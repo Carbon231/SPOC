@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-spoc/backend/__pycache__/
-spoc/admin/__pycache__/
-spoc/backend/migrations/
+backend/__pycache__/
 spoc/__pycache__/
+backend/migrations/
+__pycache__/
