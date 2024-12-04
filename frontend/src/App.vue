@@ -26,3 +26,17 @@ export default {
   margin-top: 60px;
 }
 </style>
+
+<!--<template>-->
+<!--  <router-view/>-->
+<!--</template>-->
+
+<!--<script>-->
+<!--export default {-->
+<!--  name: 'App'-->
+<!--}-->
+<!--</script>-->
+
+<!--<style scoped>-->
+
+<!--</style>-->

@@ -1,0 +1,18 @@
+.toggle-btn :hover {
+  cursor: pointer;
+}
+.toggle-btn {
+  float: left;
+}
+
+.userInfo {
+  float: right;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: black;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
