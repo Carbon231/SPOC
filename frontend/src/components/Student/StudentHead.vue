@@ -52,11 +52,6 @@ import StudentHeading from './StudentHeading'
 export default {
   name: 'StudentHead',
   components: {StudentHeading, StudentNav}
-  // data() {
-  //   return {
-  //     html: FreeTalk
-  //   }
-  // }
 }
 </script>
 

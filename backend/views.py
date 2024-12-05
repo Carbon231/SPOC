@@ -39,9 +39,11 @@ class StudentLogin(APIView):
             })
         else:
             if user.s_pwd == s_pwd:
+                s_name = user.s_name
                 return Response({
                     "code": 200,
-                    "message": "登录成功"
+                    "message": "登录成功",
+                    "s_name": s_name
                 })
             else:
                 return Response({
