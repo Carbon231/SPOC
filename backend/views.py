@@ -39,9 +39,11 @@ class StudentLogin(APIView):
             })
         else:
             if user.s_pwd == s_pwd:
+                s_name = user.s_name
                 return Response({
                     "code": 200,
-                    "message": "登录成功"
+                    "message": "登录成功",
+                    "s_name": s_name
                 })
             else:
                 return Response({
@@ -71,9 +73,11 @@ class TeacherLogin(APIView):
         t_pwd = req_data['s_pwd']
         user = Teacher.objects.get(t_name=t_name)
         if user.t_pwd == t_pwd:
+            t_name = user.t_name
             return Response({
                 "code": 200,
-                "message": "登录成功"
+                "message": "登录成功",
+                "t_name": t_name
             })
         else:
             return Response({
