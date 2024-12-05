@@ -9,12 +9,12 @@
       <el-form>
         <div id="register-name">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入学号" v-model="userName" clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请输入学号" v-model="s_id" clearable></el-input>
           </el-form-item>
         </div>
         <div id="register-password">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入密码" v-model="userPassWord" show-password clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请输入密码" v-model="s_pwd" show-password clearable></el-input>
           </el-form-item>
         </div>
         <div class="confirm-button">
@@ -40,71 +40,55 @@
 /* eslint-disable */
 export default {
   name: 'StudentLogin',
-  data: function () {
+  data() {
     return {
-      userNickName: '',
-      userName: '',
-      userPassWord: '',
+      s_id: '',
+      s_pwd: '',
       status: -1
-    }
-  },
-  mounted() {
-    window.addEventListener('keydown', this.keydown)
+    };
   },
   methods: {
     goToStudentHead: function () {
       let that = this
-      let debug = false
-      if (debug) {
-        if (that.userName === 'admin' && that.userPassWord === '123456') {
-          let loginInfo = {userName: 'admin', userNickName: '前端测试用户'}
-          that.cookie.setCookie(loginInfo)
+
+      this.$http.request({
+        url: that.$url + 'StudentLogin/',
+        method: 'post',
+        data: {
+          s_id: that.s_id,
+          s_pwd: that.s_pwd
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        that.status = response.data.code;
+        if (that.status === 200) {
+          that.$message.success(response.data.message);
           that.$router.push({
-            name: 'StudentHead',
-          })
-        } else {
-          that.$message.error('!!!')
+            name: 'StudentHead'
+          });
+        } else if (that.status === 401) {
+          that.$message.error(response.data.error);
         }
-      } else {
-        this.$http.request({
-          url: that.$url + 'StudentLogin/',
-          method: 'get',
-          params: {
-            userNickName: that.userNickName,
-            userName: that.userName,
-            userPassWord: that.userPassWord
-          }
-        }).then(function (response) {
-          console.log(response.data)
-          that.status = response.data.value
-          if (that.status === 0) {
-            let loginInfo = {userName: that.userName, userNickName: response.data.userNickName}
-            that.cookie.setCookie(loginInfo)
-            that.$router.push({
-              name: 'StudentHead'
-            })
-          } else if (that.status === 1) {
-            that.$message.error('学号不存在')
-          } else if (that.status === 2) {
-            that.$message.error('密码错误')
-          } else {
-            that.$message.info('请输入学号')
-          }
-        }).catch(function (error) {
-          console.log(error)
-        })
-      }
+      }).catch(function (error) {
+        console.log(error)
+      })
     },
     goToStudentRegister: function () {
       this.$router.push({
         name: 'StudentRegister'
-      })
+      });
     },
     keydown(e) {
       if (e.keyCode === 13) {
         this.goToStudentHead()
       }
     }
+  },
+  mounted() {
+    window.addEventListener('keydown', this.keydown)
   },
   destroyed() {
     window.removeEventListener('keydown', this.keydown, false)

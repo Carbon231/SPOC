@@ -9,22 +9,22 @@
       <el-form rules="rules">
         <div id="register-n">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入姓名" v-model="userNickName" clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请输入学号" v-model="s_id" clearable></el-input>
           </el-form-item>
         </div>
         <div id="register-name">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入学号" v-model="userName" clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请输入姓名" v-model="s_name" clearable></el-input>
           </el-form-item>
         </div>
         <div id="register-password">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入密码" v-model="userPassWord" show-password clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请输入密码" v-model="s_pwd" show-password clearable></el-input>
           </el-form-item>
         </div>
         <div id="confirm-password">
           <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请确认密码" v-model="userPassWord2" show-password clearable></el-input>
+            <el-input class="inputs" type="text" placeholder="请确认密码" v-model="s_pwd_confirm" show-password clearable></el-input>
           </el-form-item>
         </div>
         <div class="confirm-button">
@@ -46,17 +46,14 @@
 <script>
 export default {
   name: 'StudentRegister',
-  data: function () {
+  data() {
     return {
       status: -1,
-      userNickName: '',
-      userName: '',
-      userPassWord: '',
-      userPassWord2: ''
+      s_id: '',
+      s_name: '',
+      s_pwd: '',
+      s_pwd_confirm: ''
     }
-  },
-  mounted () {
-    window.addEventListener('keydown', this.keydown)
   },
   methods: {
     goToStudentLogin: function () {
@@ -66,36 +63,41 @@ export default {
     },
     Register: function () {
       let that = this
-      if (that.userPassWord === '') {
+      console.log(that.s_id, that.s_name, that.s_pwd, that.s_pwd_confirm)
+      if (that.s_pwd === '') {
         that.$message.error('密码不能为空')
-      } else if (that.userName === '') {
+      } else if (that.s_name === '') {
         that.$message.error('用户名不能为空')
-      } else if (that.userNickName === '') {
-        that.$message.error('请添加您的昵称')
+      } else if (that.s_id === '') {
+        that.$message.error('学号不能为空')
       } else {
         this.$http.request({
           url: that.$url + 'StudentRegister/',
-          method: 'get',
-          params: {
-            userNickName: that.userNickName,
-            userName: that.userName,
-            userPassWord: that.userPassWord,
-            userPassWord2: that.userPassWord2
+          method: 'post',
+          data: {
+            s_id: that.s_id,
+            s_name: that.s_name,
+            s_pwd: that.s_pwd,
+            s_pwd_confirm: that.s_pwd_confirm
+          },
+          headers: {
+            'Content-Type': 'application/json'
           }
         }).then(function (response) {
-          console.log(response)
-          that.status = response.data
-          if (that.status === 0) {
+          console.log(response.data)
+          that.status = response.data.code;
+          if (that.status === 201) {
+            that.$message.success(response.data.message)
             that.$router.push({
               name: 'StudentLogin',
-              params: {
-                userName: that.userName
+              data: {
+                s_id: that.s_id,
+                s_pwd: that.s_pwd
               }
             })
-          } else if (that.status === 1) {
-            that.$message.error('学号已存在')
-          } else if (that.status === 2) {
-            that.$message.error('密码不一致')
+          }
+          else if (that.status === 400) {
+            that.$message.error(response.data.message)
           }
         }).catch(function (error) {
           console.log(error)
@@ -107,6 +109,9 @@ export default {
         this.Register()
       }
     }
+  },
+  mounted () {
+    window.addEventListener('keydown', this.keydown)
   },
   destroyed () {
     window.removeEventListener('keydown', this.keydown, false)
