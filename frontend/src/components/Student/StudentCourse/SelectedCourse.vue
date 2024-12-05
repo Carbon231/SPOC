@@ -33,11 +33,11 @@
               <el-col :offset="2" :span="14">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
-                    <span style="font-size: 16px"><strong>{{ course.name }}</strong></span>
+                    <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.id}}</span></el-tag>
+                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
@@ -51,14 +51,14 @@
             <el-descriptions class="info" direction="vertical">
               <el-descriptions-item label="课程名称(ID)">
                 &nbsp;&nbsp;
-                {{courseInfo.name}}({{courseInfo.id}})
+                {{courseInfo.c_name}}({{courseInfo.c_id}})
               </el-descriptions-item>
-              <el-descriptions-item label="学习材料(ID)">
-                &nbsp;&nbsp;
-                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>
-              </el-descriptions-item>
+<!--              <el-descriptions-item label="学习材料(ID)">-->
+<!--                &nbsp;&nbsp;-->
+<!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
+<!--              </el-descriptions-item>-->
               <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
-                <span v-html="courseInfo.introduction "></span>
+                <span v-html="courseInfo.intro "></span>
               </el-descriptions-item>
             </el-descriptions>
             <div slot="footer" class="dialog-footer">
@@ -91,38 +91,29 @@ export default {
     return {
       courseInfoVisible: false,
       courseInfo: {
-        id: '',
-        name: '',
-        materialList: [{
-          id: '',
-          name: ''
-        }],
-        introduction: ''
+        c_id: '',
+        c_name: '',
+        t_name: '',
+        intro: ''
       },
       courseImg: CourseImg,
       loading: true,
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       inputSearch: '',
       myCourseList: [{
-        id: '1',
-        name: '课程1',
-        materialList: [{
-          id: '01',
-          name: '材料01'
-        }, {
-          id: '02',
-          name: '材料02'
-        }],
-        introduction: '',
-        avgDegree: 3.0
+        c_id: '1',
+        c_name: '课程1',
+        t_name: '教师1',
+        avgDegree: 2.0,
+        intro: ''
       }],
       showMyCourseList: this.myCourseList
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
     this.getStudentCourseList()
   },
   methods: {
@@ -136,9 +127,12 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetStudentCourseList/',
-        method: 'get',
-        params: {
-          userName: that.userName
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
         console.log(response.data)
@@ -160,15 +154,15 @@ export default {
         let that = this
         this.$http.request({
           url: that.$url + 'DropCourse/',
-          method: 'get',
-          params: {
-            userName: that.userName,
-            id: that.showMyCourseList[index].id
+          method: 'post',
+          data: {
+            s_id: that.s_id,
+            c_id: that.showMyCourseList[index].c_id
           }
         }).then(function (response) {
           console.log(response.data)
-          if (response.data === 0) {
-            that.$message.success('退课成功')
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
           } else {
             that.$message.error('未知错误')
           }
@@ -179,8 +173,8 @@ export default {
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     },
     searchCourse: function (inputSearch) {
@@ -196,7 +190,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].name.indexOf(keyWord) >= 0) {
+        if (list[i].c_id.indexOf(keyWord) >= 0) {
           arr.push(list[i])
         }
       }

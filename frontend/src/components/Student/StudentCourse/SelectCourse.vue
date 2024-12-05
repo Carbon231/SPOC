@@ -36,11 +36,11 @@
               <el-col :offset="2" :span="14">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
-                    <span style="font-size: 16px"><strong>{{ course.name }}</strong></span>
+                    <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.id}}</span></el-tag>
+                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
@@ -54,14 +54,14 @@
             <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
                 &nbsp;&nbsp;
-                {{courseInfo.name}}({{courseInfo.id}})
+                {{courseInfo.c_name}}({{courseInfo.c_id}})
               </el-descriptions-item>
-              <el-descriptions-item label="学习材料(ID)">
-                &nbsp;&nbsp;
-                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>
-              </el-descriptions-item>
+<!--              <el-descriptions-item label="学习材料(ID)">-->
+<!--                &nbsp;&nbsp;-->
+<!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
+<!--              </el-descriptions-item>-->
               <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
-                <span v-html="courseInfo.introduction"></span>
+                <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
             </el-descriptions>
             <div slot="footer" class="dialog-footer">
@@ -94,38 +94,29 @@ export default {
     return {
       courseInfoVisible: false,
       courseInfo: {
-        id: '',
-        name: '',
-        materialList: [{
-          id: '',
-          name: ''
-        }],
-        introduction: ''
+        c_id: '',
+        c_name: '',
+        t_name: '',
+        intro: ''
       },
       courseImg: CourseImg,
       loading: false,
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       courseList: [{
-        id: '1',
-        name: '课程1',
-        materialList: [{
-          id: '01',
-          name: '材料01'
-        }, {
-          id: '02',
-          name: '材料02'
-        }],
-        introduction: '',
-        avgDegree: 2.0
+        c_id: '1',
+        c_name: '课程1',
+        t_name: '教师1',
+        avgDegree: 2.0,
+        intro: ''
       }],
       showCourseList: this.courseList,
       inputSearch: ''
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
     this.getCourseList()
   },
   methods: {
@@ -139,12 +130,15 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseList/',
-        method: 'get'
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.courseList = response.data
-        that.showCourseList = response.data
+        that.courseList = response.data.data
+        that.showCourseList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -155,26 +149,26 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'SelectCourse/',
-        method: 'get',
+        method: 'post',
         params: {
-          userName: that.userName,
-          id: that.showCourseList[index].id
+          s_id: that.s_id,
+          c_id: that.showCourseList[index].c_id
         }
       }).then(function (response) {
         console.log(response.data)
-        var status = response.data
-        if (status === 0) {
-          that.$message.success('选课成功')
-        } else if (status === 1) {
-          that.$message.info('已选择该课程')
+        var status = response.data.code
+        if (status === 200) {
+          that.$message.success(response.data.message)
+        } else if (status === 401) {
+          that.$message.info(response.data.message)
         } else {
-          that.$message.error('!')
+          that.$message.error(response.data.message)
         }
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     },
     searchCourse: function (inputSearch) {
@@ -190,7 +184,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].name.indexOf(keyWord) >= 0) {
+        if (list[i].c_id.indexOf(keyWord) >= 0) {
           arr.push(list[i])
         }
       }
