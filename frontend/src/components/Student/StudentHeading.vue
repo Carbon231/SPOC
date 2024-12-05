@@ -7,10 +7,10 @@
     <el-dropdown @command="handleCommand"  class="userInfo" >
       <span class="el-dropdown-link">
         <i class="el-icon-user"></i>
-        {{userNickName}}
+        {{s_name}}
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
-      <el-dropdown-menu slot="dropdown">
+      <el-dropdown-menu>
         <el-dropdown-item command="goToHelloWorld">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -19,39 +19,39 @@
 
 <script>
 import Utils from '../../assets/js/util.js'
-import StudentNav from './StudentNav'
+// import StudentNav from './StudentNav'
 export default {
   name: 'StudentHeading',
-  components: {StudentNav},
+  // components: {StudentNav},
   data: function () {
     return {
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       show: false
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
   },
   methods: {
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     },
     toggleCollapse: function () {
       this.show = !this.show
       Utils.$emit('toggleCollapse', 'call function toggleCollapse in StudentNav')
     },
-    handleCommand (command) {
+    handleCommand () {
       this.goToHelloWorld()
     },
     goToCommentPlatform () {
       let that = this
       let loginInfo =
-        { userName: that.userName,
-          userNickName: that.userNickName,
+        { s_id: that.s_id,
+          s_name: that.s_name,
           userType: 'student'
         }
       that.cookie.setCookie(loginInfo)

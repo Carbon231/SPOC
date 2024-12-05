@@ -3,7 +3,11 @@ import Router from 'vue-router'
 import HelloWorld from '../components/HelloWorld'
 import StudentLogin from '../components/Student/StudentLogin'
 import StudentRegister from '../components/Student/StudentRegister'
-// import StudentHead from '../components/Student/StudentHead'
+import StudentHead from '../components/Student/StudentHead'
+import StudentCourse from '../components/Student/StudentCourse/StudentCourse'
+import SelectCourse from '../components/Student/StudentCourse/SelectCourse'
+import SelectedCourse from '../components/Student/StudentCourse/SelectedCourse'
+
 import TeacherLogin from '../components/Teacher/TeacherLogin'
 
 
@@ -31,11 +35,28 @@ export default new Router({
       name: 'StudentRegister',
       component: StudentRegister
     },
-    // {
-    //   path: '/StudentHead',
-    //   name: 'StudentHead',
-    //   component: StudentHead
-    // },
+    {
+      path: '/StudentHead',
+      name: 'StudentHead',
+      component: StudentHead
+    },
+      {
+      path: '/StudentCourse',
+      name: 'StudentCourse',
+      component: StudentCourse,
+      children: [
+        {
+          path: 'SelectCourse',
+          name: 'SelectCourse',
+          component: SelectCourse
+        },
+        {
+          path: 'SelectedCourse',
+          name: 'SelectedCourse',
+          component: SelectedCourse
+        }
+      ]
+    },
     {
       path: '/TeacherLogin',
       name: 'TeacherLogin',
