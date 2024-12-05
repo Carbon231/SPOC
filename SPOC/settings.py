@@ -41,9 +41,27 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+# CORS组的配置信息
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',
+    'http://localhost:5173',
+    'http://localhost:8000',
+    'http://localhost:8080',
+)
+CORS_ALLOW_CREDENTIALS = True  # 允许ajax跨域请求时携带cookie
+
+CORS_ALLOW_ALL_ORIGINS = True
+# 增加跨域忽略
+CORS_ORIGIN_ALLOW_ALL = True
+# 允许所有方法
+CORS_ALLOW_METHODS = ('*')
+# 允许所有请求头
+CORS_ALLOW_HEADERS = ('*')
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
