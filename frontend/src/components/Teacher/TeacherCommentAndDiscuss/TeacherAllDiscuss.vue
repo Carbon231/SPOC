@@ -56,8 +56,8 @@
                   </el-col>
                   <el-col :span="12" :offset="1">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{userNickName}}</el-descriptions-item>
-                      <el-descriptions-item label="工号">{{userName}}</el-descriptions-item>
+                      <el-descriptions-item label="用户名">{{t_name}}</el-descriptions-item>
+                      <el-descriptions-item label="工号">{{t_id}}</el-descriptions-item>
                       <el-descriptions-item label="已发帖子">{{discussNum}}</el-descriptions-item>
                     </el-descriptions>
                   </el-col>
@@ -106,9 +106,9 @@ export default {
   data: function () {
     return {
       loading: true,
-      userName: '',
-      userNickName: '',
-        discussNum: '',
+      t_id: '',
+      t_name: '',
+      discussNum: '',
       inputSearch: '',
       input: {
         title: '',
@@ -122,8 +122,8 @@ export default {
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.t_id = this.cookie.getCookie('t_id')
+    this.t_name = this.cookie.getCookie('t_name')
     this.getPostThemeList()
     this.getTeacherDiscussNum()
   },
@@ -134,7 +134,7 @@ export default {
         url: that.$url + 'GetTeacherDiscussNum/',
           method: 'post',
           data: {
-            t_id: that.userName
+            t_id: that.t_id
         }
       }).then(function (response) {
         console.log(response.data)
@@ -170,11 +170,10 @@ export default {
         url: that.$url + 'BuildPostTheme/',
           method: 'post',
           data: {
-            t_id: that.userName,
+          s_id: that.s_id,
           title: that.input.title,
           content: that.input.content,
           time: that.time,
-          isTeacher: 1
         }
       }).then(function (response) {
         console.log(response.data)
