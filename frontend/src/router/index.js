@@ -9,7 +9,13 @@ import SelectCourse from '../components/Student/StudentCourse/SelectCourse'
 import SelectedCourse from '../components/Student/StudentCourse/SelectedCourse'
 
 import TeacherLogin from '../components/Teacher/TeacherLogin'
-
+import TeacherRegister from '@/components/Teacher/TeacherRegister.vue'
+import TeacherHead from '@/components/Teacher/TeacherHead.vue'
+import TeacherCourse from '@/components/Teacher/TeacherCourse/TeacherCourse.vue'
+import ChangeCourse from '@/components/Teacher/TeacherCourse/ChangeCourse.vue'
+import BuildCourse from '@/components/Teacher/TeacherCourse/BuildCourse.vue'
+import ManageCourse from '@/components/Teacher/TeacherCourse/ManageCourse.vue'
+import AllCourse from '@/components/Teacher/TeacherCourse/AllCourse.vue'
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = Router.prototype.push
@@ -40,7 +46,7 @@ export default new Router({
       name: 'StudentHead',
       component: StudentHead
     },
-      {
+    {
       path: '/StudentCourse',
       name: 'StudentCourse',
       component: StudentCourse,
@@ -62,5 +68,41 @@ export default new Router({
       name: 'TeacherLogin',
       component: TeacherLogin
     },
-  ]
+    {
+      path: '/TeacherRegister',
+      name: 'TeacherRegister',
+      component: TeacherRegister
+    },
+    {
+      path: '/TeacherHead',
+      name: 'TeacherHead',
+      component: TeacherHead
+    },
+    {
+      path: '/TeacherCourse',
+      name: 'TeacherCourse',
+      component: TeacherCourse,
+      children: [
+        {
+          path: 'ChangeCourse',
+          name: 'ChangeCourse',
+          component: ChangeCourse
+        },
+        {
+          path: 'BuildCourse',
+          name: 'BuildCourse',
+          component: BuildCourse
+        },
+        {
+          path: 'ManageCourse',
+          name: 'ManageCourse',
+          component: ManageCourse
+        },
+        {
+          path: 'AllCourse',
+          name: 'AllCourse',
+          component: AllCourse
+        }
+      ]
+    },]
 })
