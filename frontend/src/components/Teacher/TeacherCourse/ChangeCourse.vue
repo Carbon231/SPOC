@@ -9,17 +9,15 @@
           <TeacherHeading></TeacherHeading>
         </el-header>
         <el-main style="padding-left: 30%; padding-right: 10%">
-        <!-- <el-page-header @back="returnManageCourse" :content="name" style="margin-bottom: 2%">
-        </el-page-header> -->
         <el-form label-position="top" v-loading="loading">
           <el-form-item label="课程名称">
             <el-col :span="12">
-              <el-input v-model="name"></el-input>
+                  <el-input v-model="course.c_name"></el-input>
             </el-col>
           </el-form-item>
           <el-form-item label="课程介绍">
             <el-col :span="12">
-                  <el-input type="textarea" v-model="introduction"></el-input>
+                  <el-input type="textarea" v-model="course.introduction"></el-input>
             </el-col>
           </el-form-item>
           <el-form-item style="margin-top: 20%">
@@ -37,32 +35,49 @@
 <script>
 import TeacherNav from '../TeacherNav'
 import TeacherHeading from '../TeacherHeading'
-// import {quillEditor} from 'vue-quill-editor'
-// import 'quill/dist/quill.core.css'
-// import 'quill/dist/quill.snow.css'
-// import 'quill/dist/quill.bubble.css'
+  
 export default {
-  /* eslint-disable */
   name: 'ChangeCourse',
     components: { TeacherNav, TeacherHeading },
   data: function () {
     return {
       loading: false,
-      c_id: '',
-      c_name: '',
-      introduction: '',
+        course: {
+          c_id: '',
+          c_name: '',
+          introduction: ''
+        },
       t_id: ''
     }
   },
     mounted: function () {
-      this.id = this.$route.params.id
-      this.name = this.$route.params.name
-      this.introduction = this.$route.params.introduction
-    this.t_id = this.cookie.getCookie('t_id')
+      this.course.c_id = this.$route.params.id
+      this.t_id = this.cookie.getCookie('t_id')
+      this.getCourseInfo()
   },
   methods: {
-    returnManageCourse: function () {
-        this.$router.push({ name: 'ManageCourse' })
+      getCourseInfo: function () {
+        let that = this
+        that.loading = true
+        this.$http.request({
+          url: that.$url + 'GetCourseInfo/',
+          method: 'get',
+          params: {
+            c_id: that.course.c_id
+          }
+        }).then(function (response) {
+          console.log(response.data)
+          that.loading = false
+          if (response.data.code === 200) {
+            that.course.c_name = response.data.data.c_name
+            that.course.introduction = response.data.data.introduction
+          } else {
+            that.$message.error(response.data.message)
+          }
+        }).catch(function (error) {
+          console.log(error)
+          that.loading = false
+        })
     },
     changeCourse: function () {
       let that = this
@@ -71,9 +86,9 @@ export default {
         url: that.$url + 'ChangeCourse/',
           method: 'post',
           data: {
-            id: that.id,
-            name: that.name,
-            introduction: that.introduction,
+            c_id: that.course.c_id,
+            c_name: that.course.c_name,
+            introduction: that.course.introduction,
             t_id: that.t_id
         }
       }).then(function (response) {
@@ -82,7 +97,7 @@ export default {
           if (response.data.code === 200) {
             that.$message.success(response.data.message)
             that.$router.push({ name: 'ManageCourse' })
-          } else if (response.data.code === 400) {
+          } else {
             that.$message.error(response.data.message)
         }
       }).catch(function (error) {

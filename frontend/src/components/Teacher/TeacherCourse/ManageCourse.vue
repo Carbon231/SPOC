@@ -36,11 +36,11 @@
               <el-col :offset="2" :span="16">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
-                    <span style="font-size: 16px"><strong>{{ course.name }}</strong></span>
+                      <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号&nbsp;&nbsp;<span>{{course.c_id}}</span></el-tag>
+                    <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
@@ -53,17 +53,16 @@
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="提示" :visible.sync="courseInfoVisible" width="40%">
-            <el-descriptions class="info" direction="vertical">
+            <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="40%">
+              <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
-                &nbsp;&nbsp;{{courseInfo.name}}({{courseInfo.c_id}})
-              </el-descriptions-item>
-              <el-descriptions-item label="课程介绍">
                 &nbsp;&nbsp;
-                <span v-html="courseInfo.introduction"></span>
+                  {{courseInfo.c_name}}({{courseInfo.c_id}})
+                </el-descriptions-item>
+                <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
+                  <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
             </el-descriptions>
-
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="courseInfoVisible = false">确 定</el-button>
             </div>
@@ -79,9 +78,8 @@ import TeacherNav from '../TeacherNav'
 import TeacherHeading from '../TeacherHeading'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
 export default {
-  /* eslint-disable */
   name: 'ManageCourse',
-  components: {TeacherNav, TeacherHeading},
+    components: { TeacherNav, TeacherHeading },
   data: function () {
     return {
       courseInfoVisible: false,
@@ -95,14 +93,8 @@ export default {
       loading: true,
       t_name: '',
       t_id: '',
-      myCourseList: [{
-        c_id: '1',
-        c_name: '课程1',
-        t_name: '教师1',
-        avgDegree: 2.0,
-        intro: ''
-      }],
-      showMyCourseList: this.myCourseList,
+        myCourseList: [],
+        showMyCourseList: [],
       inputSearch: ''
     }
   },
@@ -129,80 +121,46 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.myCourseList = response.data
-        that.showMyCourseList = response.data
+          if (response.data.code === 200) {
+            that.myCourseList = response.data.data
+            that.showMyCourseList = response.data.data
+          } else {
+            that.$message.error(response.data.message)
+          }
       }).catch(function (error) {
         console.log(error)
         that.loading = false
       })
     },
-    changeCourse: function (index) {
-      console.log(index)
-      let that = this
-      this.$router.push({
-        path: '/TeacherCourse/ChangeCourse',
-        // 这里不能使用params传递参数，详见：
-        // https://blog.csdn.net/qq_37548296/article/details/90446430
-        query: {
-          c_id: that.showMyCourseList[index].c_id,
-        }
-      })
+      changeCourse: function (index) {
+        this.$router.push({ name: 'ChangeCourse', params: { id: this.showMyCourseList[index].c_id } })
     },
-    cancelCourse: function (index) {
-      this.$confirm('此操作将停开并删除该课程，是否继续？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        console.log(index)
+      cancelCourse: function (index) {
         let that = this
         that.loading = true
         this.$http.request({
           url: that.$url + 'CancelCourse/',
-          method: 'get',
-          params: {
-            t_id: that.t_id,
-            c_id: that.showMyCourseList[index].c_id
+          method: 'post',
+          data: {
+            c_id: that.showMyCourseList[index].c_id,
+            t_id: that.t_id
           }
         }).then(function (response) {
           console.log(response.data)
           that.loading = false
-          if (response.data === 0) {
-            that.$message.success('停课成功')
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
+            that.getTeacherCourseList()
           } else {
-            that.$message.error('未知错误')
+            that.$message.error(response.data.message)
           }
-          that.getTeacherCourseList()
         }).catch(function (error) {
           console.log(error)
           that.loading = false
         })
-      })
     },
-    goToHelloWorld: function () {
-      this.cookie.clearCookie('t_id')
-      this.cookie.clearCookie('t_name')
-      this.$router.replace('/')
-    },
-    searchCourse: function (inputSearch) {
-      let that = this
-      that.showMyCourseList = this.searchByIndexOf(inputSearch, that.myCourseList)
-    },
-    searchByIndexOf: function (keyWord, list) {
-      if (!(list instanceof Array)) {
-        return
-      } else if (keyWord === '') {
-        return list
-      }
-      const len = list.length
-      const arr = []
-      for (let i = 0; i < len; i++) {
-        // 如果字符串中不包含目标字符会返回-1
-        if (list[i].name.indexOf(keyWord) >= 0) {
-          arr.push(list[i])
-        }
-      }
-      return arr
+      searchCourse: function (query) {
+        this.showMyCourseList = this.myCourseList.filter(course => course.c_name.includes(query))
     }
   }
 }
@@ -211,8 +169,4 @@ export default {
 <style scoped>
 @import "../../../assets/css/nav.css";
 @import "../../../assets/css/back.css";
-.info {
-  margin-bottom: 20px;
-  word-break: break-all;
-}
 </style>
