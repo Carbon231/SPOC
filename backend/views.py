@@ -2,7 +2,7 @@ import json
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from backend.models import Student, Teacher, Course, Comment, SC
+from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post
 
 
 class MyCore(MiddlewareMixin):
@@ -150,7 +150,7 @@ class TeacherChange(APIView):
             error_response = {'error': str(e)}
             return Response({
                 "code": 401,
-                "message": "学号不存在",
+                "message": "工号不存在",
                 "error_response": error_response
             })
         if not user.s_pwd == s_pwd:
@@ -499,6 +499,138 @@ class GetCommentList(APIView):
                 "time": comment.time
             })
 
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": data
+        })
+
+
+class DeleteComment(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        cm_id = req_data['cm_id']
+        try:
+            comment = Comment.objects.get(id=cm_id)
+        except Comment.DoesNotExist:
+            return Response({
+                "code": 400,
+                "message": "评论不存在"
+            })
+        comment.delete()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class GetPostThemeList(APIView):
+    def post(self, request):
+        post_themes = PostTheme.objects.all()
+        data = [{
+            "pt_id": post_theme.id,
+            "s_id": post_theme.student.s_id,
+            "s_name": post_theme.student.s_name,
+            "title": post_theme.title,
+            "content": post_theme.content,
+            "time": post_theme.time,
+        } for post_theme in post_themes]
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": data
+        })
+
+
+class BuildPostTheme(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        title = req_data['title']
+        content = req_data['content']
+        time = req_data['time']
+        student = Student.objects.get(s_id=s_id)
+        post_theme = PostTheme.objects.create(student=student, title=title, content=content, time=time)
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class GetPostList(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        posts = Post.objects.filter(post_theme__id=pt_id)
+        data = [{
+            "p_id": post.id,
+            "s_id": post.student.s_id,
+            "s_name": post.student.s_name,
+            "content": post.content,
+            "time": post.time,
+        } for post in posts]
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": data
+        })
+
+
+class BuildPost(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        s_id = req_data['s_id']
+        content = req_data['content']
+        time = req_data['time']
+        student = Student.objects.get(s_id=s_id)
+        post_theme = PostTheme.objects.get(id=pt_id)
+        post = Post.objects.create(student=student, post_theme=post_theme, content=content, time=time)
+        post.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class DeletePostTheme(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        post_theme = PostTheme.objects.get(id=pt_id)
+        post_theme.delete()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class DeletePost(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        p_id = req_data['p_id']
+        post = Post.objects.get(id=p_id)
+        post.delete()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class GetPostTheme(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        post_theme = PostTheme.objects.get(id=pt_id)
+        data = {
+            "pt_id": post_theme.id,
+            "s_id": post_theme.student.s_id,
+            "s_name": post_theme.student.s_name,
+            "title": post_theme.title,
+            "content": post_theme.content,
+            "time": post_theme.time,
+        }
         return Response({
             "code": 200,
             "message": "操作成功！",

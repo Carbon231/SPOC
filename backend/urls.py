@@ -34,16 +34,16 @@ urlpatterns = [
     # # Comment
     path('GetCommentList/', views.GetCommentList.as_view()),
     path('CommentCourse/', views.CommentCourse.as_view()),
-    # path('DeleteComment/', views.DeleteComment.as_view()),
+    path('DeleteComment/', views.DeleteComment.as_view()),
     #
     # # Post
-    # path('GetPostThemeList/', views.GetPostThemeList.as_view()),
-    # path('BuildPostTheme/', views.BuildPostTheme.as_view()),
-    # path('GetPostList/', views.GetPostList.as_view()),
-    # path('BuildPost/', views.BuildPost.as_view()),
-    # path('DeletePostTheme/', views.DeletePostTheme.as_view()),
-    # path('DeletePost/', views.DeletePost.as_view()),
-    # path('GetPostTheme/', views.GetPostTheme.as_view()),
+    path('GetPostThemeList/', views.GetPostThemeList.as_view()),
+    path('BuildPostTheme/', views.BuildPostTheme.as_view()),
+    path('GetPostList/', views.GetPostList.as_view()),
+    path('BuildPost/', views.BuildPost.as_view()),
+    path('DeletePostTheme/', views.DeletePostTheme.as_view()),
+    path('DeletePost/', views.DeletePost.as_view()),
+    path('GetPostTheme/', views.GetPostTheme.as_view()),
     #
     #
     # # 成绩

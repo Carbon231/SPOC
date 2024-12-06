@@ -23,7 +23,7 @@ class Comment(models.Model):
     cm_id = models.CharField(max_length=30, blank=True, null=True, unique=True)
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     degree = models.CharField(max_length=30, blank=True, null=True)
-    content = models.CharField(max_length=30, blank=True, null=True)
+    content = models.CharField(max_length=300, blank=True, null=True)
     time = models.CharField(max_length=30, blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
@@ -31,6 +31,20 @@ class Comment(models.Model):
 class SC(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+
+class PostTheme(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.RESTRICT)
+    title = models.CharField(max_length=30, blank=True, null=True)
+    content = models.CharField(max_length=300, blank=True, null=True)
+    time = models.CharField(max_length=30, blank=True, null=True)
+
+
+class Post(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.RESTRICT)
+    content = models.CharField(max_length=300, blank=True, null=True)
+    time = models.CharField(max_length=30, blank=True, null=True)
+    post_theme = models.ForeignKey(PostTheme, on_delete=models.CASCADE)
 
 
 
