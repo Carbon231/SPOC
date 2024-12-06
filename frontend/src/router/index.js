@@ -16,11 +16,16 @@ import ChangeCourse from '@/components/Teacher/TeacherCourse/ChangeCourse.vue'
 import BuildCourse from '@/components/Teacher/TeacherCourse/BuildCourse.vue'
 import ManageCourse from '@/components/Teacher/TeacherCourse/ManageCourse.vue'
 import AllCourse from '@/components/Teacher/TeacherCourse/AllCourse.vue'
+import TeacherCommentAndDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherCommentAndDiscuss.vue'
+import TeacherAllComment from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherAllComment.vue'
+import TeacherAllDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherAllDiscuss.vue'
+import TeacherComment from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherComment.vue'
+import TeacherDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherDiscuss.vue'
+import TeacherChange from '@/components/Teacher/TeacherChange/TeacherChange.vue'
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) { return originalPush.call(this, location).catch(err => err) }
-
 
 Vue.use(Router)
 
@@ -104,5 +109,38 @@ export default new Router({
           component: AllCourse
         }
       ]
-    },]
+    },
+    {
+      path: '/TeacherCommentAndDiscuss',
+      name: 'TeacherCommentAndDiscuss',
+      component: TeacherCommentAndDiscuss,
+      children: [
+        {
+          path: 'TeacherAllComment',
+          name: 'TeacherAllComment',
+          component: TeacherAllComment
+        },
+        {
+          path: 'TeacherAllDiscuss',
+          name: 'TeacherAllDiscuss',
+          component: TeacherAllDiscuss
+        },
+        {
+          path: 'TeacherComment',
+          name: 'TeacherComment',
+          component: TeacherComment
+        },
+        {
+          path: 'TeacherDiscuss',
+          name: 'TeacherDiscuss',
+          component: TeacherDiscuss
+        }
+      ]
+    },
+    {
+      path: '/TeacherChange',
+      name: 'TeacherChange',
+      component: TeacherChange
+    }
+  ]
 })
