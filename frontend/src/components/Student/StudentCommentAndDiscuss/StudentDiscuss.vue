@@ -20,15 +20,15 @@
                 <el-row class="time">
                   {{postTheme.time}}
                 </el-row>
-                <el-row class="userName">
-                  <el-col v-if="postTheme.isTeacher === 1">
-                    {{postTheme.userNickName}}({{postTheme.userName}}) (教师)
+                <el-row class="s_id">
+                  <el-col v-if="postTheme.isExcellent === 1">
+                    {{postTheme.s_name}}({{postTheme.s_id}}) (教师)
                   </el-col>
-                  <el-col v-else-if="postTheme.isTeacher === 2">
-                    {{postTheme.userNickName}}({{postTheme.userName}}) (管理员)
+                  <el-col v-else-if="postTheme.isExcellent === 2">
+                    {{postTheme.s_name}}({{postTheme.s_id}}) (管理员)
                   </el-col>
                   <el-col v-else>
-                    {{postTheme.userNickName}}({{postTheme.userName}})
+                    {{postTheme.s_name}}({{postTheme.s_id}})
                   </el-col>
                 </el-row>
               </el-col>
@@ -36,7 +36,7 @@
                 <el-row class="content" v-html="postTheme.content">
                 </el-row>
                 <el-row class="delete" :span="1" style="float: right">
-                  <div v-if="postTheme.userName === userName">
+                  <div v-if="postTheme.s_id === s_id">
                     <el-link type="danger" v-on:click="deletePostTheme">删除</el-link>
                   </div>
                 </el-row>
@@ -60,31 +60,31 @@
           <div v-for="(post, index) in postList" v-bind:key="index">
             <el-row v-loading="loading">
               <el-col :span="1" :offset="1">
-                <el-image v-if="post.isTeacher === 1" :src="teacherImg" lazy></el-image>
-                <el-image v-else-if="post.isTeacher === 2" :src="adminImg" lazy></el-image>
+                <el-image v-if="post.isExcellent === 1" :src="teacherImg" lazy></el-image>
+                <el-image v-else-if="post.isExcellent === 2" :src="adminImg" lazy></el-image>
                 <el-image v-else :src="studentImg" lazy></el-image>
               </el-col>
               <el-col :span="3">
                 <el-row class="time">
                   {{post.time}}
                 </el-row>
-                <el-row class="userName">
-                  <div v-if="post.isTeacher === 1">
-                    {{post.userNickName}}({{post.userName}}) (教师) :
+                <el-row class="s_id">
+                  <div v-if="post.isExcellent === 1">
+                    {{post.s_name}}({{post.s_id}}) (教师) :
                   </div>
-                  <div v-else-if="post.isTeacher === 2">
-                    {{post.userNickName}}({{post.userName}}) (管理员) :
+                  <div v-else-if="post.isExcellent === 2">
+                    {{post.s_name}}({{post.s_id}}) (管理员) :
                   </div>
                   <div v-else>
-                    {{post.userNickName}}({{post.userName}}) :
+                    {{post.s_name}}({{post.s_id}}) :
                   </div>
                 </el-row>
               </el-col>
               <el-col class="content" :span="18" v-html="post.content">
               </el-col>
               <el-col class="delete" :span="1" style="float: right">
-                <div v-if="post.userName === userName">
-                  <el-link type="danger" v-on:click="deletePost(post.id)">删除</el-link>
+                <div v-if="post.s_id === s_id">
+                  <el-link type="danger" v-on:click="deletePost(post.p_id)">删除</el-link>
                 </div>
               </el-col>
             </el-row>
@@ -108,7 +108,7 @@
     font-size: small;
     color: #e2e2e2;
   }
-  .userName {
+  .s_id {
     font-size: small;
     color: #66b1ff;
   }
@@ -130,41 +130,41 @@ export default {
   data: function () {
     return {
       loading: true,
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       dialogFormVisible: false,
       studentImg: StudentImg,
       teacherImg: TeacherImg,
       adminImg: AdminImg,
-      postThemeId: 0,
+      p_id: 0,
       postTheme: {
-        id: '',
-        userName: '',
-        userNickName: '',
+        pt_id: '',
+        s_id: '',
+        s_name: '',
         title: '',
         content: '',
         time: '',
-        isTeacher: 1
+        isExcellent: 0
       },
       input: {
         content: ''
       },
       postList: [{
-        id: '',
-        userName: '',
-        userNickName: '',
+        p_id: '',
+        s_id: '',
+        s_name: '',
         content: '',
         time: '',
-        isTeacher: 0
+        isExcellent: 0
       }],
       time: ''
     }
   },
   mounted () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
-    this.postTheme = this.$route.query.newPostTheme
-    this.postThemeId = this.$route.query.postThemeId
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
+    this.pt_id = this.$route.query.pt_id
+    console.log(this.pt_id)
     this.getPostTheme()
     this.getPostList()
     console.log('Checking...')
@@ -175,13 +175,16 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'GetPostTheme/',
-        method: 'get',
-        params: {
-          postThemeId: that.postThemeId
+        method: 'post',
+        data: {
+          pt_id: that.pt_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
         console.log(response.data)
-        that.postTheme = response.data
+        that.postTheme = response.data.data
       }).catch(function (error) {
         console.log(error)
       })
@@ -207,14 +210,17 @@ export default {
         that.getTime()
         this.$http.request({
           url: that.$url + 'DeletePostTheme/',
-          method: 'get',
-          params: {
-            postThemeId: that.postTheme.id
+          method: 'post',
+          data: {
+            pt_id: that.pt_id
+          },
+          headers: {
+            'Content-Type': 'application/json'
           }
         }).then(function (response) {
           console.log(response.data)
           if (response.data === 0) {
-            that.$message.success('删除成功')
+            that.$message.success(response.data.message)
             that.returnStudentAllDiscuss()
           } else {
             that.$message.error('未知错误')
@@ -229,14 +235,17 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetPostList/',
-        method: 'get',
-        params: {
-          postThemeId: that.postThemeId
+        method: 'post',
+        data: {
+          pt_id: that.pt_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.postList = response.data
+        that.postList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -248,18 +257,20 @@ export default {
       that.getTime()
       this.$http.request({
         url: that.$url + 'BuildPost/',
-        method: 'get',
-        params: {
-          postThemeId: that.postTheme.id,
-          userName: that.userName,
+        method: 'post',
+        data: {
+          pt_id: that.pt_id,
+          s_id: that.s_id,
           content: that.input.content,
           time: that.time,
-          isTeacher: 0
+        },
+        headers: {
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
         console.log(response.data)
-        if (response.data === 0) {
-          that.$message.success('跟贴成功')
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
           that.getPostList()
           that.input.content = ''
         } else {
@@ -269,7 +280,7 @@ export default {
         console.log(error)
       })
     },
-    deletePost: function (postId) {
+    deletePost: function (p_id) {
       this.$confirm('此操作将永久删除该跟贴，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -279,14 +290,17 @@ export default {
         that.getTime()
         this.$http.request({
           url: that.$url + 'DeletePost/',
-          method: 'get',
-          params: {
-            postId: postId
+          method: 'post',
+          data: {
+            p_id: p_id
+          },
+          headers: {
+            'Content-Type': 'application/json'
           }
         }).then(function (response) {
           console.log(response.data)
-          if (response.data === 0) {
-            that.$message.success('删除成功')
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
             that.getPostList()
           } else {
             that.$message.error('未知错误')
@@ -303,8 +317,8 @@ export default {
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     }
   }

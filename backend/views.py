@@ -565,7 +565,7 @@ class DeleteComment(APIView):
 
 
 class GetPostThemeList(APIView):
-    def post(self, request):
+    def get(self, request):
         post_themes = PostTheme.objects.all()
         data = [{
             "pt_id": post_theme.id,
@@ -669,7 +669,7 @@ class GetPostTheme(APIView):
             "s_name": post_theme.student.s_name,
             "title": post_theme.title,
             "content": post_theme.content,
-            "time": post_theme.time,
+            "time": post_theme.time
         }
         return Response({
             "code": 200,

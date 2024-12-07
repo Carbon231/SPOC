@@ -35,9 +35,9 @@
                 </div>
                 <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
                   <el-tag size="mini">
-                  <span v-if="postTheme.isTeacher === 0">学生</span>
-                  <span v-else-if="postTheme.isTeacher === 1">教师</span>
-                  <span v-else-if="postTheme.isTeacher === 2">管理员</span>
+                  <span v-if="postTheme.isExcellent === 0">学生</span>
+                  <span v-else-if="postTheme.isExcellent === 1">教师</span>
+                  <span v-else-if="postTheme.isExcellent === 2">管理员</span>
                   </el-tag>
                 </div>
                 <div>
@@ -53,8 +53,8 @@
                   </el-col>
                   <el-col :span="12" :offset="1">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{userNickName}}</el-descriptions-item>
-                      <el-descriptions-item label="学号">{{userName}}</el-descriptions-item>
+                      <el-descriptions-item label="用户名">{{s_name}}</el-descriptions-item>
+                      <el-descriptions-item label="学号">{{s_id}}</el-descriptions-item>
                       <el-descriptions-item label="已发帖子">{{discussNum}}</el-descriptions-item>
                     </el-descriptions>
                   </el-col>
@@ -104,8 +104,8 @@ export default {
   data: function () {
     return {
       loading: true,
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       discussNum: '',
       studentImg: StudentImg,
       input: {
@@ -114,23 +114,23 @@ export default {
       },
       inputSearch: '',
       postThemeList: [{
-        id: '',
-        userName: '',
-        userNickName: '',
+        pt_id: '',
+        s_id: '',
+        s_name: '',
         title: '',
         content: '',
         time: '',
-        isTeacher: 0
+        isExcellent: 0
       }],
       showPostThemeList: [
         {
-          id: '',
-          userName: '',
-          userNickName: '',
+          pt_id: '',
+          s_id: '',
+          s_name: '',
           title: '',
           content: '',
           time: '',
-          isTeacher: 1
+          isExcellent: 0
         }
       ],
       buildThemeVisible: false,
@@ -138,8 +138,8 @@ export default {
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
     this.getPostThemeList()
     this.getStudentDiscussNum()
   },
@@ -147,14 +147,14 @@ export default {
     getStudentDiscussNum: function () {
       let that = this
       this.$http.request({
-        url: that.$url + 'GetStudentDisCussNum/',
-        method: 'get',
-        params: {
-          userName: that.userName
+        url: that.$url + 'GetStudentDiscussNum/',
+        method: 'post',
+        data: {
+          s_id: that.s_id
         }
       }).then(function (response) {
         console.log(response.data)
-        that.discussNum = response.data
+        that.discussNum = response.data.data.discussNum
       }).catch(function (error) {
         console.log(error)
       })
@@ -164,12 +164,15 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetPostThemeList/',
-        method: 'get'
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.postThemeList = response.data
-        that.showPostThemeList = response.data
+        that.postThemeList = response.data.data
+        that.showPostThemeList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -190,14 +193,16 @@ export default {
       that.getTime()
       this.$http.request({
         url: that.$url + 'BuildPostTheme/',
-        method: 'get',
-        params: {
-          userName: that.userName,
+        method: 'post',
+        data: {
+          s_id: that.s_id,
           title: that.input.title,
           content: that.input.content,
-          time: that.time,
-          isTeacher: 0
-        }
+          time: that.time
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         if (response.data === 0) {
@@ -221,22 +226,13 @@ export default {
       this.$router.push({
         name: 'StudentDiscuss',
         query: {
-          postThemeId: that.showPostThemeList[index].id,
-          newPostTheme: {
-            id: that.showPostThemeList[index].id,
-            userName: that.showPostThemeList[index].userName,
-            userNickName: that.showPostThemeList[index].userNickName,
-            title: that.showPostThemeList[index].title,
-            content: that.showPostThemeList[index].content,
-            time: that.showPostThemeList[index].time,
-            isTeacher: that.showPostThemeList[index].isTeacher
-          }
+          pt_id: that.showPostThemeList[index].pt_id,
         }
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     },
     searchDiscuss: function (inputSearch) {
