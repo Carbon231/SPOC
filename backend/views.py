@@ -524,7 +524,7 @@ class GetCommentList(APIView):
         data = []
         for comment in comments:
             data.append({
-                "cm_id": comment.cm_id,
+                "cm_id": comment.id,
                 "s_name": comment.student.s_name,
                 "s_id": comment.student.s_id,
                 "degree": comment.degree,

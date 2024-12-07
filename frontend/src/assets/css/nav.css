@@ -22,7 +22,7 @@ body{
 
 .el-menu-item:hover {
   border-left: #33A2EF solid 2px !important;
-  background-color: black !important;
+  background-color: #393E46 !important;
   color: #38B2FF !important;
 }
 

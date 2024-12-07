@@ -5,17 +5,17 @@
       <span class="item">首页</span>
     </el-menu-item>
     <el-submenu index="1">
-      <template><i class="el-icon-reading"></i><span class="item">课程信息</span></template>
+      <template slot="title"><i class="el-icon-reading"></i><span class="item">课程信息</span></template>
       <el-menu-item class="subitem" index="/StudentCourse/SelectCourse">学生选课</el-menu-item>
       <el-menu-item class="subitem" index="/StudentCourse/SelectedCourse">我的课程</el-menu-item>
     </el-submenu>
     <el-submenu index="2">
-      <template><i class="el-icon-share"></i><span class="item">留言板</span></template>
+      <template slot="title"><i class="el-icon-share"></i><span class="item">留言板</span></template>
       <el-menu-item class="subitem" index="/StudentCommentAndDiscuss/StudentAllComment">课程评价</el-menu-item>
       <el-menu-item class="subitem" index="/StudentCommentAndDiscuss/StudentAllDiscuss">自由讨论</el-menu-item>
     </el-submenu>
     <el-submenu index="3">
-      <template><i class="el-icon-user"></i><span class="item">用户信息</span></template>
+      <template slot="title"><i class="el-icon-user"></i><span class="item">用户信息</span></template>
       <el-menu-item class="subitem" index="/StudentChange/StudentChange">修改密码</el-menu-item>
     </el-submenu>
   </el-menu>
