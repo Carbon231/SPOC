@@ -16,7 +16,7 @@ urlpatterns = [
     # path('AdminChange/', views.AdminChange.as_view()),
     path('GetStudentCourseNum/', views.GetStudentCourseNum.as_view()),
     path('GetStudentCommentNum/', views.GetStudentCommentNum.as_view()),
-    # path('GetStudentDisCussNum/', views.GetStudentDiscussNum.as_view()),
+    path('GetStudentDiscussNum/', views.GetStudentDiscussNum.as_view()),
     path('GetTeacherCourseNum/', views.GetTeacherCourseNum.as_view()),
     # path('GetTeacherDiscussNum/', views.GetTeacherDisCussNum.as_view()),
     #
