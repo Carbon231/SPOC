@@ -542,6 +542,7 @@ class GetCommentList(APIView):
 class DeleteComment(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
+        s_id = req_data['s_id']
         cm_id = req_data['cm_id']
         try:
             comment = Comment.objects.get(id=cm_id)
@@ -550,11 +551,17 @@ class DeleteComment(APIView):
                 "code": 400,
                 "message": "评论不存在"
             })
-        comment.delete()
-        return Response({
-            "code": 200,
-            "message": "操作成功！"
-        })
+        if comment.student.s_id == s_id:
+            comment.delete()
+            return Response({
+                "code": 200,
+                "message": "操作成功！"
+            })
+        else:
+            return Response({
+                "code": 401,
+                "error": "不允许删除其他同学的帖子！"
+            })
 
 
 class GetPostThemeList(APIView):
