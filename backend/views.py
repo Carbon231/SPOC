@@ -214,7 +214,7 @@ class GetStudentCommentNum(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        comments = Comment.objects.filter(student__id=s_id)
+        comments = Comment.objects.filter(student__s_id=s_id)
         num = len(comments)
         return Response({
             "code": 200,
@@ -227,7 +227,7 @@ class GetStudentCourseNum(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        scs = SC.objects.filter(student__id=s_id)
+        scs = SC.objects.filter(student__s_id=s_id)
         num = len(scs)
         return Response({
             "code": 200,
@@ -565,7 +565,7 @@ class DeleteComment(APIView):
 
 
 class GetPostThemeList(APIView):
-    def post(self, request):
+    def get(self, request):
         post_themes = PostTheme.objects.all()
         data = [{
             "pt_id": post_theme.id,
@@ -669,7 +669,7 @@ class GetPostTheme(APIView):
             "s_name": post_theme.student.s_name,
             "title": post_theme.title,
             "content": post_theme.content,
-            "time": post_theme.time,
+            "time": post_theme.time
         }
         return Response({
             "code": 200,

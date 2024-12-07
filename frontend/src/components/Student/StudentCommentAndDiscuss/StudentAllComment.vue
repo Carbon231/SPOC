@@ -84,10 +84,10 @@
                   </el-descriptions>
                 </el-row>
                 <el-row class="el-row-button-head">
-                  <el-button @click="changeShowIt" type="text" class="el-row-button">
-                    <i v-if="showIt" class="el-icon-caret-top">隐藏</i>
-                    <i v-else class="el-icon-caret-bottom">展开</i>
-                  </el-button>
+<!--                  <el-button @click="changeShowIt" type="text" class="el-row-button">-->
+<!--                    <i v-if="showIt" class="el-icon-caret-top">隐藏</i>-->
+<!--                    <i v-else class="el-icon-caret-bottom">展开</i>-->
+<!--                  </el-button>-->
                 </el-row>
               </el-card>
             </el-col>
@@ -107,7 +107,7 @@ import CourseImg from '../../../assets/img/buaa_class_img.jpg'
 export default {
   name: 'StudentAllComment',
   components: {StudentNav, StudentHeading},
-  data: function () {
+  data(){
     return {
       loading: true,
       s_id: '',
@@ -150,7 +150,7 @@ export default {
         },
       }).then(function (response) {
         console.log(response.data)
-        that.courseNum = response.data.courseNum
+        that.courseNum = response.data.data.courseNum
       }).catch(function (error) {
         console.log(error)
       })
@@ -168,7 +168,7 @@ export default {
         },
       }).then(function (response) {
         console.log(response.data)
-        that.commentNum = response.data.commentNum
+        that.commentNum = response.data.data.commentNum
       }).catch(function (error) {
         console.log(error)
       })
