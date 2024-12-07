@@ -36,7 +36,7 @@
                   <el-col :span="2">
                     <el-image :src="courseImg" lazy></el-image>
                   </el-col>
-                  {{ course.name }}
+                  {{ course.c_name }}
                   <el-button v-on:click="commentCourse(index)" type="text" style="font-size: smaller; float: right">
                     进入评价
                   </el-button>
@@ -67,8 +67,8 @@
                   </el-col>
                   <el-col :span="12" :offset="1">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{ userNickName }}</el-descriptions-item>
-                      <el-descriptions-item label="学号">{{ userName }}</el-descriptions-item>
+                      <el-descriptions-item label="用户名">{{ s_name }}</el-descriptions-item>
+                      <el-descriptions-item label="学号">{{ s_id }}</el-descriptions-item>
                       <el-descriptions-item label="已选课程">{{ courseNum }}</el-descriptions-item>
                       <el-descriptions-item label="参与评价">{{ commentNum }}</el-descriptions-item>
                     </el-descriptions>
@@ -79,8 +79,8 @@
                 </el-row>
                 <el-row>
                   <el-descriptions :column="1" v-if="showIt">
-                    <el-descriptions-item label="用户名">{{ userNickName }}</el-descriptions-item>
-                    <el-descriptions-item label="学号">{{ userName }}</el-descriptions-item>
+                    <el-descriptions-item label="用户名">{{ s_name }}</el-descriptions-item>
+                    <el-descriptions-item label="学号">{{ s_id }}</el-descriptions-item>
                   </el-descriptions>
                 </el-row>
                 <el-row class="el-row-button-head">
@@ -110,8 +110,8 @@ export default {
   data: function () {
     return {
       loading: true,
-      userName: '',
-      userNickName: '',
+      s_id: '',
+      s_name: '',
       commentNum: '',
       courseNum: '',
       courseImg: CourseImg,
@@ -119,30 +119,18 @@ export default {
       inputSearch: '',
       showIt: false,
       courseList: [{
-        id: '',
-        name: '',
-        introduction: '',
-        materialList: [{
-          id: '',
-          name: ''
-        }],
-        avgDegree: 3.0
+        c_id: '1',
+        c_name: '课程1',
+        t_name: '教师1',
+        avgDegree: 2.0,
+        intro: ''
       }],
-      showCourseList: [{
-        id: '',
-        name: '',
-        materialList: [{
-          id: '',
-          name: ''
-        }],
-        introduction: '',
-        avgDegree: 3.0
-      }]
+      showCourseList: this.courseList
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
     this.getCourseList()
     this.getStudentCommentNum()
     this.getStudentCourseNum()
@@ -153,13 +141,16 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'GetStudentCourseNum/',
-        method: 'get',
-        params: {
-          userName: that.userName
-        }
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
-        that.courseNum = response.data
+        that.courseNum = response.data.courseNum
       }).catch(function (error) {
         console.log(error)
       })
@@ -168,13 +159,16 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'GetStudentCommentNum/',
-        method: 'get',
-        params: {
-          userName: that.userName
-        }
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
-        that.commentNum = response.data
+        that.commentNum = response.data.commentNum
       }).catch(function (error) {
         console.log(error)
       })
@@ -184,12 +178,15 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseList/',
-        method: 'get'
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.courseList = response.data
-        that.showCourseList = response.data
+        that.courseList = response.data.data
+        that.showCourseList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -200,13 +197,13 @@ export default {
       this.$router.push({
         path: '/StudentCommentAndDiscuss/StudentComment',
         query: {
-          courseId: that.showCourseList[index].id
+          c_id: that.showCourseList[index].c_id
         }
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     },
     changeShowIt: function () {
@@ -225,7 +222,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].name.indexOf(keyWord) >= 0) {
+        if (list[i].c_name.indexOf(keyWord) >= 0) {
           arr.push(list[i])
         }
       }

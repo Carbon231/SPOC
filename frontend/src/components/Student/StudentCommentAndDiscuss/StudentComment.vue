@@ -9,7 +9,7 @@
           <StudentHeading></StudentHeading>
         </el-header>
         <el-main style="padding-left: 10%; padding-right: 10%">
-          <el-page-header @back="returnStudentAllComment" :content="courseName" style="margin-bottom: 2%"></el-page-header>
+          <el-page-header @back="returnStudentAllComment" :content="c_name" style="margin-bottom: 2%"></el-page-header>
           <el-card shadow="hover" style="margin-bottom: 1%">
             <el-row>
               <el-col :offset="1" :span="3">
@@ -30,7 +30,7 @@
               <el-col :offset="2" :span="17">
                 <el-row>
                   <el-col :span="18">
-                    <strong>{{courseName}}</strong>
+                    <strong>{{c_name}}</strong>
                   </el-col>
                 </el-row>
                 <el-row>
@@ -41,8 +41,6 @@
                   <div style="font-size: small">
                     <h3>课程介绍</h3>
                     <span v-html="courseIntroduction"></span>
-                    <h3>课程资料</h3>
-                    <p><a v-for="(m) in courseMaterialList" v-bind:key="m.id">{{ m.name }}，</a></p>
                   </div>
                 </el-row>
               </el-col>
@@ -57,7 +55,7 @@
             </div>
             <el-rate
               style="font-size: medium"
-              v-model="degree"
+              v-model="myDegree"
               show-text>
             </el-rate>
           </el-row>
@@ -78,8 +76,8 @@
                 <el-image :src="studentImg" fit="contain" lazy></el-image>
               </el-col>
               <el-col :span="3" :offset="1">
-                <el-row class="userName">
-                  {{comment.userNickName}}({{comment.userName}}) :
+                <el-row class="s_id">
+                  {{comment.s_name}}({{comment.s_id}}) :
                 </el-row>
                 <el-row>{{comment.time}}</el-row>
               </el-col>
@@ -87,8 +85,8 @@
                 <el-row class="content-of-comment" v-html="comment.content">
                 </el-row>
                 <el-row class="delete" :span="1" style="float: right">
-                  <div v-if="comment.userName === userName">
-                    <el-link type="danger" v-on:click="deleteComment(comment.id)">删除</el-link>
+                  <div v-if="comment.s_id === s_id">
+                    <el-link type="danger" v-on:click="deleteComment(comment.cm_id)">删除</el-link>
                   </div>
                 </el-row>
               </el-col>
@@ -113,7 +111,7 @@
     font-size: small;
     color: #e2e2e2;
   }
-  .userName {
+  .s_id {
     font-size: medium;
     color: #66b1ff;
   }
@@ -137,25 +135,23 @@ export default {
   data: function () {
     return {
       loading: true,
-      userName: '',
-      userNickName: '',
-      courseId: '',
-      courseName: '',
+      s_id: '',
+      s_name: '',
+      c_id: '',
+      c_name: '',
+      t_name: '',
       courseIntroduction: '',
-      courseMaterialList: [{
-        id: '',
-        name: ''
-      }],
       courseAvgDegree: 3.0,
-      degree: 5,
+      myDegree: 5,
       contentInput: '',
       courseImg: CourseImg,
       studentImg: StudentImg,
       time: '',
       commentList: [{
-        id: 1,
-        userName: '',
-        userNickName: '',
+        cm_id: 1,
+        s_id: '',
+        s_name: '',
+        degree: 5,
         content: '',
         time: ''
       }
@@ -163,9 +159,9 @@ export default {
     }
   },
   mounted () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
-    this.courseId = this.$route.query.courseId
+    this.s_id = this.cookie.getCookie('s_id')
+    this.s_name = this.cookie.getCookie('s_name')
+    this.c_id = this.$route.query.c_id
     this.getCourseInfo()
     this.getDegree()
     this.getCommentList()
@@ -185,15 +181,16 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'GetCourseInfo/',
-        method: 'get',
-        params: {
-          courseId: that.courseId
+        method: 'post',
+        data: {
+          c_id: that.c_id
         }
       }).then(function (response) {
         console.log(response.data)
-        that.courseName = response.data.name
-        that.courseIntroduction = response.data.introduction
-        that.courseMaterialList = response.data.materialList
+        that.c_id = response.data.c_id
+        that.c_name = response.data.c_name
+        that.t_name = response.data.t_name
+        that.courseIntroduction = response.data.intro
       }).catch(function (error) {
         console.log(error)
       })
@@ -203,10 +200,13 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCommentList/',
-        method: 'get',
-        params: {
-          courseId: that.courseId
-        }
+        method: 'post',
+        data: {
+          c_id: that.c_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
@@ -220,10 +220,13 @@ export default {
       let that = this
       this.$http.request({
         url: that.$url + 'GetDegree/',
-        method: 'get',
-        params: {
-          id: that.courseId
-        }
+        method: 'post',
+        data: {
+          c_id: that.c_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.courseAvgDegree = response.data.avgDegree
@@ -237,19 +240,22 @@ export default {
       that.getTime()
       this.$http.request({
         url: that.$url + 'CommentCourse/',
-        method: 'get',
-        params: {
-          courseId: that.courseId,
-          userName: that.userName,
-          userNickName: that.userNickName,
+        method: 'post',
+        data: {
+          c_id: that.c_id,
+          s_id: that.s_id,
+          s_name: that.s_name,
           content: that.contentInput,
           time: that.time,
-          degree: that.degree
-        }
+          degree: that.myDegree
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
-        if (response.data === 0) {
-          that.$message.success('评价成功')
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
           that.getCommentList()
           that.getDegree()
           that.contentInput = ''
@@ -269,16 +275,22 @@ export default {
         that.getTime()
         this.$http.request({
           url: that.$url + 'DeleteComment/',
-          method: 'get',
-          params: {
-            commentId: commentId
-          }
+          method: 'post',
+          data: {
+            s_id: that.s_id,
+            cm_id: that.cm_id
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          },
         }).then(function (response) {
           console.log(response.data)
-          if (response.data === 0) {
-            that.$message.success('删除成功')
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
             that.getCommentList()
             that.getDegree()
+          } else if (response.data.code === 401) {
+            that.$message.error(response.data.message)
           } else {
             that.$message.error('未知错误')
           }
@@ -294,8 +306,8 @@ export default {
       })
     },
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('s_id')
+      this.cookie.clearCookie('s_name')
       this.$router.replace('/')
     }
   }
