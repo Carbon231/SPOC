@@ -70,13 +70,13 @@
             <el-button v-on:click="commentCourse" type="primary" size="small" style="float: right">添加评价</el-button>
           </el-row>
           <el-divider></el-divider>
-          <div v-for="(comment) in commentList" v-bind:key="comment">
+          <div v-for="(comment, index) in commentList" v-bind:key="index">
             <el-row class="time" v-loading="loading">
               <el-col :span="1">
                 <el-image :src="studentImg" fit="contain" lazy></el-image>
               </el-col>
               <el-col :span="3" :offset="1">
-                <el-row class="s_id">
+                <el-row class="userName">
                   {{comment.s_name}}({{comment.s_id}}) :
                 </el-row>
                 <el-row>{{comment.time}}</el-row>
@@ -187,10 +187,10 @@ export default {
         }
       }).then(function (response) {
         console.log(response.data)
-        that.c_id = response.data.c_id
-        that.c_name = response.data.c_name
-        that.t_name = response.data.t_name
-        that.courseIntroduction = response.data.intro
+        that.c_id = response.data.data.c_id
+        that.c_name = response.data.data.c_name
+        that.t_name = response.data.data.t_name
+        that.courseIntroduction = response.data.data.intro
       }).catch(function (error) {
         console.log(error)
       })
@@ -210,7 +210,7 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.commentList = response.data
+        that.commentList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -229,7 +229,7 @@ export default {
         },
       }).then(function (response) {
         console.log(response.data)
-        that.courseAvgDegree = response.data.avgDegree
+        that.courseAvgDegree = response.data.data.avgDegree
         if (that.courseAvgDegree !== 5) {
           that.courseAvgDegree = Number(that.courseAvgDegree).toFixed(1)
         }
@@ -269,7 +269,8 @@ export default {
     deleteComment: function (cm_id) {
       this.$confirm('此操作将永久删除该评价，是否继续？', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         let that = this
         that.getTime()

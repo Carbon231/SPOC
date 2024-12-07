@@ -214,7 +214,7 @@ class GetStudentCommentNum(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        comments = Comment.objects.filter(student__id=s_id)
+        comments = Comment.objects.filter(student__s_id=s_id)
         num = len(comments)
         return Response({
             "code": 200,
@@ -227,7 +227,7 @@ class GetStudentCourseNum(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        scs = SC.objects.filter(student__id=s_id)
+        scs = SC.objects.filter(student__s_id=s_id)
         num = len(scs)
         return Response({
             "code": 200,
@@ -524,7 +524,7 @@ class GetCommentList(APIView):
         data = []
         for comment in comments:
             data.append({
-                "cm_id": comment.cm_id,
+                "cm_id": comment.id,
                 "s_name": comment.student.s_name,
                 "s_id": comment.student.s_id,
                 "degree": comment.degree,
