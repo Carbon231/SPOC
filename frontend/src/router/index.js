@@ -7,6 +7,12 @@ import StudentHead from '../components/Student/StudentHead'
 import StudentCourse from '../components/Student/StudentCourse/StudentCourse'
 import SelectCourse from '../components/Student/StudentCourse/SelectCourse'
 import SelectedCourse from '../components/Student/StudentCourse/SelectedCourse'
+import StudentChange from '../components/Student/StudentChange/StudentChange'
+import StudentCommentAndDiscuss from '../components/Student/StudentCommentAndDiscuss/StudentCommentAndDiscuss'
+import StudentAllComment from '../components/Student/StudentCommentAndDiscuss/StudentAllComment'
+import StudentComment from '../components/Student/StudentCommentAndDiscuss/StudentComment'
+import StudentAllDiscuss from '../components/Student/StudentCommentAndDiscuss/StudentAllDiscuss'
+import StudentDiscuss from '../components/Student/StudentCommentAndDiscuss/StudentDiscuss'
 
 import TeacherLogin from '../components/Teacher/TeacherLogin'
 import TeacherRegister from '@/components/Teacher/TeacherRegister.vue'
@@ -65,6 +71,44 @@ export default new Router({
           path: 'SelectedCourse',
           name: 'SelectedCourse',
           component: SelectedCourse
+        }
+      ]
+    },
+    {
+      path: '/StudentCommentAndDiscuss',
+      name: 'StudentCommentAndDiscuss',
+      component: StudentCommentAndDiscuss,
+      children: [
+        {
+          path: 'StudentAllComment',
+          name: 'StudentAllComment',
+          component: StudentAllComment
+        },
+        {
+          path: 'StudentComment',
+          name: 'StudentComment',
+          component: StudentComment
+        },
+        {
+          path: 'StudentAllDiscuss',
+          name: 'StudentAllDiscuss',
+          component: StudentAllDiscuss
+        },
+        {
+          path: 'StudentDiscuss',
+          name: 'StudentDiscuss',
+          component: StudentDiscuss
+        }
+      ]
+    },
+    {
+      path: '/StudentChange',
+      name: 'StudentChange',
+      component: StudentChange,
+      children: [
+        {
+          path: 'StudentChange',
+          component: StudentChange
         }
       ]
     },

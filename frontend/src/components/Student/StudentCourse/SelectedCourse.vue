@@ -137,8 +137,8 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.myCourseList = response.data
-        that.showMyCourseList = response.data
+        that.myCourseList = response.data.data
+        that.showMyCourseList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
