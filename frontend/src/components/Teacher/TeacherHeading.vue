@@ -7,10 +7,10 @@
     <el-dropdown @command="handleCommand"  class="userInfo" >
       <span class="el-dropdown-link">
         <i class="el-icon-user"></i>
-        {{userNickName}}
+        {{t_name}}
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
-      <el-dropdown-menu slot="dropdown">
+      <el-dropdown-menu>
         <el-dropdown-item command="goToHelloWorld">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -19,33 +19,45 @@
 
 <script>
 import Utils from '../../assets/js/util.js'
-import TeacherNav from './TeacherNav'
+// import TeacherNav from './TeacherNav'
 export default {
   name: 'TeacherHeading',
-  components: {TeacherNav},
+  // components: {TeacherNav},
   data: function () {
     return {
-      userName: '',
-      userNickName: '',
+      t_id: '',
+      t_name: '',
       show: false
     }
   },
   mounted: function () {
-    this.userName = this.cookie.getCookie('userName')
-    this.userNickName = this.cookie.getCookie('userNickName')
+    this.t_id = this.cookie.getCookie('t_id')
+    this.t_name = this.cookie.getCookie('t_name')
   },
   methods: {
     goToHelloWorld: function () {
-      this.cookie.clearCookie('userName')
-      this.cookie.clearCookie('userNickName')
+      this.cookie.clearCookie('t_id')
+      this.cookie.clearCookie('t_name')
       this.$router.replace('/')
     },
     toggleCollapse: function () {
       this.show = !this.show
-      Utils.$emit('toggleCollapseTeacher', 'call function toggleCollapse in StudentNav')
+      Utils.$emit('toggleCollapseTeacher', 'call function toggleCollapse in TeacherNav')
     },
-    handleCommand (command) {
+    handleCommand () {
       this.goToHelloWorld()
+    },
+    goToCommentPlatform () {
+      let that = this
+      let loginInfo =
+        { t_id: that.t_id,
+          t_name: that.t_name,
+          userType: 'teacher'
+        }
+      that.cookie.setCookie(loginInfo)
+      that.$router.push({
+        name: 'CommentPlatForm'
+      })
     }
   }
 }

@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-container class="background">
-      <el-aside class="aside" width="show?'64px':'250px'">
+      <el-aside class="aside" width="show?'64px':30%">
         <TeacherNav></TeacherNav>
       </el-aside>
       <el-container class="main">
         <el-header>
           <TeacherHeading></TeacherHeading>
         </el-header>
-        <el-main style="padding-right: 10%; padding-left: 10%">
+        <el-main style="padding-left: 10%; padding-right: 10%">
           <h1>FreeTalk课程平台</h1>
           <p>FreeTalk课程平台是一个基于Vue进行前端设计的平台，经历过多次更新。</p>
           <ul>
@@ -52,11 +52,6 @@ import TeacherHeading from './TeacherHeading'
 export default {
   name: 'TeacherHead',
   components: {TeacherNav, TeacherHeading}
-  // data() {
-  //   return {
-  //     html: FreeTalk
-  //   }
-  // }
 }
 </script>
 
