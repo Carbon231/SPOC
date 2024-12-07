@@ -266,7 +266,7 @@ export default {
         console.log(error)
       })
     },
-    deleteComment: function (commentId) {
+    deleteComment: function (cm_id) {
       this.$confirm('此操作将永久删除该评价，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -278,7 +278,7 @@ export default {
           method: 'post',
           data: {
             s_id: that.s_id,
-            cm_id: that.cm_id
+            cm_id: cm_id
           },
           headers: {
             'Content-Type': 'application/json'
