@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import StudentNav from '../StudentNav'
-import StudentHeading from '../StudentHeading'
+// import StudentNav from '../StudentNav'
+// import StudentHeading from '../StudentHeading'
 export default {
   name: 'StudentCommentAndDiscuss',
-  components: {StudentNav, StudentHeading}
+  // components: {StudentNav, StudentHeading}
 }
 </script>
 

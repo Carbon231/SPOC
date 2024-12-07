@@ -150,7 +150,7 @@ export default {
       this.$http.request({
         url: that.$url + 'SelectCourse/',
         method: 'post',
-        params: {
+        data: {
           s_id: that.s_id,
           c_id: that.showCourseList[index].c_id
         }
