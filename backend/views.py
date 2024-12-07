@@ -311,7 +311,7 @@ class DropCourse(APIView):
         c_id = req_data['c_id']
         s_id = req_data['s_id']
         student = Student.objects.get(s_id=s_id)
-        course = Course.objects.get(c_id=c_id)
+        course = Course.objects.get(id=c_id)
         if SC.objects.filter(student=student, course=course):
             SC.objects.get(student=student, course=course).delete()
             return Response({
