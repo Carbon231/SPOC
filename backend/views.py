@@ -206,7 +206,7 @@ class GetTeacherCourseNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"courseNum": num}
         })
 
 
@@ -219,7 +219,7 @@ class GetStudentCommentNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"commentNum": num}
         })
 
 
@@ -232,7 +232,7 @@ class GetStudentCourseNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"courseNum": num}
         })
 
 
@@ -542,6 +542,7 @@ class GetCommentList(APIView):
 class DeleteComment(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
+        s_id = req_data['s_id']
         cm_id = req_data['cm_id']
         try:
             comment = Comment.objects.get(id=cm_id)
@@ -550,11 +551,17 @@ class DeleteComment(APIView):
                 "code": 400,
                 "message": "评论不存在"
             })
-        comment.delete()
-        return Response({
-            "code": 200,
-            "message": "操作成功！"
-        })
+        if comment.student.s_id == s_id:
+            comment.delete()
+            return Response({
+                "code": 200,
+                "message": "操作成功！"
+            })
+        else:
+            return Response({
+                "code": 401,
+                "error": "不允许删除其他同学的帖子！"
+            })
 
 
 class GetPostThemeList(APIView):
@@ -688,6 +695,27 @@ class GetStudentDiscussNum(APIView):
             "code": 200,
             "message": "操作成功！",
             "data": {
-                "num": num
+                "discussNum": num
+            }
+        })
+
+
+class GetDegree(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        c_id = req_data['c_id']
+        course = Course.objects.get(id=c_id)
+        sum = 0
+        avgDegree = 0
+        comment = Comment.objects.filter(course__id=course.id)
+        if Comment.objects.filter(course__id=course.id).exists():
+            for c in comment:
+                sum += int(c.degree)
+            avgDegree = sum / len(comment)
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": {
+                "avgDegree": avgDegree
             }
         })
