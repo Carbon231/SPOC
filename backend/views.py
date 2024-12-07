@@ -34,8 +34,7 @@ class StudentLogin(APIView):
             error_response = {'error': str(e)}
             return Response({
                 "code": 401,
-                "message": "学号不存在",
-                "error_response": error_response
+                "error": "学号不存在"
             })
         else:
             if user.s_pwd == s_pwd:
@@ -48,7 +47,7 @@ class StudentLogin(APIView):
             else:
                 return Response({
                     "code": 401,
-                    "message": "密码错误"
+                    "error": "密码错误"
                 })
 
 
@@ -58,7 +57,23 @@ class StudentRegister(APIView):
         req_data = json.loads(request.body)
         s_name = req_data['s_name']
         s_pwd = req_data['s_pwd']
+        s_pwd_confirm = req_data['s_pwd_confirm']
         s_id = req_data['s_id']
+        if s_pwd != s_pwd_confirm:
+            return Response({
+                "code": 400,
+                "error": "密码不正确"
+            })
+        if Student.objects.filter(s_name=s_name).exists():
+            return Response({
+                "code": 400,
+                "error": "用户名已存在"
+            })
+        if Student.objects.filter(s_id=s_id).exists():
+            return Response({
+                "code": 400,
+                "error": "学号已存在"
+            })
         user = Student.objects.create(s_id=s_id, s_name=s_name, s_pwd=s_pwd)
         user.save()
         return Response({
@@ -69,9 +84,9 @@ class StudentRegister(APIView):
 class TeacherLogin(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
-        t_name = req_data['t_name']
-        t_pwd = req_data['s_pwd']
-        user = Teacher.objects.get(t_name=t_name)
+        t_id = req_data['t_id']
+        t_pwd = req_data['t_pwd']
+        user = Teacher.objects.get(t_id=t_id)
         if user.t_pwd == t_pwd:
             t_name = user.t_name
             return Response({
@@ -82,7 +97,7 @@ class TeacherLogin(APIView):
         else:
             return Response({
                 "code": 401,
-                "message": "用户名或密码错误"
+                "error": "用户名或密码错误"
             })
 
 class TeacherRegister(APIView):
@@ -95,7 +110,17 @@ class TeacherRegister(APIView):
         if not t_pwd_confirm == t_pwd:
             return Response({
                 "code": 401,
-                "message": "密码不一致"
+                "message": "密码不正确"
+            })
+        if Teacher.objects.filter(t_name=t_name).exists():
+            return Response({
+                "code": 400,
+                "error": "用户名已存在"
+            })
+        if Teacher.objects.filter(t_id=t_id).exists():
+            return Response({
+                "code": 400,
+                "error": "工号已存在"
             })
         user = Teacher.objects.create(t_id=t_id, t_name=t_name, t_pwd=t_pwd)
         user.save()
@@ -127,6 +152,7 @@ class StudentChange(APIView):
             })
         if new_pwd_1 == new_pwd_2:
             user.s_pwd = new_pwd_1
+            user.save()
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -140,12 +166,12 @@ class StudentChange(APIView):
 class TeacherChange(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
-        s_id = req_data['t_id']
-        s_pwd = req_data['t_pwd']
+        t_id = req_data['t_id']
+        t_pwd = req_data['t_pwd']
         new_pwd_1 = req_data['new_pwd_1']
         new_pwd_2 = req_data['new_pwd_2']
         try:
-            user = Teacher.objects.get(s_id=s_id)
+            user = Teacher.objects.get(t_id=t_id)
         except Exception as e:
             error_response = {'error': str(e)}
             return Response({
@@ -153,13 +179,14 @@ class TeacherChange(APIView):
                 "message": "工号不存在",
                 "error_response": error_response
             })
-        if not user.s_pwd == s_pwd:
+        if not user.t_pwd == t_pwd:
             return Response({
                 "code": 402,
                 "message": "密码错误"
             })
         if new_pwd_1 == new_pwd_2:
-            user.s_pwd = new_pwd_1
+            user.t_pwd = new_pwd_1
+            user.save()
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -262,16 +289,16 @@ class SelectCourse(APIView):
         c_id = req_data['c_id']
         s_id = req_data['s_id']
         student = Student.objects.get(s_id=s_id)
-        course = Course.objects.get(c_id=c_id)
+        course = Course.objects.get(id=c_id)
         if SC.objects.filter(student=student, course=course):
             return Response({
-                "code": 200,
+                "code": 401,
                 "message": "已经选课"
             })
         else:
             SC.objects.create(student=student, course=course)
             return Response({
-                "code": 401,
+                "code": 200,
                 "message": "操作成功"
             })
 
@@ -390,14 +417,14 @@ class GetStudentCourseList(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        scs = SC.objects.filter(student__id=s_id)
+        scs = SC.objects.filter(student__s_id=s_id)
         data = []
         for sc in scs:
             course = sc.course
             sum = 0
-            comment = Comment.objects.filter(course__id=course.id)()
+            comment = Comment.objects.filter(course__id=course.id)
             for c in comment:
-                sum += c.degree
+                sum += int(c.degree)
             avgDegree = sum / len(comment)
             data.append({
                 "c_id": course.id,
@@ -421,9 +448,9 @@ class GetTeacherCourseList(APIView):
         data = []
         for course in courses:
             sum = 0
-            comment = Comment.objects.filter(course__id=course.id)()
+            comment = Comment.objects.filter(course__id=course.id)
             for c in comment:
-                sum += c.degree
+                sum += int(c.degree)
             avgDegree = sum / len(comment)
             data.append({
                 "c_id": course.id,
