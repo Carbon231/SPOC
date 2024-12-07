@@ -265,10 +265,12 @@ class GetCourseList(APIView):
         data = []
         for course in course_list:
             sum = 0
+            avgDegree = 0
             comment = Comment.objects.filter(course__id=course.id)
-            for c in comment:
-                sum += int(c.degree)
-            avgDegree = sum / len(comment)
+            if Comment.objects.filter(course__id=course.id).exists():
+                for c in comment:
+                    sum += int(c.degree)
+                avgDegree = sum / len(comment)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -422,10 +424,12 @@ class GetStudentCourseList(APIView):
         for sc in scs:
             course = sc.course
             sum = 0
+            avgDegree = 0
             comment = Comment.objects.filter(course__id=course.id)
-            for c in comment:
-                sum += int(c.degree)
-            avgDegree = sum / len(comment)
+            if Comment.objects.filter(course__id=course.id).exists():
+                for c in comment:
+                    sum += int(c.degree)
+                avgDegree = sum / len(comment)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -448,10 +452,12 @@ class GetTeacherCourseList(APIView):
         data = []
         for course in courses:
             sum = 0
+            avgDegree = 0
             comment = Comment.objects.filter(course__id=course.id)
-            for c in comment:
-                sum += int(c.degree)
-            avgDegree = sum / len(comment)
+            if Comment.objects.filter(course__id=course.id).exists():
+                for c in comment:
+                    sum += int(c.degree)
+                avgDegree = sum / len(comment)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
