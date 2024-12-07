@@ -206,7 +206,7 @@ class GetTeacherCourseNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"courseNum": num}
         })
 
 
@@ -219,7 +219,7 @@ class GetStudentCommentNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"commentNum": num}
         })
 
 
@@ -232,7 +232,7 @@ class GetStudentCourseNum(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！",
-            "data": {"num": num}
+            "data": {"courseNum": num}
         })
 
 
@@ -688,6 +688,6 @@ class GetStudentDiscussNum(APIView):
             "code": 200,
             "message": "操作成功！",
             "data": {
-                "num": num
+                "discussNum": num
             }
         })
