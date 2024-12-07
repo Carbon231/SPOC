@@ -1,38 +1,39 @@
 <template>
   <transition name="head-login-register">
     <div class="background">
-    <br>
-    <div class="register_block">
-      <div class="register_head">
-        <p>学生登录</p>
-      </div>
-      <el-form>
-        <div id="register-name">
-          <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入学号" v-model="s_id" clearable></el-input>
-          </el-form-item>
+      <br>
+      <div class="register_block">
+        <div class="register_head">
+          <p>学生登录</p>
         </div>
-        <div id="register-password">
-          <el-form-item>
-            <el-input class="inputs" type="text" placeholder="请输入密码" v-model="s_pwd" show-password clearable></el-input>
-          </el-form-item>
-        </div>
-        <div class="confirm-button">
+        <el-form>
+          <div id="register-name">
+            <el-form-item>
+              <el-input class="inputs" type="text" placeholder="请输入学号" v-model="s_id" clearable></el-input>
+            </el-form-item>
+          </div>
+          <div id="register-password">
+            <el-form-item>
+              <el-input class="inputs" type="text" placeholder="请输入密码" v-model="s_pwd" show-password
+                clearable></el-input>
+            </el-form-item>
+          </div>
+          <div class="confirm-button">
             <el-button id="button_in" type="primary" size="small" v-on:click="goToStudentHead">
               确认
             </el-button>
-        </div>
-        <div class="register-button">
+          </div>
+          <div class="register-button">
             <el-button id="button_re" type="primary" :plain="true" size="small" v-on:click="goToStudentRegister">
               注册
             </el-button>
-        </div>
-        <div class="return-text">
-           <el-link href="#/" style="font-size: 8px; color: white">返回</el-link>
-        </div>
-      </el-form>
+          </div>
+          <div class="return-text">
+            <el-link href="#/" style="font-size: 8px; color: white">返回</el-link>
+          </div>
+        </el-form>
+      </div>
     </div>
-  </div>
   </transition>
 </template>
 
@@ -66,7 +67,7 @@ export default {
         that.status = response.data.code;
         if (that.status === 200) {
           that.$message.success(response.data.message);
-          let loginInfo = {"s_id": that.s_id, "s_name": response.data.s_name}
+          let loginInfo = { "s_id": that.s_id, "s_name": response.data.s_name }
           that.cookie.setCookie(loginInfo)
           that.$router.push({
             name: 'StudentHead'
@@ -99,6 +100,6 @@ export default {
 </script>
 
 <style scoped>
-  @import "../../assets/css/login.css";
-  @import "../../assets/css/Transition/head-login-register.css";
+@import "../../assets/css/login.css";
+@import "../../assets/css/Transition/head-login-register.css";
 </style>
