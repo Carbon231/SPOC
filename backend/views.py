@@ -240,10 +240,10 @@ class GetCourseList(APIView):
             sum = 0
             comment = Comment.objects.filter(course__id=course.id)
             for c in comment:
-                sum += c.degree
+                sum += int(c.degree)
             avgDegree = sum / len(comment)
             data.append({
-                "c_id": course.c_id,
+                "c_id": course.id,
                 "c_name": course.c_name,
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
