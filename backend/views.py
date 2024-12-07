@@ -691,3 +691,24 @@ class GetStudentDiscussNum(APIView):
                 "discussNum": num
             }
         })
+
+
+class GetDegree(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        c_id = req_data['c_id']
+        course = Course.objects.get(id=c_id)
+        sum = 0
+        avgDegree = 0
+        comment = Comment.objects.filter(course__id=course.id)
+        if Comment.objects.filter(course__id=course.id).exists():
+            for c in comment:
+                sum += int(c.degree)
+            avgDegree = sum / len(comment)
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": {
+                "avgDegree": avgDegree
+            }
+        })
