@@ -7,6 +7,7 @@ import StudentHead from '../components/Student/StudentHead'
 import StudentCourse from '../components/Student/StudentCourse/StudentCourse'
 import SelectCourse from '../components/Student/StudentCourse/SelectCourse'
 import SelectedCourse from '../components/Student/StudentCourse/SelectedCourse'
+import StudentChange from '../components/Student/StudentChange/StudentChange'
 
 import TeacherLogin from '../components/Teacher/TeacherLogin'
 import TeacherRegister from '@/components/Teacher/TeacherRegister.vue'
@@ -65,6 +66,17 @@ export default new Router({
           path: 'SelectedCourse',
           name: 'SelectedCourse',
           component: SelectedCourse
+        }
+      ]
+    },
+    {
+      path: '/StudentChange',
+      name: 'StudentChange',
+      component: StudentChange,
+      children: [
+        {
+          path: 'StudentChange',
+          component: StudentChange
         }
       ]
     },
