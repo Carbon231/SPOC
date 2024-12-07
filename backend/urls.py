@@ -48,5 +48,6 @@ urlpatterns = [
     #
     # # 成绩
     path('GetDegree/', views.GetDegree.as_view()),
+    path('TeacherChangeInfo/', views.TeacherChange.as_view()),
 
 ]

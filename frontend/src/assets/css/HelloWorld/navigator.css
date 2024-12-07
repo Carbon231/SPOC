@@ -1,7 +1,7 @@
   .navigator{
     height: 80px;
     width: 100%;
-    background-color: whitesmoke;
+    background-color: #005BAC;
   }
   .navigator-left{
     font-size: 30px;
@@ -12,6 +12,7 @@
   }
   .el-icon-s-platform-text {
     font-family: "华文仿宋",sans-serif;
+    color: white;
   }
   .navigator-right{
     align-self: center;

@@ -11,6 +11,10 @@ class Teacher(models.Model):
     t_id = models.CharField(max_length=30, blank=True, null=True, unique=True)
     t_pwd = models.CharField(max_length=30, blank=True, null=True)
     t_name = models.CharField(max_length=30, blank=True, null=True)
+    t_department = models.CharField(max_length=30, blank=True, null=True)
+    t_email = models.CharField(max_length=30, blank=True, null=True)
+    t_phone = models.CharField(max_length=30, blank=True, null=True)
+    t_office = models.CharField(max_length=30, blank=True, null=True)
 
 
 class Course(models.Model):
@@ -38,6 +42,7 @@ class PostTheme(models.Model):
     title = models.CharField(max_length=30, blank=True, null=True)
     content = models.CharField(max_length=300, blank=True, null=True)
     time = models.CharField(max_length=30, blank=True, null=True)
+    isExcellent = models.IntegerField(blank=True, null=True, default=0)
 
 
 class Post(models.Model):

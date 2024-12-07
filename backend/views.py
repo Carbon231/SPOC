@@ -719,3 +719,30 @@ class GetDegree(APIView):
                 "avgDegree": avgDegree
             }
         })
+
+
+class TeacherChangeInfo(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        t_id = req_data['t_id']
+        t_department = req_data['t_department']
+        t_email = req_data['t_email']
+        t_phone = req_data['t_phone']
+        t_office = req_data['t_office']
+        try:
+            teacher = Teacher.objects.get(t_id=t_id)
+        except Teacher.DoesNotExist:
+            return Response({
+                "code": 404,
+                "error": "教师不存在"
+            })
+        # 更新教师信息
+        teacher.t_department = t_department
+        teacher.t_email = t_email
+        teacher.t_phone = t_phone
+        teacher.t_office = t_office
+        teacher.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })

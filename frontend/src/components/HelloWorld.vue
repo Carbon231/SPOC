@@ -3,7 +3,7 @@
     <div class="welcome">
     <div class="navigator">
       <div class="navigator-left">
-        <i class="el-icon-s-platform"><span class="el-icon-s-platform-text">&nbsp;&nbsp;FreeTalk课程平台</span></i>
+        <i class="el-icon-s-platform"><span class="el-icon-s-platform-text">&nbsp;&nbsp;Sharing课程平台</span></i>
       </div>
       <div class="navigator-right">
         <span><el-button class="buttons" @click="goToStudentLogin">学生登录</el-button></span>
@@ -12,18 +12,14 @@
       </div>
   </div>
     <div class="introduction">
-      <el-carousel height="600px">
+      <el-carousel height="400px">
         <el-carousel-item v-for="(item, index) in headImg" :key="index">
           <img :src="item.src" style="width: 100%; height: 100%;" alt="">
-          <div class="cover">
-            {{item.title}}<br>
-            <span style="font-size: 25px">{{item.subTitle}}</span>
-          </div>
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="line_1">
-      <div class="line-1-head"><span class="div-head">其他推荐</span></div>
+      <div class="line-1-head"><span class="div-head">课程推荐</span></div>
       <br><br>
       <div class="line-1-content">
         <el-row class="this-el-row">
@@ -143,9 +139,9 @@
 </template>
 
 <script>
-import technology from '../assets/img/technology.jpg'
-import book from '../assets/img/book.jpg'
-import Computer from '../assets/img/Computer.jpg'
+import technology from '../assets/img/AI助手.png'
+import book from '../assets/img/智学北航.png'
+import Computer from '../assets/img/人才培养.png'
 import cardBook from '../assets/img/300-240-book.png'
 import cardJoin from '../assets/img/300-240-add.jpg'
 import cardGroup from '../assets/img/300-240-group.jpg'
@@ -155,34 +151,28 @@ export default {
     return {
       headImg: [
         {
-          'title': '数据集成平台',
-          'subTitle': 'Data Integration Platform',
           'src': technology
         },
         {
-          'title': '更好的学习体验',
-          'subTitle': 'Better Study Experience',
           'src': book
         },
         {
-          'title': '合作与共享',
-          'subTitle': 'Corporation and Sharing',
           'src': Computer
         }
       ],
       cardImg_group: {
         'id': 'group',
-        'title': '讨论交流',
+        'title': '计算机组成原理',
         'src': cardGroup
       },
       cardImg_join: {
         'id': 'join',
-        'title': '加入我们',
+        'title': '操作系统',
         'src': cardJoin
       },
       cardImg_book: {
         'id': 'book',
-        'title': '资料查询',
+        'title': '面向对象设计与构造',
         'src': cardBook
       },
       fullscreenLoading: false
@@ -216,8 +206,8 @@ export default {
   @import "../assets/css/HelloWorld/navigator.css";
   @import "../assets/css/Transition/head-login-register.css";
   .welcome {
-    margin-left: 80px;
-    margin-right: 80px;
+    margin-left: 40px;
+    margin-right: 40px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
   }
 
