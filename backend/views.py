@@ -669,3 +669,25 @@ class GetPostTheme(APIView):
             "message": "操作成功！",
             "data": data
         })
+
+
+class GetStudentDiscussNum(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        try:
+            student = Student.objects.get(s_id=s_id)
+        except Student.DoesNotExist:
+            return Response({
+                "code": 400,
+                "error": "学生不存在"
+            })
+        post_themes = PostTheme.objects.filter(student=student)
+        num = len(post_themes)
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": {
+                "num": num
+            }
+        })
