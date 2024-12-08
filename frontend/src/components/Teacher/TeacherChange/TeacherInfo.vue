@@ -21,8 +21,8 @@
                                             v-on:click="teacherChangeInfo">编辑</el-button>
                                     </el-button-group>
                                 </el-row>
-                                <el-descriptions border :column="1" label-style="width: 30%;text-align: center;"
-                                    content-style="text-align: center;">
+                                <el-descriptions border :column="1" :label-style="{ width: '30%', textAlign: 'center' }"
+                                    :content-style="{ textAlign: 'center' }">
                                     <el-descriptions-item label="姓名">{{ t_name }}</el-descriptions-item>
                                     <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
                                     <el-descriptions-item label="部门">{{ t_department }}</el-descriptions-item>
@@ -36,8 +36,6 @@
                             <el-divider></el-divider>
                         </el-row>
                     </el-card>
-
-
                 </el-main>
             </el-container>
         </el-container>
@@ -71,7 +69,7 @@ export default {
     },
     methods: {
         teacherChangeInfo: function () {
-            this.$router.push({ name: 'TeacherChangeInfo', params: { id: this.t_id } })
+            this.$router.push({ name: 'TeacherChangeInfo' })
         },
 
         getTeacherInfo: function () {
