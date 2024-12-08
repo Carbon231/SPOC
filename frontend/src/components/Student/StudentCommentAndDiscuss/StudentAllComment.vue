@@ -103,6 +103,7 @@ import StudentNav from '../StudentNav'
 import StudentHeading from '../StudentHeading'
 import StudentImg from '../../../assets/img/student.png'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
+import {toNumber} from "vue/src/shared/util";
 
 export default {
   name: 'StudentAllComment',
@@ -123,7 +124,8 @@ export default {
         c_name: '课程1',
         t_name: '教师1',
         avgDegree: 2.0,
-        intro: ''
+        intro: '',
+        isSelect: false
       }],
       showCourseList: this.courseList
     }
@@ -137,6 +139,7 @@ export default {
     this.showCourseList = this.courseList
   },
   methods: {
+    toNumber,
     getStudentCourseNum: function () {
       let that = this
       this.$http.request({
@@ -178,7 +181,10 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseList/',
-        method: 'get',
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
         headers: {
           'Content-Type': 'application/json'
         },
