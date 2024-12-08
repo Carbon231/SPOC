@@ -40,23 +40,37 @@
                   <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
                 </el-row>
               </el-col>
+<!--              <el-col :span="2">-->
+<!--                <el-button-group style="margin-top: 2%">-->
+<!--                  <el-button v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>-->
+<!--                </el-button-group>-->
+<!--              </el-col>-->
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
                   <el-button v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
+                  <el-button v-if="course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
+                  <el-button v-else type="info" disabled size="small">查看成绩</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
           </el-card>
+          <el-dialog title="课程成绩" :visible.sync="gradesDialogVisible" width="30%">
+            <div v-if="currentCourseScore">
+              <p>成绩：{{ currentCourseScore }}</p>
+            </div>
+            <div v-else>
+              <p>该课程暂无成绩信息。</p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="gradesDialogVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
           <el-dialog title="提示" :visible.sync="courseInfoVisible" width="40%">
             <el-descriptions class="info" direction="vertical">
               <el-descriptions-item label="课程名称(ID)">
                 &nbsp;&nbsp;
                 {{courseInfo.c_name}}({{courseInfo.c_id}})
               </el-descriptions-item>
-<!--              <el-descriptions-item label="学习材料(ID)">-->
-<!--                &nbsp;&nbsp;-->
-<!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
-<!--              </el-descriptions-item>-->
               <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
                 <span v-html="courseInfo.intro "></span>
               </el-descriptions-item>
@@ -106,9 +120,12 @@ export default {
         c_name: '课程1',
         t_name: '教师1',
         avgDegree: 2.0,
-        intro: ''
+        intro: '',
+        hasScore: false
       }],
-      showMyCourseList: this.myCourseList
+      showMyCourseList: this.myCourseList,
+      gradesDialogVisible: false,
+      currentCourseScore: null
     }
   },
   mounted: function () {
@@ -170,6 +187,31 @@ export default {
         }).catch(function (error) {
           console.log(error)
         })
+      })
+    },
+    viewScore: function (index) {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'GetStudentCourseScore/',
+        method: 'post',
+        data: {
+          s_id: that.s_id,
+          c_id: that.showMyCourseList[index].c_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
+          that.gradesDialogVisible = true;
+          that.currentCourseScore = response.data.data.score;
+        } else {
+          that.$message.error('未知错误')
+        }
+      }).catch(function (error) {
+        console.log(error)
       })
     },
     goToHelloWorld: function () {
