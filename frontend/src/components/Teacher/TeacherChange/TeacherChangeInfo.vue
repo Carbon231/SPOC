@@ -88,6 +88,7 @@ export default {
                     that.teacher.t_email = ''
                     that.teacher.t_phone = ''
                     that.teacher.t_office = ''
+
                     that.$router.push({ name: 'TeacherInfo' })
                 } else {
                     that.$message.error(response.data.message)

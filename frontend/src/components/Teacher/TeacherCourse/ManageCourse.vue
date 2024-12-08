@@ -54,7 +54,10 @@
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
               <el-descriptions-item label="选课学生">
-                // TODO
+                <el-button-group style="margin-left: 20px;">
+                  <el-button type="primary" icon="el-icon-edit"
+                    v-on:click="teacherGetStudentsInCourse">查看选课学生名单</el-button>
+                </el-button-group>
               </el-descriptions-item>
             </el-descriptions>
             <div slot="footer" class="dialog-footer">
@@ -71,6 +74,7 @@
 import TeacherNav from '../TeacherNav'
 import TeacherHeading from '../TeacherHeading'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
+
 export default {
   name: 'ManageCourse',
   components: { TeacherNav, TeacherHeading },
@@ -89,7 +93,7 @@ export default {
       t_id: '',
       myCourseList: [],
       showMyCourseList: [],
-      inputSearch: ''
+      inputSearch: '',
     }
   },
   mounted: function () {
@@ -98,6 +102,10 @@ export default {
     this.getTeacherCourseList()
   },
   methods: {
+    teacherGetStudentsInCourse: function () {
+      console.log(this.$router)
+      this.$router.push({ name: 'TeacherGetStudentsInCourse', params: { c_id: this.courseInfo.c_id } })
+    },
     getCourseInfo: function (index) {
       let that = this
       that.courseInfo = that.showMyCourseList[index]
