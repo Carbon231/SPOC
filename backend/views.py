@@ -2,7 +2,20 @@ import json
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post
+from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post, User
+
+
+class createUser(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        username = req_data['username']
+        password = req_data['password']
+        user = User.objects.create_user(username=username, password=password)
+        return Response({
+            "code": 200,
+            "message": "注册成功",
+            "data": user.id
+        })
 
 
 class MyCore(MiddlewareMixin):
@@ -260,7 +273,9 @@ class GetStudentList(APIView):
 
 
 class GetCourseList(APIView):
-    def get(self, request):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
         course_list = Course.objects.all()
         data = []
         for course in course_list:
@@ -271,12 +286,16 @@ class GetCourseList(APIView):
                 for c in comment:
                     sum += int(c.degree)
                 avgDegree = sum / len(comment)
+            isSelect = 0
+            if SC.objects.filter(course__id=course.id, student__s_id=s_id).exists():
+                isSelect = 1
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
-                "intro": course.intro
+                "intro": course.intro,
+                "isSelect": isSelect
             })
         return Response({
             "code": 200,
@@ -813,4 +832,24 @@ class TeacherChangeInfo(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！"
+        })
+
+class TeacherGetStudentInCourse(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        c_id = req_data['c_id']
+        course = Course.objects.get(id=c_id)
+        scs = SC.objects.filter(course=course)
+        data = []
+        for sc in scs:
+            student = sc.student
+            data.append({
+                "s_id": student.s_id,
+                "s_name": student.s_name,
+                "score": sc.score
+            })
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": data
         })

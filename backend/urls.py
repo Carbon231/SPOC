@@ -1,8 +1,10 @@
 from django.urls import path
 from . import views
+from django.contrib import admin
 
 urlpatterns = [
     # Student/Teacher Info
+    path("admin/", admin.site.urls),
     path('StudentLogin/', views.StudentLogin.as_view()),
     path('StudentRegister/', views.StudentRegister.as_view()),
     path('TeacherLogin/', views.TeacherLogin.as_view()),
@@ -52,5 +54,6 @@ urlpatterns = [
     # # 成绩
     path('GetDegree/', views.GetDegree.as_view()),
     path('TeacherChangeInfo/', views.TeacherChangeInfo.as_view()),
+    path('TeacherGetStudentInCourse/', views.TeacherGetStudentInCourse.as_view())
 
 ]
