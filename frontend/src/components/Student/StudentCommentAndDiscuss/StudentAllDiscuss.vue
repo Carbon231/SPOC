@@ -247,8 +247,7 @@ export default {
       const len = list.length
       const arr = []
       for (let i = 0; i < len; i++) {
-        // 如果字符串中不包含目标字符会返回-1
-        if (list[i].title.indexOf(keyWord) >= 0) {
+        if (list[i].title.toString().includes(keyWord)) {
           arr.push(list[i])
         }
       }

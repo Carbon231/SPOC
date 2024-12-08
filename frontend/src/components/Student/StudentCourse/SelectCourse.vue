@@ -11,7 +11,7 @@
         <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
             <el-col :span="23">
-              <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
+              <el-input placeholder="查找您的相关课程(课程名或课程编号)" prefix-icon="el-icon-search" v-model="inputSearch"
                 style="margin-bottom: 5%"></el-input>
             </el-col>
             <el-col :span="1">
@@ -37,7 +37,7 @@
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-if="!showCourseList[index].isSelected" v-on:click="selectCourse(index)" type="primary">选课</el-button>
+                  <el-button v-if="!showCourseList[index].isSelect" v-on:click="selectCourse(index)" type="primary">选课</el-button>
                   <el-button v-else type="info" disabled>已选</el-button>
                 </el-button-group>
               </el-col>
@@ -103,7 +103,7 @@ export default {
         t_name: '教师1',
         avgDegree: 2.0,
         intro: '',
-        isSelected: false,
+        isSelect: false,
       }],
       showCourseList: this.courseList,
       inputSearch: ''
@@ -125,7 +125,10 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseList/',
-        method: 'get',
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
         headers: {
           'Content-Type': 'application/json'
         },
@@ -142,7 +145,7 @@ export default {
     selectCourse(index) {
       console.log(index)
       let that = this
-      if (!that.courseList[index].isSelected) {
+      if (!that.courseList[index].isSelect) {
           this.$http.request({
           url: that.$url + 'SelectCourse/',
           method: 'post',
@@ -155,7 +158,7 @@ export default {
           var status = response.data.code
           if (status === 200) {
             that.$message.success(response.data.message)
-            that.courseList[index].isSelected = true
+            that.courseList[index].isSelect = true
           } else if (status === 401) {
             that.$message.info(response.data.message)
           } else {
@@ -189,7 +192,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].c_id.indexOf(keyWord) >= 0) {
+          if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
           arr.push(list[i])
         }
       }
