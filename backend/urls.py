@@ -54,6 +54,7 @@ urlpatterns = [
     # # 成绩
     path('GetDegree/', views.GetDegree.as_view()),
     path('TeacherChangeInfo/', views.TeacherChangeInfo.as_view()),
-    path('TeacherGetStudentInCourse/', views.TeacherGetStudentInCourse.as_view())
+    path('TeacherGetStudentInCourse/', views.TeacherGetStudentInCourse.as_view()),
+    path('GetScoreDistribution/', views.GetScoreDistribution.as_view()),
 
 ]

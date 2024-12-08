@@ -285,7 +285,7 @@ class GetCourseList(APIView):
             if Comment.objects.filter(course__id=course.id).exists():
                 for c in comment:
                     sum += int(c.degree)
-                avgDegree = sum / len(comment)
+                avgDegree = round(sum / len(comment),  2)
             isSelect = 0
             if SC.objects.filter(course__id=course.id, student__s_id=s_id).exists():
                 isSelect = 1
@@ -448,7 +448,7 @@ class GetStudentCourseList(APIView):
             if Comment.objects.filter(course__id=course.id).exists():
                 for c in comment:
                     sum += int(c.degree)
-                avgDegree = sum / len(comment)
+                avgDegree = round(sum / len(comment),  2)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -544,7 +544,7 @@ class GetTeacherCourseList(APIView):
             if Comment.objects.filter(course__id=course.id).exists():
                 for c in comment:
                     sum += int(c.degree)
-                avgDegree = sum / len(comment)
+                avgDegree = round(sum / len(comment),  2)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -798,7 +798,7 @@ class GetDegree(APIView):
         if Comment.objects.filter(course__id=course.id).exists():
             for c in comment:
                 sum += int(c.degree)
-            avgDegree = sum / len(comment)
+            avgDegree = round(sum / len(comment),  2)
         return Response({
             "code": 200,
             "message": "操作成功！",
@@ -852,4 +852,42 @@ class TeacherGetStudentInCourse(APIView):
             "code": 200,
             "message": "操作成功！",
             "data": data
+        })
+
+
+class GetScoreDistribution(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        c_id = req_data['c_id']
+        try:
+            course = Course.objects.get(id=c_id)
+        except Course.DoesNotExist:
+            return Response({
+                "code": 400,
+                "message": "课程不存在"
+            })
+        score_distribution = {
+            "0-20": 0,
+            "20-40": 0,
+            "40-60": 0,
+            "60-80": 0,
+            "80-100": 0
+        }
+        scores = SC.objects.filter(course=course)
+        for score in scores:
+            degree = int(score.score)
+            if 0 <= degree <= 20:
+                score_distribution["0-20"] += 1
+            elif 20 < degree <= 40:
+                score_distribution["20-40"] += 1
+            elif 40 < degree <= 60:
+                score_distribution["40-60"] += 1
+            elif 60 < degree <= 80:
+                score_distribution["60-80"] += 1
+            elif 80 < degree <= 100:
+                score_distribution["80-100"] += 1
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": score_distribution
         })
