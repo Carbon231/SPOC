@@ -103,7 +103,6 @@ import StudentNav from '../StudentNav'
 import StudentHeading from '../StudentHeading'
 import StudentImg from '../../../assets/img/student.png'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
-import {toNumber} from "vue/src/shared/util";
 
 export default {
   name: 'StudentAllComment',
@@ -139,7 +138,6 @@ export default {
     this.showCourseList = this.courseList
   },
   methods: {
-    toNumber,
     getStudentCourseNum: function () {
       let that = this
       this.$http.request({
