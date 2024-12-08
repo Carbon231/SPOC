@@ -123,7 +123,8 @@ export default {
         c_name: '课程1',
         t_name: '教师1',
         avgDegree: 2.0,
-        intro: ''
+        intro: '',
+        isSelect: false
       }],
       showCourseList: this.courseList
     }
@@ -178,7 +179,10 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseList/',
-        method: 'get',
+        method: 'post',
+        data: {
+          s_id: that.s_id
+        },
         headers: {
           'Content-Type': 'application/json'
         },
@@ -222,7 +226,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].c_name.indexOf(keyWord) >= 0) {
+        if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
           arr.push(list[i])
         }
       }

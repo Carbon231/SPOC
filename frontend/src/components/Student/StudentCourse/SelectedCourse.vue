@@ -40,14 +40,9 @@
                   <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
                 </el-row>
               </el-col>
-<!--              <el-col :span="2">-->
-<!--                <el-button-group style="margin-top: 2%">-->
-<!--                  <el-button v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>-->
-<!--                </el-button-group>-->
-<!--              </el-col>-->
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
+                  <el-button v-if="!course.hasScore" v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
                   <el-button v-if="course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
                   <el-button v-else type="info" disabled size="small">查看成绩</el-button>
                 </el-button-group>
@@ -232,7 +227,7 @@ export default {
       const arr = []
       for (let i = 0; i < len; i++) {
         // 如果字符串中不包含目标字符会返回-1
-        if (list[i].c_id.indexOf(keyWord) >= 0) {
+        if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
           arr.push(list[i])
         }
       }
