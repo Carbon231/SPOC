@@ -435,13 +435,81 @@ class GetStudentCourseList(APIView):
                 "c_name": course.c_name,
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
-                "intro": course.intro
+                "intro": course.intro,
+                "hasScore": sc.hasScore
             })
         return Response({
             "code": 200,
             "message": "操作成功",
             "data": data
         })
+
+
+class GetStudentCourseScore(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        c_id = req_data['c_id']
+        if SC.objects.filter(student__s_id=s_id, course__id=c_id).exists():
+            sc = SC.objects.get(student__s_id=s_id, course__id=c_id)
+            return Response({
+                "code": 200,
+                "message": "操作成功",
+                "data": {
+                    "score": sc.score
+                }
+            })
+        else:
+            return Response({
+                "code": 200,
+                "error": "不存在该选课"
+            })
+
+
+class SetStudentCourseScore(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        c_id = req_data['c_id']
+        score = req_data['score']
+        if SC.objects.filter(student__s_id=s_id, course__id=c_id).exists():
+            sc = SC.objects.get(student__s_id=s_id, course__id=c_id)
+            sc.score = score
+            sc.hasScore = 1
+            sc.save()
+            return Response({
+                "code": 200,
+                "message": "操作成功"
+            })
+        else:
+            return Response({
+                "code": 400,
+                "error": "不存在该选课"
+            })
+
+
+class GetTeacherInfo(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        t_id = req_data['t_id']
+        if Teacher.objects.filter(t_id=t_id).exists():
+            teacher = Teacher.objects.get(t_id=t_id)
+            data = {
+                "t_office": teacher.t_office,
+                "t_department": teacher.t_department,
+                "t_phone": teacher.t_phone,
+                "t_email": teacher.t_email
+            }
+            return Response({
+                "code": 200,
+                "message": "操作成功",
+                "data": data
+            })
+        else:
+            return Response({
+                "code": 401,
+                "error": "教师不存在"
+            })
 
 
 class GetTeacherCourseList(APIView):

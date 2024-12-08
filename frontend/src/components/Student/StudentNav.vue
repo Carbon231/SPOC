@@ -30,7 +30,7 @@ import Utils from '../../assets/js/util.js'
 
 export default {
   name: 'StudentNav',
-  data () {
+  data() {
     return {
       s_id: '',
       s_name: '',

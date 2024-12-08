@@ -48,11 +48,13 @@
           <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="40%">
             <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
-                &nbsp;&nbsp;
                 {{ courseInfo.c_name }}({{ courseInfo.c_id }})
               </el-descriptions-item>
-              <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
+              <el-descriptions-item label="课程介绍">
                 <span v-html="courseInfo.intro"></span>
+              </el-descriptions-item>
+              <el-descriptions-item label="选课学生">
+                // TODO
               </el-descriptions-item>
             </el-descriptions>
             <div slot="footer" class="dialog-footer">

@@ -41,22 +41,6 @@
               </el-card>
             </el-col>
             <el-col :span="8" :offset="2" class="right-information">
-              <el-card shadow="hover" style="width: 100%">
-                <el-row>
-                  <el-col :span="11">
-                    <el-image :src="teacherImg" lazy></el-image>
-                  </el-col>
-                  <el-col :span="12" :offset="1">
-                    <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{ t_name }}</el-descriptions-item>
-                      <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
-                    </el-descriptions>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-divider></el-divider>
-                </el-row>
-              </el-card>
             </el-col>
           </el-row>
         </el-main>
