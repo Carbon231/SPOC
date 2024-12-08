@@ -186,7 +186,7 @@ export default new Router({
     {
       path: '/TeacherChange',
       name: 'TeacherChange',
-      component: TeacherChange
+      component: TeacherChange,
     },
     {
       path: '/TeacherInfo',

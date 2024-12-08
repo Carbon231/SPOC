@@ -50,9 +50,9 @@ export default {
     data: function () {
         return {
             loading: false,
+            t_id: '',
+            t_name: '',
             teacher: {
-                t_id: '',
-                t_name: '',
                 t_department: '',
                 t_email: '',
                 t_phone: '',
@@ -61,8 +61,8 @@ export default {
         }
     },
     mounted: function () {
-        this.teacher.t_id = this.$route.params.id
         this.t_id = this.cookie.getCookie('t_id')
+        this.t_name = this.cookie.getCookie('t_name')
     },
     methods: {
         teacherChangeInfo: function () {
@@ -72,7 +72,7 @@ export default {
                 url: that.$url + 'TeacherChangeInfo/',
                 method: 'post',
                 data: {
-                    t_id: that.teacher.t_id,
+                    t_id: that.t_id,
                     t_department: that.teacher.t_department,
                     t_email: that.teacher.t_email,
                     t_phone: that.teacher.t_phone,
@@ -80,21 +80,20 @@ export default {
                 }
             }).then(function (response) {
                 console.log(response.data)
+                console.log(response)
                 that.loading = false
                 if (response.data.code === 200) {
                     that.$message.success(response.data.message)
-                    // that.teacher.t_id = response.data.data.t_id
-                    // that.teacher.t_name = response.data.data.t_name
-                    that.teacher.t_department = response.data.data.t_department
-                    that.teacher.t_email = response.data.data.t_email
-                    that.teacher.t_phone = response.data.data.t_phone
-                    that.teacher.t_office = response.data.data.t_office
+                    that.teacher.t_department = ''
+                    that.teacher.t_email = ''
+                    that.teacher.t_phone = ''
+                    that.teacher.t_office = ''
                     that.$router.push({ name: 'TeacherInfo' })
                 } else {
                     that.$message.error(response.data.message)
                 }
             }).catch(function (error) {
-                console.log(error)
+                console.error(error)
                 that.loading = false
             })
         },

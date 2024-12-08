@@ -11,24 +11,16 @@
         <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
             <el-col :span="23">
-              <el-input
-                placeholder="查找您的相关课程"
-                prefix-icon="el-icon-search" v-model="inputSearch"
+              <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
                 style="margin-bottom: 5%"></el-input>
             </el-col>
             <el-col :span="1">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                style="float: right"
-                @click="searchCourse(inputSearch)"
+              <el-button type="primary" icon="el-icon-search" style="float: right" @click="searchCourse(inputSearch)"
                 circle></el-button>
             </el-col>
           </el-row>
-          <el-card v-for="(course, index) in showCourseList" :key="index"
-                   v-loading="loading"
-                   shadow="hover"
-                   style="margin-bottom: 2%">
+          <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
+            style="margin-bottom: 2%">
             <el-row>
               <el-col :offset="1" :span="2">
                 <el-image :src="courseImg" lazy></el-image>
@@ -40,7 +32,7 @@
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
+                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
@@ -54,12 +46,12 @@
             <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
                 &nbsp;&nbsp;
-                {{courseInfo.c_name}}({{courseInfo.c_id}})
+                {{ courseInfo.c_name }}({{ courseInfo.c_id }})
               </el-descriptions-item>
-<!--              <el-descriptions-item label="学习材料(ID)">-->
-<!--                &nbsp;&nbsp;-->
-<!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
-<!--              </el-descriptions-item>-->
+              <!--              <el-descriptions-item label="学习材料(ID)">-->
+              <!--                &nbsp;&nbsp;-->
+              <!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
+              <!--              </el-descriptions-item>-->
               <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
@@ -76,6 +68,7 @@
 
 <style scoped>
 @import "../../../assets/css/back.css";
+
 .info {
   margin-bottom: 20px;
   word-break: break-all;
@@ -89,7 +82,7 @@ import CourseImg from '../../../assets/img/buaa_class_img.jpg'
 export default {
   /* eslint-disable */
   name: 'SelectCourse',
-  components: {StudentNav, StudentHeading},
+  components: { StudentNav, StudentHeading },
   data: function () {
     return {
       courseInfoVisible: false,
@@ -144,7 +137,7 @@ export default {
         that.loading = false
       })
     },
-    selectCourse (index) {
+    selectCourse(index) {
       console.log(index)
       let that = this
       this.$http.request({
