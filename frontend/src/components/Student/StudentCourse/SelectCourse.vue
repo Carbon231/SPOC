@@ -45,7 +45,8 @@
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-on:click="selectCourse(index)" type="primary">选课</el-button>
+                  <el-button v-if="!showCourseList[index].isSelected" v-on:click="selectCourse(index)" type="primary">选课</el-button>
+                  <el-button v-else type="info" disabled>已选</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
@@ -108,7 +109,8 @@ export default {
         c_name: '课程1',
         t_name: '教师1',
         avgDegree: 2.0,
-        intro: ''
+        intro: '',
+        isSelected: false,
       }],
       showCourseList: this.courseList,
       inputSearch: ''
@@ -147,24 +149,34 @@ export default {
     selectCourse (index) {
       console.log(index)
       let that = this
-      this.$http.request({
-        url: that.$url + 'SelectCourse/',
-        method: 'post',
-        data: {
-          s_id: that.s_id,
-          c_id: that.showCourseList[index].c_id
-        }
-      }).then(function (response) {
-        console.log(response.data)
-        var status = response.data.code
-        if (status === 200) {
-          that.$message.success(response.data.message)
-        } else if (status === 401) {
-          that.$message.info(response.data.message)
-        } else {
-          that.$message.error(response.data.message)
-        }
-      })
+      if (!that.courseList[index].isSelected) {
+          this.$http.request({
+          url: that.$url + 'SelectCourse/',
+          method: 'post',
+          data: {
+            s_id: that.s_id,
+            c_id: that.showCourseList[index].c_id
+          }
+        }).then(function (response) {
+          console.log(response.data)
+          var status = response.data.code
+          if (status === 200) {
+            that.$message.success(response.data.message)
+            that.courseList[index].isSelected = true
+          } else if (status === 401) {
+            that.$message.info(response.data.message)
+          } else {
+            that.$message.error(response.data.message)
+          }
+        })
+      }
+      else {
+        that.message({
+          message: '您已选过该课程',
+          type: 'warning'
+        })
+      }
+
     },
     goToHelloWorld: function () {
       this.cookie.clearCookie('s_id')
