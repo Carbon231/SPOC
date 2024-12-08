@@ -35,6 +35,8 @@ class Comment(models.Model):
 class SC(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    score = models.CharField(max_length=30, blank=True, null=True)
+    hasScore = models.IntegerField(blank=True, null=True, default=0)
 
 
 class PostTheme(models.Model):

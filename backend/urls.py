@@ -29,7 +29,10 @@ urlpatterns = [
     path('CancelCourse/', views.CancelCourse.as_view()),
     path('GetCourseInfo/', views.GetCourseInfo.as_view()),
     path('GetStudentCourseList/', views.GetStudentCourseList.as_view()),
+    path('GetStudentCourseScore/', views.GetStudentCourseScore.as_view()),
+    path('SetStudentCourseScore/', views.SetStudentCourseScore.as_view()),
     path('GetTeacherCourseList/', views.GetTeacherCourseList.as_view()),
+    path('GetTeacherInfo/', views.GetTeacherInfo.as_view()),
     #
     # # Comment
     path('GetCommentList/', views.GetCommentList.as_view()),
