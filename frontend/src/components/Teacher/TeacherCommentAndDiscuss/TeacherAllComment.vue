@@ -13,40 +13,32 @@
             <el-col :span="14" class="left-information" style="width: 50%">
               <el-row>
                 <el-col :span="22">
-                  <el-input
-                    placeholder="查找您的相关课程"
-                    prefix-icon="el-icon-search" v-model="inputSearch"
+                  <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
                     style="margin-bottom: 5%"></el-input>
                 </el-col>
                 <el-col :span="2">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-search"
-                    style="float: right"
-                    @click="searchCourse(inputSearch)"
-                    circle></el-button>
+                  <el-button type="primary" icon="el-icon-search" style="float: right"
+                    @click="searchCourse(inputSearch)" circle></el-button>
                 </el-col>
               </el-row>
-            <el-card v-for="(course, index) in showCourseList" :key="index"
-                v-loading="loading"
-                shadow="hover"
-                     style="margin-bottom: 2%">
-              <el-row>
-                <el-col :offset="1" :span="2">
+              <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
+                style="margin-bottom: 2%">
+                <el-row>
+                  <el-col :offset="1" :span="2">
                     <el-image :src="courseImg" lazy></el-image>
                   </el-col>
-                <el-col :offset="2" :span="14">
-                  <el-row style="margin-bottom: 3%">
-                    <el-link type="primary" v-on:click="commentCourse(index)">
-                      <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
-                    </el-link>
+                  <el-col :offset="2" :span="14">
+                    <el-row style="margin-bottom: 3%">
+                      <el-link type="primary" v-on:click="commentCourse(index)">
+                        <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
+                      </el-link>
+                    </el-row>
+                    <el-row>
+                      <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
+                    </el-row>
+                  </el-col>
                 </el-row>
-                <el-row>
-                    <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{course.c_id}}</span></el-tag>
-                </el-row>
-            </el-col>
-          </el-row>
-            </el-card>
+              </el-card>
             </el-col>
           </el-row>
         </el-main>
@@ -75,32 +67,8 @@ export default {
   },
   mounted: function () {
     this.t_id = this.cookie.getCookie('t_id')
-    this.getCourseList()
   },
   methods: {
-    getCourseList: function () {
-      let that = this
-      that.loading = true
-      this.$http.request({
-        url: that.$url + 'GetTeacherCourseList/',
-        method: 'post',
-        data: {
-          t_id: that.t_id
-        }
-      }).then(function (response) {
-        console.log(response.data)
-        that.loading = false
-        if (response.data.code === 200) {
-          that.courseList = response.data.data
-          that.showCourseList = response.data.data
-        } else {
-          that.$message.error(response.data.message)
-        }
-      }).catch(function (error) {
-        console.log(error)
-        that.loading = false
-      })
-    },
     searchCourse: function (query) {
       this.showCourseList = this.courseList.filter(course => course.c_name.includes(query))
     },

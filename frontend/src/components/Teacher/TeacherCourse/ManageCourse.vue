@@ -56,7 +56,7 @@
               <el-descriptions-item label="选课学生">
                 <el-button-group style="margin-left: 20px;">
                   <el-button type="primary" icon="el-icon-edit"
-                    v-on:click="teacherGetStudentsInCourse">查看选课学生名单</el-button>
+                    v-on:click="teacherGetStudentInCourse">查看选课学生名单</el-button>
                 </el-button-group>
               </el-descriptions-item>
             </el-descriptions>
@@ -102,9 +102,8 @@ export default {
     this.getTeacherCourseList()
   },
   methods: {
-    teacherGetStudentsInCourse: function () {
-      console.log(this.$router)
-      this.$router.push({ name: 'TeacherGetStudentsInCourse', params: { c_id: this.courseInfo.c_id } })
+    teacherGetStudentInCourse: function () {
+      this.$router.push({ name: 'TeacherGetStudentInCourse', params: { c_id: this.courseInfo.c_id } })
     },
     getCourseInfo: function (index) {
       let that = this
