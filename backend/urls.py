@@ -62,5 +62,6 @@ urlpatterns = [
     path('GetStudentInfo/', views.GetStudentInfo.as_view()),
     path('GetDepartmentCourseList/', views.GetDepartmentCourseList.as_view()),
     path('DrawALottery/', views.DrawALottery.as_view()),
-
+    path('SetExcellent/', views.SetExcellent.as_view()),
+    path('CancelExcellent/', views.CancelExcellent.as_view()),
 ]

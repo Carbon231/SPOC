@@ -1090,3 +1090,41 @@ class DrawALottery(APIView):
             "message": "操作成功！",
             "data": selected_students_data
         })
+
+
+class SetExcellent(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.isExcellent = 1
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class CancelExcellent(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.isExcellent = 0
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
