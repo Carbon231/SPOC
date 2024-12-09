@@ -115,8 +115,8 @@ export default {
       inputSearch: '',
       postThemeList: [{
         pt_id: '',
-        s_id: '',
-        s_name: '',
+        u_id: '',
+        u_name: '',
         title: '',
         content: '',
         time: '',
@@ -125,8 +125,8 @@ export default {
       showPostThemeList: [
         {
           pt_id: '',
-          s_id: '',
-          s_name: '',
+          u_id: '',
+          u_name: '',
           title: '',
           content: '',
           time: '',
@@ -195,7 +195,7 @@ export default {
         url: that.$url + 'BuildPostTheme/',
         method: 'post',
         data: {
-          s_id: that.s_id,
+          u_id: that.s_id,
           title: that.input.title,
           content: that.input.content,
           time: that.time
