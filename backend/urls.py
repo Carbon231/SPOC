@@ -56,5 +56,7 @@ urlpatterns = [
     path('TeacherChangeInfo/', views.TeacherChangeInfo.as_view()),
     path('TeacherGetStudentInCourse/', views.TeacherGetStudentInCourse.as_view()),
     path('GetScoreDistribution/', views.GetScoreDistribution.as_view()),
+    path('StudentChangeInfo/', views.StudentChangeInfo.as_view()),
+    path('GetStudentInfo/', views.GetStudentInfo.as_view()),
 
 ]
