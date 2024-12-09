@@ -46,6 +46,7 @@ export default {
     goToHelloWorld: function () {
       this.cookie.clearCookie('s_id')
       this.cookie.clearCookie('s_name')
+      this.cookie.clearCookie('accepted')
       this.$router.replace('/')
     },
     toggleCollapse: function () {
@@ -55,18 +56,6 @@ export default {
     handleCommand () {
       this.goToHelloWorld()
     },
-    goToCommentPlatform () {
-      let that = this
-      let loginInfo =
-        { s_id: that.s_id,
-          s_name: that.s_name,
-          userType: 'student'
-        }
-      that.cookie.setCookie(loginInfo)
-      that.$router.push({
-        name: 'CommentPlatForm'
-      })
-    }
   }
 }
 </script>
