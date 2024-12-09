@@ -1,8 +1,12 @@
 import json
+import random
+
+from django.contrib.auth.decorators import login_required
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post, User
+from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post, User, Department
+from django.contrib import auth
 
 
 class createUser(APIView):
@@ -42,7 +46,7 @@ class StudentLogin(APIView):
         s_id = req_data['s_id']
         s_pwd = req_data['s_pwd']
         try:
-            user = Student.objects.get(s_id=s_id)
+            student = Student.objects.get(s_id=s_id)
         except Exception as e:
             error_response = {'error': str(e)}
             return Response({
@@ -50,13 +54,21 @@ class StudentLogin(APIView):
                 "error": "学号不存在"
             })
         else:
-            if user.s_pwd == s_pwd:
-                s_name = user.s_name
-                return Response({
-                    "code": 200,
-                    "message": "登录成功",
-                    "s_name": s_name
-                })
+            if student.s_pwd == s_pwd:
+                s_name = student.s_name
+                user = auth.authenticate(username=s_id, password=s_pwd)
+                if user:
+                    auth.login(request, user)
+                    return Response({
+                        "code": 200,
+                        "message": "登录成功",
+                        "s_name": s_name
+                    })
+                else:
+                    return Response({
+                        "code": 402,
+                        "error": "未知错误"
+                    })
             else:
                 return Response({
                     "code": 401,
@@ -82,31 +94,42 @@ class StudentRegister(APIView):
                 "code": 400,
                 "error": "用户名已存在"
             })
-        if Student.objects.filter(s_id=s_id).exists():
+        if User.objects.filter(username=s_id).exists():
             return Response({
                 "code": 400,
-                "error": "学号已存在"
+                "error": "学号或工号已存在"
             })
-        user = Student.objects.create(s_id=s_id, s_name=s_name, s_pwd=s_pwd)
-        user.save()
+        user = User.objects.create_user(username=s_id, password=s_pwd, u_name=s_name)
+        department = Department.objects.get(d_id=0)
+        student = Student.objects.create(s_id=s_id, s_name=s_name, s_pwd=s_pwd, user=user, s_department=department)
+        student.save()
         return Response({
             "code": 200,
             "message": "注册成功"
         })
+
 
 class TeacherLogin(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         t_id = req_data['t_id']
         t_pwd = req_data['t_pwd']
-        user = Teacher.objects.get(t_id=t_id)
-        if user.t_pwd == t_pwd:
-            t_name = user.t_name
-            return Response({
-                "code": 200,
-                "message": "登录成功",
-                "t_name": t_name
-            })
+        teacher = Teacher.objects.get(t_id=t_id)
+        if teacher.t_pwd == t_pwd:
+            t_name = teacher.t_name
+            user = auth.authenticate(username=t_id, password=t_pwd)
+            if user:
+                auth.login(request, user)
+                return Response({
+                    "code": 200,
+                    "message": "登录成功",
+                    "t_name": t_name
+                })
+            else:
+                return Response({
+                    "code": 402,
+                    "error": "未知错误"
+                })
         else:
             return Response({
                 "code": 401,
@@ -130,13 +153,15 @@ class TeacherRegister(APIView):
                 "code": 400,
                 "error": "用户名已存在"
             })
-        if Teacher.objects.filter(t_id=t_id).exists():
+        if User.objects.filter(username=t_id).exists():
             return Response({
                 "code": 400,
-                "error": "工号已存在"
+                "error": "学号或工号已存在"
             })
-        user = Teacher.objects.create(t_id=t_id, t_name=t_name, t_pwd=t_pwd)
-        user.save()
+        user = User.objects.create_user(username=t_id, password=t_pwd, u_name=t_name)
+        department = Department.objects.get(d_id=0)
+        teacher = Teacher.objects.create(t_id=t_id, t_name=t_name, t_pwd=t_pwd, user=user, t_department=department)
+        teacher.save()
         return Response({
             "code": 200,
             "message": "注册成功"
@@ -150,7 +175,7 @@ class StudentChange(APIView):
         new_pwd_1 = req_data['new_pwd_1']
         new_pwd_2 = req_data['new_pwd_2']
         try:
-            user = Student.objects.get(s_id=s_id)
+            student = Student.objects.get(s_id=s_id)
         except Exception as e:
             error_response = {'error': str(e)}
             return Response({
@@ -158,14 +183,17 @@ class StudentChange(APIView):
                 "message": "学号不存在",
                 "error_response": error_response
             })
-        if not user.s_pwd == s_pwd:
+        if not student.s_pwd == s_pwd:
             return Response({
                 "code": 402,
                 "message": "密码错误"
             })
         if new_pwd_1 == new_pwd_2:
-            user.s_pwd = new_pwd_1
+            student.s_pwd = new_pwd_1
+            user = student.user
+            user.set_password(new_pwd_1)
             user.save()
+            student.save()
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -184,7 +212,7 @@ class TeacherChange(APIView):
         new_pwd_1 = req_data['new_pwd_1']
         new_pwd_2 = req_data['new_pwd_2']
         try:
-            user = Teacher.objects.get(t_id=t_id)
+            teacher = Teacher.objects.get(t_id=t_id)
         except Exception as e:
             error_response = {'error': str(e)}
             return Response({
@@ -192,14 +220,17 @@ class TeacherChange(APIView):
                 "message": "工号不存在",
                 "error_response": error_response
             })
-        if not user.t_pwd == t_pwd:
+        if not teacher.t_pwd == t_pwd:
             return Response({
                 "code": 402,
                 "message": "密码错误"
             })
         if new_pwd_1 == new_pwd_2:
-            user.t_pwd = new_pwd_1
+            teacher.t_pwd = new_pwd_1
+            user = teacher.user
+            user.set_password(new_pwd_1)
             user.save()
+            teacher.save()
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -271,12 +302,52 @@ class GetStudentList(APIView):
         })
 
 
-
 class GetCourseList(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        course_list = Course.objects.all()
+        course_list = Course.objects.filter(confirmed=False)
+        data = []
+        for course in course_list:
+            # 计算平均分
+            sum = 0
+            avgDegree = 0
+            comment = Comment.objects.filter(course__id=course.id)
+            if Comment.objects.filter(course__id=course.id).exists():
+                for c in comment:
+                    sum += int(c.degree)
+                avgDegree = round(sum / len(comment),  2)
+            # 查询是否已选课
+            isSelect = 0
+            if SC.objects.filter(course__id=course.id, student__s_id=s_id).exists():
+                isSelect = SC.objects.get(course__id=course.id, student__s_id=s_id).isSelect
+            # 查询选课人数
+            scs = SC.objects.filter(course__id=course.id)
+            selectedNum = len(scs)
+            data.append({
+                "c_id": course.id,
+                "c_name": course.c_name,
+                "t_name": course.teacher.t_name,
+                "avgDegree": avgDegree,
+                "intro": course.intro,
+                "isSelect": isSelect,
+                "capacity": course.capacity,
+                "selectedNum": selectedNum
+            })
+        return Response({
+            "code": 200,
+            "message": "操作成功",
+            "data": data
+        })
+
+
+class GetDepartmentCourseList(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        d_id = req_data['d_id']
+        department = Department.objects.filter(d_id=d_id)
+        course_list = Course.objects.filter(teacher__t_department=department, confirmed=False)
         data = []
         for course in course_list:
             sum = 0
@@ -288,14 +359,18 @@ class GetCourseList(APIView):
                 avgDegree = round(sum / len(comment),  2)
             isSelect = 0
             if SC.objects.filter(course__id=course.id, student__s_id=s_id).exists():
-                isSelect = 1
+                isSelect = SC.objects.get(course__id=course.id, student__s_id=s_id).isSelect
+            scs = SC.objects.filter(course__id=course.id)
+            selectedNum = len(scs)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
                 "intro": course.intro,
-                "isSelect": isSelect
+                "isSelect": isSelect,
+                "capacity": course.capacity,
+                "selectedNum": selectedNum
             })
         return Response({
             "code": 200,
@@ -317,7 +392,7 @@ class SelectCourse(APIView):
                 "message": "已经选课"
             })
         else:
-            SC.objects.create(student=student, course=course)
+            SC.objects.create(student=student, course=course, isSelect=1)
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -370,6 +445,7 @@ class ChangeCourse(APIView):
         c_id = req_data['c_id']
         t_id = req_data['t_id']
         intro = req_data['intro']
+        capacity = req_data['capacity']
         teacher = Teacher.objects.get(t_id=t_id)
         course = Course.objects.get(id=c_id)
         if Course.objects.filter(c_name=c_name).exists():
@@ -385,6 +461,7 @@ class ChangeCourse(APIView):
         else:
             course.c_name = c_name
             course.intro = intro
+            course.capacity = capacity
             course.save()
             return Response({
                 "code": 200,
@@ -410,7 +487,8 @@ class GetCourseInfo(APIView):
                     "t_name": course.teacher.t_name,
                     "c_name": course.c_name,
                     "c_id": course.id,
-                    "intro": course.intro
+                    "intro": course.intro,
+                    "capacity": course.capacity
                 }
             })
 
@@ -515,7 +593,7 @@ class GetTeacherInfo(APIView):
             teacher = Teacher.objects.get(t_id=t_id)
             data = {
                 "t_office": teacher.t_office,
-                "t_department": teacher.t_department,
+                "t_department": teacher.t_department.d_name,
                 "t_phone": teacher.t_phone,
                 "t_email": teacher.t_email
             }
@@ -550,7 +628,8 @@ class GetTeacherCourseList(APIView):
                 "c_name": course.c_name,
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
-                "intro": course.intro
+                "intro": course.intro,
+                "capacity": course.capacity
             })
         return Response({
             "code": 200,
@@ -656,8 +735,8 @@ class GetPostThemeList(APIView):
         post_themes = PostTheme.objects.all()
         data = [{
             "pt_id": post_theme.id,
-            "s_id": post_theme.student.s_id,
-            "s_name": post_theme.student.s_name,
+            "u_id": post_theme.user.username,
+            "u_name": post_theme.user.u_name,
             "title": post_theme.title,
             "content": post_theme.content,
             "time": post_theme.time,
@@ -672,12 +751,12 @@ class GetPostThemeList(APIView):
 class BuildPostTheme(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
-        s_id = req_data['s_id']
+        u_id = req_data['u_id']
         title = req_data['title']
         content = req_data['content']
         time = req_data['time']
-        student = Student.objects.get(s_id=s_id)
-        post_theme = PostTheme.objects.create(student=student, title=title, content=content, time=time)
+        user = User.objects.get(username=u_id)
+        post_theme = PostTheme.objects.create(user=user, title=title, content=content, time=time)
         post_theme.save()
         return Response({
             "code": 200,
@@ -692,8 +771,8 @@ class GetPostList(APIView):
         posts = Post.objects.filter(post_theme__id=pt_id)
         data = [{
             "p_id": post.id,
-            "s_id": post.student.s_id,
-            "s_name": post.student.s_name,
+            "u_id": post.user.username,
+            "u_name": post.user.u_name,
             "content": post.content,
             "time": post.time,
         } for post in posts]
@@ -708,12 +787,12 @@ class BuildPost(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         pt_id = req_data['pt_id']
-        s_id = req_data['s_id']
+        u_id = req_data['u_id']
         content = req_data['content']
         time = req_data['time']
-        student = Student.objects.get(s_id=s_id)
+        user = User.objects.get(username=u_id)
         post_theme = PostTheme.objects.get(id=pt_id)
-        post = Post.objects.create(student=student, post_theme=post_theme, content=content, time=time)
+        post = Post.objects.create(user=user, post_theme=post_theme, content=content, time=time)
         post.save()
         return Response({
             "code": 200,
@@ -752,8 +831,8 @@ class GetPostTheme(APIView):
         post_theme = PostTheme.objects.get(id=pt_id)
         data = {
             "pt_id": post_theme.id,
-            "s_id": post_theme.student.s_id,
-            "s_name": post_theme.student.s_name,
+            "u_id": post_theme.user.username,
+            "u_name": post_theme.user.u_name,
             "title": post_theme.title,
             "content": post_theme.content,
             "time": post_theme.time
@@ -770,13 +849,35 @@ class GetStudentDiscussNum(APIView):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
         try:
-            student = Student.objects.get(s_id=s_id)
-        except Student.DoesNotExist:
+            user = User.objects.get(username=s_id)
+        except User.DoesNotExist:
             return Response({
                 "code": 400,
                 "error": "学生不存在"
             })
-        post_themes = PostTheme.objects.filter(student=student)
+        post_themes = PostTheme.objects.filter(user=user)
+        num = len(post_themes)
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": {
+                "discussNum": num
+            }
+        })
+
+
+class GetTeacherDiscussNum(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        t_id = req_data['t_id']
+        try:
+            user = User.objects.get(username=t_id)
+        except User.DoesNotExist:
+            return Response({
+                "code": 400,
+                "error": "学生不存在"
+            })
+        post_themes = PostTheme.objects.filter(user=user)
         num = len(post_themes)
         return Response({
             "code": 200,
@@ -812,7 +913,7 @@ class TeacherChangeInfo(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         t_id = req_data['t_id']
-        t_department = req_data['t_department']
+        d_id = req_data['d_id']
         t_email = req_data['t_email']
         t_phone = req_data['t_phone']
         t_office = req_data['t_office']
@@ -824,7 +925,7 @@ class TeacherChangeInfo(APIView):
                 "error": "教师不存在"
             })
         # 更新教师信息
-        teacher.t_department = t_department
+        teacher.t_department = Department.objects.get(d_id=d_id)
         teacher.t_email = t_email
         teacher.t_phone = t_phone
         teacher.t_office = t_office
@@ -833,6 +934,64 @@ class TeacherChangeInfo(APIView):
             "code": 200,
             "message": "操作成功！"
         })
+
+
+class GetStudentInfo(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        try:
+            student = Student.objects.get(s_id=s_id)
+        except Student.DoesNotExist:
+            return Response({
+                "code": 404,
+                "error": "学生不存在"
+            })
+        student_info = {
+            "s_id": student.s_id,
+            "s_name": student.s_name,
+            "s_department": student.s_department.d_name,
+            "s_email": student.s_email,
+            "s_phone": student.s_phone
+        }
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": student_info
+        })
+
+
+class StudentChangeInfo(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        s_id = req_data['s_id']
+        d_id = req_data['d_id']
+        s_email = req_data['s_email']
+        s_phone = req_data['s_phone']
+        try:
+            student = Student.objects.get(s_id=s_id)
+        except Student.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "学生不存在"
+            })
+        student.s_email = s_email
+        student.s_phone = s_phone
+        try:
+            department = Department.objects.get(d_id=d_id)
+            student.s_department = department
+        except Department.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "部门不存在"
+            })
+        student.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
 
 class TeacherGetStudentInCourse(APIView):
     def post(self, request):
@@ -890,4 +1049,82 @@ class GetScoreDistribution(APIView):
             "code": 200,
             "message": "操作成功！",
             "data": score_distribution
+        })
+
+
+class DrawALottery(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        c_id = req_data['c_id']
+        try:
+            course = Course.objects.get(id=c_id)
+        except Course.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "课程不存在"
+            })
+        course.confirmed = True
+        course.save()
+        scs = SC.objects.filter(course=course)# 获取所有选了这门课程的学生列表
+        capacity = course.capacity
+        # 检查选课学生的数量是否小于等于课程容量
+        if scs.count() <= capacity:
+            # 全部中选，更新isSelect字段为2
+            SC.objects.filter(course=course).update(isSelect=2)
+            selected_scs = scs
+        else:
+            # 随机选择部分学生中选
+            selected_scs = random.sample(list(scs), capacity)
+            selected_students_ids = [sc.student.s_id for sc in selected_scs]
+            SC.objects.filter(student__s_id__in=selected_students_ids).update(isSelect=2)
+            # 删除未中选学生的选课记录
+            SC.objects.exclude(student__s_id__in=selected_students_ids).filter(course=course).delete()
+        selected_students_data = [
+            {
+                "s_id": sc.student.s_id,
+                "s_name": sc.student.s_name
+            } for sc in selected_scs
+        ]
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": selected_students_data
+        })
+
+
+class SetExcellent(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.isExcellent = 1
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class CancelExcellent(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.isExcellent = 0
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
         })

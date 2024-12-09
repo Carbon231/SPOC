@@ -20,7 +20,7 @@ urlpatterns = [
     path('GetStudentCommentNum/', views.GetStudentCommentNum.as_view()),
     path('GetStudentDiscussNum/', views.GetStudentDiscussNum.as_view()),
     path('GetTeacherCourseNum/', views.GetTeacherCourseNum.as_view()),
-    # path('GetTeacherDiscussNum/', views.GetTeacherDisCussNum.as_view()),
+    path('GetTeacherDiscussNum/', views.GetTeacherDiscussNum.as_view()),
     #
     # # Course
     path('GetCourseList/', views.GetCourseList.as_view()),
@@ -53,8 +53,15 @@ urlpatterns = [
     #
     # # 成绩
     path('GetDegree/', views.GetDegree.as_view()),
+
+
     path('TeacherChangeInfo/', views.TeacherChangeInfo.as_view()),
     path('TeacherGetStudentInCourse/', views.TeacherGetStudentInCourse.as_view()),
     path('GetScoreDistribution/', views.GetScoreDistribution.as_view()),
-
+    path('StudentChangeInfo/', views.StudentChangeInfo.as_view()),
+    path('GetStudentInfo/', views.GetStudentInfo.as_view()),
+    path('GetDepartmentCourseList/', views.GetDepartmentCourseList.as_view()),
+    path('DrawALottery/', views.DrawALottery.as_view()),
+    path('SetExcellent/', views.SetExcellent.as_view()),
+    path('CancelExcellent/', views.CancelExcellent.as_view()),
 ]

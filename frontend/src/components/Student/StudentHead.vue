@@ -43,18 +43,76 @@
         </el-main>
       </el-container>
     </el-container>
+    <el-dialog
+      title="Cookies通知"
+      :visible.sync="dialogVisible"
+      :modal="true"
+      class="cookie-consent-dialog"
+      >
+      <div class="content">
+        <el-image :src="cookieImg" lazy style="height: 30%; width: 30%"></el-image>
+        <div class="test">
+          <span>我们使用cookies来改善您的网站体验,<br>继续浏览网站表示您同意我们使用cookies。</span>
+          <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">拒绝</el-button>
+          <el-button type="primary" @click="acceptCookies">接受所有Cookies</el-button>
+        </span>
+        </div>
+      </div>
+
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import StudentNav from './StudentNav'
 import StudentHeading from './StudentHeading'
+import CookieImg from '../../assets/img/cookiePic.png'
 export default {
   name: 'StudentHead',
-  components: {StudentHeading, StudentNav}
+  components: {StudentHeading, StudentNav},
+  data(){
+    return {
+      dialogVisible: true,
+      cookieImg: CookieImg
+    };
+  },
+  methods: {
+    acceptCookies() {
+      this.cookie.setCookie({
+        'accepted': 'true'
+      });
+      this.dialogVisible = false;
+    },
+  },
+  mounted() {
+    if (this.cookie.getCookie('accepted') === true) {
+      console.log(this.cookie.getCookie('accepted'));
+      this.dialogVisible = false;
+    } else {
+      console.log(this.cookie.getCookie('accepted'));
+      this.dialogVisible = true;
+    }
+  }
 }
 </script>
 
 <style scoped>
   @import "../../assets/css/back.css";
+  .cookie-consent-dialog {
+
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 16px;
+  }
+
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
 </style>

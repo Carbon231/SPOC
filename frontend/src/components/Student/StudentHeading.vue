@@ -33,11 +33,20 @@ export default {
   mounted: function () {
     this.s_id = this.cookie.getCookie('s_id')
     this.s_name = this.cookie.getCookie('s_name')
+    this.checkIdent()
   },
   methods: {
+    checkIdent: function() {
+      if (this.s_id == null || this.s_name == null) {
+        this.$router.push({
+          name: 'StudentLogin'
+        })
+      }
+    },
     goToHelloWorld: function () {
       this.cookie.clearCookie('s_id')
       this.cookie.clearCookie('s_name')
+      this.cookie.clearCookie('accepted')
       this.$router.replace('/')
     },
     toggleCollapse: function () {
@@ -47,18 +56,6 @@ export default {
     handleCommand () {
       this.goToHelloWorld()
     },
-    goToCommentPlatform () {
-      let that = this
-      let loginInfo =
-        { s_id: that.s_id,
-          s_name: that.s_name,
-          userType: 'student'
-        }
-      that.cookie.setCookie(loginInfo)
-      that.$router.push({
-        name: 'CommentPlatForm'
-      })
-    }
   }
 }
 </script>

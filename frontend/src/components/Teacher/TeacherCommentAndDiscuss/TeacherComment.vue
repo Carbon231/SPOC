@@ -122,7 +122,6 @@ export default {
       t_name: '',
       c_id: '',
       c_name: '',
-      t_name: '',
       courseIntroduction: '',
       courseAvgDegree: 3.0,
       myDegree: 5,
