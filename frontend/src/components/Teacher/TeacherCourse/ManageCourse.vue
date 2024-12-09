@@ -45,13 +45,16 @@
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="40%">
+          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="60%">
             <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
                 {{ courseInfo.c_name }}({{ courseInfo.c_id }})
               </el-descriptions-item>
               <el-descriptions-item label="课程介绍">
                 <span v-html="courseInfo.intro"></span>
+              </el-descriptions-item>
+              <el-descriptions-item label="课程容量">
+                <span v-html="courseInfo.capacity"></span>
               </el-descriptions-item>
               <el-descriptions-item label="选课学生">
                 <el-button-group style="margin-left: 20px;">
@@ -85,6 +88,7 @@ export default {
         c_id: '',
         c_name: '',
         t_name: '',
+        capacity: '',
         intro: ''
       },
       courseImg: CourseImg,

@@ -424,6 +424,7 @@ class BuildCourse(APIView):
         req_data = json.loads(request.body)
         c_name = req_data['c_name']
         t_id = req_data['t_id']
+        capacity = req_data['capacity']
         teacher = Teacher.objects.get(t_id=t_id)
         if Course.objects.filter(c_name=c_name).exists():
             return Response({
@@ -431,7 +432,7 @@ class BuildCourse(APIView):
                 "message": "课程已存在"
             })
         else:
-            Course.objects.create(teacher=teacher, c_name=c_name)
+            Course.objects.create(teacher=teacher, c_name=c_name,capacity=capacity)
             return Response({
                 "code": 200,
                 "message": "操作成功"
@@ -441,25 +442,18 @@ class BuildCourse(APIView):
 class ChangeCourse(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
-        c_name = req_data['c_name']
         c_id = req_data['c_id']
         t_id = req_data['t_id']
         intro = req_data['intro']
         capacity = req_data['capacity']
         teacher = Teacher.objects.get(t_id=t_id)
         course = Course.objects.get(id=c_id)
-        if Course.objects.filter(c_name=c_name).exists():
-            return Response({
-                "code": 401,
-                "message": "该课程名已存在"
-            })
         if not Course.objects.filter(teacher=teacher, id=c_id).exists():
             return Response({
-                "code": 402,
+                "code": 401,
                 "message": "您并没有开设该课程，请检查课程id是否正确"
             })
         else:
-            course.c_name = c_name
             course.intro = intro
             course.capacity = capacity
             course.save()

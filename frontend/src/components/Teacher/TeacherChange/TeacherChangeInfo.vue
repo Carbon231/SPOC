@@ -12,7 +12,7 @@
                     <el-form label-position="top" v-loading="loading">
                         <el-form-item label="部门">
                             <el-col :span="12">
-                                <el-input v-model="teacher.t_department"></el-input>
+                                <el-input v-model="teacher.d_id"></el-input>
                             </el-col>
                         </el-form-item> <el-form-item label="电子邮箱">
                             <el-col :span="12">
@@ -53,7 +53,7 @@ export default {
             t_id: '',
             t_name: '',
             teacher: {
-                t_department: '',
+                d_id: '',
                 t_email: '',
                 t_phone: '',
                 t_office: ''
@@ -73,7 +73,7 @@ export default {
                 method: 'post',
                 data: {
                     t_id: that.t_id,
-                    t_department: that.teacher.t_department,
+                    d_id: that.teacher.d_id,
                     t_email: that.teacher.t_email,
                     t_phone: that.teacher.t_phone,
                     t_office: that.teacher.t_office
@@ -84,7 +84,7 @@ export default {
                 that.loading = false
                 if (response.data.code === 200) {
                     that.$message.success(response.data.message)
-                    that.teacher.t_department = ''
+                    that.teacher.d_id = ''
                     that.teacher.t_email = ''
                     that.teacher.t_phone = ''
                     that.teacher.t_office = ''
