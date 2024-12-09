@@ -67,7 +67,7 @@ export default {
         that.status = response.data.code;
         if (that.status === 200) {
           that.$message.success(response.data.message);
-          let loginInfo = { "s_id": that.s_id, "s_name": response.data.s_name }
+          let loginInfo = { "s_id": that.s_id, "s_name": response.data.s_name, "accepted": false}
           that.cookie.setCookie(loginInfo)
           that.$router.push({
             name: 'StudentHead'
