@@ -13,35 +13,30 @@
             <el-col :span="14" class="left-information" style="width: 50%">
               <el-row>
                 <el-col :span="22">
-                  <el-input
-                    placeholder="查找相关帖子"
-                    prefix-icon="el-icon-search" v-model="inputSearch"
+                  <el-input placeholder="查找相关帖子" prefix-icon="el-icon-search" v-model="inputSearch"
                     style="margin-bottom: 5%"></el-input>
                 </el-col>
                 <el-col :span="2">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-search"
-                    style="float: right"
-                    @click="searchDiscuss(inputSearch)"
-                    circle></el-button>
+                  <el-button type="primary" icon="el-icon-search" style="float: right"
+                    @click="searchDiscuss(inputSearch)" circle></el-button>
                 </el-col>
               </el-row>
-              <el-card v-for="(postTheme, index) in showPostThemeList" :key="index" v-loading="loading" shadow="hover" style="margin-bottom: 2%">
+              <el-card v-for="(postTheme, index) in showPostThemeList" :key="index" v-loading="loading" shadow="hover"
+                style="margin-bottom: 2%">
                 <div class="clearfix">
-                  <span>{{postTheme.title}}</span>
+                  <span>{{ postTheme.title }}</span>
                   <el-button style="float: right; padding: 3px 0" type="text"
-                             v-on:click="enterPostTheme(index)">进入帖子</el-button>
+                    v-on:click="enterPostTheme(index)">进入帖子</el-button>
                 </div>
                 <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
                   <el-tag size="mini">
-                  <span v-if="postTheme.isExcellent === 0">学生</span>
-                  <span v-else-if="postTheme.isExcellent === 1">教师</span>
-                  <span v-else-if="postTheme.isExcellent === 2">管理员</span>
+                    <span v-if="postTheme.isExcellent === 0">学生</span>
+                    <span v-else-if="postTheme.isExcellent === 1">教师</span>
+                    <span v-else-if="postTheme.isExcellent === 2">管理员</span>
                   </el-tag>
                 </div>
                 <div>
-                  <span style="color: gray; font-size: 8px">发表于-{{postTheme.time}}</span>
+                  <span style="color: gray; font-size: 8px">发表于-{{ postTheme.time }}</span>
                 </div>
               </el-card>
             </el-col>
@@ -53,9 +48,9 @@
                   </el-col>
                   <el-col :span="12" :offset="1">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{s_name}}</el-descriptions-item>
-                      <el-descriptions-item label="学号">{{s_id}}</el-descriptions-item>
-                      <el-descriptions-item label="已发帖子">{{discussNum}}</el-descriptions-item>
+                      <el-descriptions-item label="用户名">{{ s_name }}</el-descriptions-item>
+                      <el-descriptions-item label="学号">{{ s_id }}</el-descriptions-item>
+                      <el-descriptions-item label="已发帖子">{{ discussNum }}</el-descriptions-item>
                     </el-descriptions>
                   </el-col>
                 </el-row>
@@ -64,7 +59,7 @@
                 </el-row>
                 <el-row>
                   <el-button @click="buildThemeVisible = true" style="width: 100%" type="primary">新建主题贴</el-button>
-                  <el-dialog title="新建主题帖" :visible.sync = "buildThemeVisible" width="70%">
+                  <el-dialog title="新建主题帖" :visible.sync="buildThemeVisible" width="70%">
                     <el-row style="margin-bottom: 10px">
                       <el-col>
                         <el-input v-model="input.title" placeholder="请输入标题"></el-input>
@@ -93,14 +88,14 @@
 <script>
 import StudentNav from '../StudentNav'
 import StudentHeading from '../StudentHeading'
-import {quillEditor} from 'vue-quill-editor'
+import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import StudentImg from '../../../assets/img/student.png'
 export default {
   name: 'StudentAllDiscuss',
-  components: {StudentNav, StudentHeading, quillEditor},
+  components: { StudentNav, StudentHeading, quillEditor },
   data: function () {
     return {
       loading: true,
@@ -115,7 +110,7 @@ export default {
       inputSearch: '',
       postThemeList: [{
         pt_id: '',
-        s_id: '',
+        u_id: '',
         s_name: '',
         title: '',
         content: '',
@@ -125,7 +120,7 @@ export default {
       showPostThemeList: [
         {
           pt_id: '',
-          s_id: '',
+          u_id: '',
           s_name: '',
           title: '',
           content: '',
@@ -195,7 +190,7 @@ export default {
         url: that.$url + 'BuildPostTheme/',
         method: 'post',
         data: {
-          s_id: that.s_id,
+          u_id: that.s_id,
           title: that.input.title,
           content: that.input.content,
           time: that.time
@@ -205,7 +200,7 @@ export default {
         },
       }).then(function (response) {
         console.log(response.data)
-        if (response.data === 0) {
+        if (response.data.code === 200) {
           that.$message.success('创建成功')
           that.buildThemeVisible = false
           that.getPostThemeList()
@@ -258,5 +253,5 @@ export default {
 </script>
 
 <style scoped>
-  @import "../../../assets/css/back.css";
+@import "../../../assets/css/back.css";
 </style>

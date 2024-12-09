@@ -48,8 +48,8 @@
                   </el-col>
                   <el-col :span="12" :offset="1">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="用户名">{{ t_name }}</el-descriptions-item>
-                      <el-descriptions-item label="学号">{{ t_id }}</el-descriptions-item>
+                      <el-descriptions-item label="姓名">{{ t_name }}</el-descriptions-item>
+                      <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
                     </el-descriptions>
                   </el-col>
                 </el-row>
@@ -173,7 +173,7 @@ export default {
         url: that.$url + 'BuildPostTheme/',
         method: 'post',
         data: {
-          t_id: that.t_id,
+          u_id: that.t_id,
           title: that.input.title,
           content: that.input.content,
           time: that.time
@@ -183,7 +183,7 @@ export default {
         },
       }).then(function (response) {
         console.log(response.data)
-        if (response.data === 0) {
+        if (response.data.code === 200) {
           that.$message.success('创建成功')
           that.buildThemeVisible = false
           that.getPostThemeList()
