@@ -33,8 +33,16 @@ export default {
   mounted: function () {
     this.s_id = this.cookie.getCookie('s_id')
     this.s_name = this.cookie.getCookie('s_name')
+    this.checkIdent()
   },
   methods: {
+    checkIdent: function() {
+      if (this.s_id == null || this.s_name == null) {
+        this.$router.push({
+          name: 'StudentLogin'
+        })
+      }
+    },
     goToHelloWorld: function () {
       this.cookie.clearCookie('s_id')
       this.cookie.clearCookie('s_name')
