@@ -59,8 +59,11 @@
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-if="!showCourseList[index].isSelect" v-on:click="selectCourse(index)" type="primary">选课</el-button>
-                  <el-button v-else type="info" disabled>已选</el-button>
+<!--                  <el-button v-if="!showCourseList[index].isSelect" v-on:click="selectCourse(index)" type="primary">选课</el-button>-->
+<!--                  <el-button v-else type="info" disabled>已选</el-button>-->
+                  <el-button v-if="showCourseList[index].isSelect !== 0" type="warning" disabled>已选</el-button>
+                  <el-button v-else-if="showCourseList[index].isOpen" type="info" disabled>不可选</el-button>
+                  <el-button v-else type="primary" @click="selectCourse(index)">选课</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
