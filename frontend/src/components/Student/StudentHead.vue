@@ -77,6 +77,11 @@ export default {
       cookieImg: CookieImg
     };
   },
+  mounted() {
+    console.log(this.cookie.getCookie('accepted'))
+    this.dialogVisible = this.cookie.getCookie('accepted') === 'false';
+    console.log(this.dialogVisible)
+  },
   methods: {
     acceptCookies() {
       this.cookie.setCookie({
@@ -85,20 +90,14 @@ export default {
       this.dialogVisible = false;
     },
   },
-  mounted() {
-    if (this.cookie.getCookie('accepted')) {
-      this.dialogVisible = false;
-    } else {
-      this.dialogVisible = true;
-    }
-  }
 }
 </script>
 
 <style scoped>
   @import "../../assets/css/back.css";
   .cookie-consent-dialog {
-
+    display: flex;
+    align-items: center;
   }
 
   .content {

@@ -43,8 +43,8 @@ export default {
   name: 'StudentLogin',
   data() {
     return {
-      s_id: '',
-      s_pwd: '',
+      s_id: this.$route.query.s_id,
+      s_pwd: this.$route.query.s_pwd,
       status: -1
     };
   },
@@ -67,12 +67,12 @@ export default {
         that.status = response.data.code;
         if (that.status === 200) {
           that.$message.success(response.data.message);
-          let loginInfo = { "s_id": that.s_id, "s_name": response.data.s_name, "accepted": false}
+          let loginInfo = { 's_id': that.s_id, 's_name': response.data.s_name, 'accepted': 'false'}
           that.cookie.setCookie(loginInfo)
           that.$router.push({
             name: 'StudentHead'
           });
-        } else if (that.status === 401) {
+        } else if (that.status === 400) {
           that.$message.error(response.data.error);
         }
       }).catch(function (error) {
