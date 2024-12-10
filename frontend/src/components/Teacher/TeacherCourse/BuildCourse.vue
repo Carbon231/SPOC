@@ -9,24 +9,29 @@
           <TeacherHeading></TeacherHeading>
         </el-header>
         <el-main style="padding-left: 30%; padding-right: 10%">
-        <el-form label-position="top" v-loading="loading">
-          <el-form-item label="课程名称">
-            <el-col :span="12">
-              <el-input v-model="course.name"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="课程介绍">
-            <el-col :span="12">
-          <el-input type="textarea" v-model="course.introduction"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item style="margin-top: 20%">
-            <el-col :span="6">
-              <el-button v-on:click="buildCourse" type="primary" >确认</el-button>
-            </el-col>
-          </el-form-item>
-        </el-form>
-      </el-main>
+          <el-form label-position="top" v-loading="loading">
+            <el-form-item label="课程名称">
+              <el-col :span="12">
+                <el-input v-model="course.c_name"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="课程介绍">
+              <el-col :span="12">
+                <el-input type="textarea" v-model="course.intro"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="课程容量">
+              <el-col :span="12">
+                <el-input v-model="course.capacity"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item style="margin-top: 20%">
+              <el-col :span="6">
+                <el-button v-on:click="buildCourse" type="primary">确认</el-button>
+              </el-col>
+            </el-form-item>
+          </el-form>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -41,15 +46,16 @@ import TeacherHeading from '../TeacherHeading'
 // import 'quill/dist/quill.bubble.css'
 export default {
   name: 'BuildCourse',
-  components: {TeacherNav, TeacherHeading},
+  components: { TeacherNav, TeacherHeading },
   data: function () {
     return {
       loading: false,
       t_name: '',
       t_id: '',
       course: {
-        name: '',
-        introduction: ''
+        c_name: '',
+        capacity: '',
+        intro: ''
       }
     }
   },
@@ -66,8 +72,9 @@ export default {
         method: 'post',
         data: {
           t_id: that.t_id,
-            c_name: that.course.name,
-            introduction: that.course.introduction
+          c_name: that.course.c_name,
+          capacity: that.course.capacity,
+          intro: that.course.intro
         }
       }).then(function (response) {
         console.log(response.data)
@@ -75,9 +82,11 @@ export default {
         if (response.data.code === 200) {
           that.$message.success(response.data.message)
           that.course = {
-            name: '',
-            introduction: ''
+            c_name: '',
+            capacity: '',
+            intro: ''
           }
+          // this.$router.push({ name: '' })
         } else {
           that.$message.error(response.data.message)
         }
@@ -96,6 +105,6 @@ export default {
 </script>
 
 <style scoped>
- @import "../../../assets/css/nav.css";
- @import "../../../assets/css/back.css";
+@import "../../../assets/css/nav.css";
+@import "../../../assets/css/back.css";
 </style>

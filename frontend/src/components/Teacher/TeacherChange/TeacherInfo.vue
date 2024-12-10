@@ -25,7 +25,7 @@
                                     :content-style="{ textAlign: 'center' }">
                                     <el-descriptions-item label="姓名">{{ t_name }}</el-descriptions-item>
                                     <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
-                                    <el-descriptions-item label="部门">{{ t_department }}</el-descriptions-item>
+                                    <el-descriptions-item label="部门">{{ d_id }}</el-descriptions-item>
                                     <el-descriptions-item label="电子邮箱">{{ t_email }}</el-descriptions-item>
                                     <el-descriptions-item label="电话">{{ t_phone }}</el-descriptions-item>
                                     <el-descriptions-item label="办公地址">{{ t_office }}</el-descriptions-item>
@@ -56,7 +56,7 @@ export default {
             teacherImg: require('../../../assets/img/teacher.png'),
             t_id: '',
             t_name: '',
-            t_department: '',
+            d_id: '',
             t_email: '',
             t_phone: '',
             t_office: ''
@@ -86,9 +86,7 @@ export default {
                 console.log(response.data)
                 that.loading = false
                 if (response.data.code === 200) {
-                    that.t_id = response.data.data.t_id
-                    that.t_name = response.data.data.t_name
-                    that.t_department = response.data.data.t_department
+                    that.d_id = response.data.data.d_id
                     that.t_email = response.data.data.t_email
                     that.t_phone = response.data.data.t_phone
                     that.t_office = response.data.data.t_office

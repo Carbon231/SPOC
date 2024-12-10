@@ -6,7 +6,6 @@
     </el-menu-item>
     <el-submenu index="1">
       <template slot="title"><i class="el-icon-reading"></i><span class="item">课程信息</span></template>
-      <el-menu-item class="subitem" index="/TeacherCourse/AllCourse">查看课程</el-menu-item>
       <el-menu-item class="subitem" index="/TeacherCourse/BuildCourse">开设课程</el-menu-item>
       <el-menu-item class="subitem" index="/TeacherCourse/ManageCourse">管理课程</el-menu-item>
     </el-submenu>

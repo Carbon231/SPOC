@@ -8,7 +8,7 @@
         <el-header>
           <TeacherHeading></TeacherHeading>
         </el-header>
-        <el-main style="padding-right: 10%; padding-left: 10%">
+        <el-main style="padding-left: 10%; padding-right: 10%">
           <el-row>
             <el-col :span="14" class="left-information" style="width: 50%">
               <el-row>
@@ -22,21 +22,48 @@
                 </el-col>
               </el-row>
               <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
-                style="margin-bottom: 2%">
-                <el-row>
-                  <el-col :offset="1" :span="2">
+                style="font-size: small; margin-bottom: 2%;">
+                <div slot="header" class="clearfix">
+                  <el-col :span="2">
                     <el-image :src="courseImg" lazy></el-image>
                   </el-col>
-                  <el-col :offset="2" :span="14">
-                    <el-row style="margin-bottom: 3%">
-                      <el-link type="primary" v-on:click="commentCourse(index)">
-                        <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
-                      </el-link>
-                    </el-row>
-                    <el-row>
-                      <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
-                    </el-row>
+                  {{ course.c_name }}
+                  <el-button v-on:click="commentCourse(index)" type="text" style="font-size: smaller; float: right">
+                    进入评价
+                  </el-button>
+                  <el-rate v-model="course.avgDegree" disabled show-score text-color="#ff9900">
+                  </el-rate>
+                </div>
+                <div
+                  style="font-size: x-small; text-overflow: ellipsis ;max-height: 50px; overflow: hidden; white-space: nowrap;">
+                  <span v-html="course.introduction"></span>
+                </div>
+              </el-card>
+            </el-col>
+            <el-col :span="8" :offset="2" class="right-information">
+              <el-card shadow="hover" style="width: 100%">
+                <el-row>
+                  <el-col :span="2">
+                    &nbsp;
                   </el-col>
+                  <el-col :span="6">
+                    <el-image :src="teacherImg" lazy></el-image>
+                  </el-col>
+                  <el-col :span="2">
+                    &nbsp;
+                  </el-col>
+                  <el-col :span="12" :offset="1">
+                    <el-descriptions :column="1">
+                      <el-descriptions-item label="用户名">{{ t_name }}</el-descriptions-item>
+                      <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
+                      <el-descriptions-item label="已开课程">{{ courseNum }}</el-descriptions-item>
+                    </el-descriptions>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-divider></el-divider>
+                </el-row>
+                <el-row class="el-row-button-head">
                 </el-row>
               </el-card>
             </el-col>
@@ -46,34 +73,111 @@
     </el-container>
   </div>
 </template>
-
 <script>
 import TeacherNav from '../TeacherNav'
 import TeacherHeading from '../TeacherHeading'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
+import TeacherImg from '../../../assets/img/teacher.png'
 
 export default {
   name: 'TeacherAllComment',
   components: { TeacherNav, TeacherHeading },
-  data: function () {
+  data() {
     return {
       loading: true,
-      courseImg: CourseImg,
       t_id: '',
-      courseList: [],
-      showCourseList: [],
-      inputSearch: ''
+      t_name: '',
+      courseNum: '',
+      courseImg: CourseImg,
+      teacherImg: TeacherImg,
+      inputSearch: '',
+      showIt: false,
+      courseList: [{
+      }],
+      showCourseList: this.courseList
     }
   },
   mounted: function () {
     this.t_id = this.cookie.getCookie('t_id')
+    this.t_name = this.cookie.getCookie('t_name')
+    this.getTeacherCourseList()
+    this.getTeacherCourseNum()
+    this.showCourseList = this.courseList
   },
   methods: {
-    searchCourse: function (query) {
-      this.showCourseList = this.courseList.filter(course => course.c_name.includes(query))
+    getTeacherCourseNum: function () {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'GetTeacherCourseNum/',
+        method: 'post',
+        data: {
+          t_id: that.t_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        that.courseNum = response.data.data.courseNum
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    getTeacherCourseList: function () {
+      let that = this
+      that.loading = true
+      this.$http.request({
+        url: that.$url + 'GetTeacherCourseList/',
+        method: 'post',
+        data: {
+          t_id: that.t_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        that.loading = false
+        that.courseList = response.data.data
+        that.showCourseList = response.data.data
+      }).catch(function (error) {
+        console.log(error)
+        that.loading = false
+      })
     },
     commentCourse: function (index) {
-      this.$router.push({ name: 'TeacherComment', params: { id: this.showCourseList[index].c_id } })
+      let that = this
+      this.$router.push({
+        path: '/TeacherCommentAndDiscuss/TeacherComment',
+        query: {
+          c_id: that.showCourseList[index].c_id
+        }
+      })
+    },
+    goToHelloWorld: function () {
+      this.cookie.clearCookie('t_id')
+      this.cookie.clearCookie('t_name')
+      this.$router.replace('/')
+    },
+
+    searchCourse: function (inputSearch) {
+      this.showCourseList = this.searchByIndexOf(inputSearch, this.courseList)
+    },
+    searchByIndexOf: function (keyWord, list) {
+      if (!(list instanceof Array)) {
+        return
+      } else if (keyWord === '') {
+        return list
+      }
+      const len = list.length
+      const arr = []
+      for (let i = 0; i < len; i++) {
+        // 如果字符串中不包含目标字符会返回-1
+        if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
+          arr.push(list[i])
+        }
+      }
+      return arr
     }
   }
 }
@@ -81,4 +185,16 @@ export default {
 
 <style scoped>
 @import "../../../assets/css/back.css";
+
+.el-row-button {
+  width: 100% !important;
+}
+
+.el-row-button :hover {
+  background-color: initial;
+}
+
+.el-row-button-head :hover {
+  background-color: hsla(0, 0%, 74%, 0.2);
+}
 </style>

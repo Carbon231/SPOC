@@ -21,7 +21,6 @@ import TeacherCourse from '@/components/Teacher/TeacherCourse/TeacherCourse.vue'
 import ChangeCourse from '@/components/Teacher/TeacherCourse/ChangeCourse.vue'
 import BuildCourse from '@/components/Teacher/TeacherCourse/BuildCourse.vue'
 import ManageCourse from '@/components/Teacher/TeacherCourse/ManageCourse.vue'
-import AllCourse from '@/components/Teacher/TeacherCourse/AllCourse.vue'
 import TeacherCommentAndDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherCommentAndDiscuss.vue'
 import TeacherAllComment from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherAllComment.vue'
 import TeacherAllDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherAllDiscuss.vue'
@@ -149,11 +148,6 @@ export default new Router({
           path: 'ManageCourse',
           name: 'ManageCourse',
           component: ManageCourse
-        },
-        {
-          path: 'AllCourse',
-          name: 'AllCourse',
-          component: AllCourse
         }
       ]
     },

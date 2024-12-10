@@ -42,16 +42,23 @@
                 <el-button-group>
                   <el-button type="danger" icon="el-icon-delete" v-on:click="cancelCourse(index)">停课</el-button>
                 </el-button-group>
+                <el-button-group>
+                  <el-button type="info" icon="el-icon-pie-chart"
+                    v-on:click="getScoreDistribution(index)">查看分数分布</el-button>
+                </el-button-group>
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="40%">
+          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="60%">
             <el-descriptions class="info">
               <el-descriptions-item label="课程名称(ID)">
                 {{ courseInfo.c_name }}({{ courseInfo.c_id }})
               </el-descriptions-item>
               <el-descriptions-item label="课程介绍">
                 <span v-html="courseInfo.intro"></span>
+              </el-descriptions-item>
+              <el-descriptions-item label="课程容量">
+                <span v-html="courseInfo.capacity"></span>
               </el-descriptions-item>
               <el-descriptions-item label="选课学生">
                 <el-button-group style="margin-left: 20px;">
@@ -64,6 +71,12 @@
               <el-button type="primary" @click="courseInfoVisible = false">确 定</el-button>
             </div>
           </el-dialog>
+          <el-dialog title="分数分布" :visible.sync="scoreDistributionVisible">
+            <div id="score-distribution-chart" style="width: 100%; height: 400px;"></div>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="scoreDistributionVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
         </el-main>
       </el-container>
     </el-container>
@@ -71,6 +84,7 @@
 </template>
 
 <script>
+import * as echarts from 'echarts';
 import TeacherNav from '../TeacherNav'
 import TeacherHeading from '../TeacherHeading'
 import CourseImg from '../../../assets/img/buaa_class_img.jpg'
@@ -81,10 +95,12 @@ export default {
   data: function () {
     return {
       courseInfoVisible: false,
+      scoreDistributionVisible: false,
       courseInfo: {
         c_id: '',
         c_name: '',
         t_name: '',
+        capacity: '',
         intro: ''
       },
       courseImg: CourseImg,
@@ -159,6 +175,55 @@ export default {
         console.log(error)
         that.loading = false
       })
+    },
+    getScoreDistribution(index) {
+      let that = this;
+      let course = this.showMyCourseList[index];
+      console.log(course);
+
+      this.$http.request({
+        url: that.$url + 'GetScoreDistribution/',
+        method: 'post',
+        data: {
+          c_id: course.c_id
+        }
+      }).then(function (response) {
+        if (response.data.code === 200) {
+          that.scoreDistributionVisible = true;
+          that.$nextTick(() => {
+            that.drawScoreDistributionChart(response.data.data);
+          });
+        } else {
+          that.$message.error(response.data.message);
+        }
+      }).catch(function (error) {
+        console.error(error);
+        that.$message.error('获取分数分布失败');
+      });
+    },
+    drawScoreDistributionChart(data) {
+      let chartDom = document.getElementById('score-distribution-chart');
+      let myChart = echarts.init(chartDom);
+      let option = {
+        title: {
+          text: '分数分布'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: ['0-20', '20-40', '40-60', '60-80', '80-100']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: [data['0-20'], data['20-40'], data['40-60'], data['60-80'], data['80-100']],
+          type: 'bar'
+        }]
+      };
+      option && myChart.setOption(option);
     },
     searchCourse: function (query) {
       this.showMyCourseList = this.myCourseList.filter(course => course.c_name.includes(query))

@@ -18,17 +18,17 @@
             <el-row>
               <el-col :offset="2" :span="2">
                 <el-row class="time">
-                  {{postTheme.time}}
+                  {{ postTheme.time }}
                 </el-row>
-                <el-row class="s_id">
+                <el-row class="u_id">
                   <el-col v-if="postTheme.isExcellent === 1">
-                    {{postTheme.u_name}}({{postTheme.u_id}}) (教师)
+                    {{ postTheme.u_name }}({{ postTheme.u_id }}) (教师)
                   </el-col>
                   <el-col v-else-if="postTheme.isExcellent === 2">
-                    {{postTheme.u_name}}({{postTheme.u_id}}) (管理员)
+                    {{ postTheme.u_name }}({{ postTheme.u_id }}) (管理员)
                   </el-col>
                   <el-col v-else>
-                    {{postTheme.u_name}}({{postTheme.u_id}})
+                    {{ postTheme.u_name }}({{ postTheme.u_id }})
                   </el-col>
                 </el-row>
               </el-col>
@@ -42,7 +42,7 @@
                 </el-row>
               </el-col>
               <el-col :offset="1" :span="1">
-                <el-button v-on:click="dialogFormVisible = true" type="primary" size="small" >跟贴</el-button>
+                <el-button v-on:click="dialogFormVisible = true" type="primary" size="small">跟贴</el-button>
               </el-col>
             </el-row>
           </el-card>
@@ -66,17 +66,17 @@
               </el-col>
               <el-col :span="3">
                 <el-row class="time">
-                  {{post.time}}
+                  {{ post.time }}
                 </el-row>
-                <el-row class="s_id">
+                <el-row class="u_id">
                   <div v-if="post.isExcellent === 1">
-                    {{post.u_name}}({{post.u_id}}) (教师) :
+                    {{ post.u_name }}({{ post.u_id }}) (教师) :
                   </div>
                   <div v-else-if="post.isExcellent === 2">
-                    {{post.u_name}}({{post.u_id}}) (管理员) :
+                    {{ post.u_name }}({{ post.u_id }}) (管理员) :
                   </div>
                   <div v-else>
-                    {{post.u_name}}({{post.u_id}}) :
+                    {{ post.u_name }}({{ post.u_id }}) :
                   </div>
                 </el-row>
               </el-col>
@@ -98,24 +98,29 @@
 
 <style scoped>
 @import "../../../assets/css/back.css";
-  .buttons {
-    margin-bottom: 10px;
-  }
-  .input {
-    font-size: large;
-  }
-  .time {
-    font-size: small;
-    color: #e2e2e2;
-  }
-  .s_id {
-    font-size: small;
-    color: #66b1ff;
-  }
-  .content {
-    font-size: medium;
-    word-break: break-all;
-  }
+
+.buttons {
+  margin-bottom: 10px;
+}
+
+.input {
+  font-size: large;
+}
+
+.time {
+  font-size: small;
+  color: #e2e2e2;
+}
+
+.u_id {
+  font-size: small;
+  color: #66b1ff;
+}
+
+.content {
+  font-size: medium;
+  word-break: break-all;
+}
 </style>
 
 <script>
@@ -126,7 +131,7 @@ import TeacherImg from '../../../assets/img/teacher.png'
 import AdminImg from '../../../assets/img/admin.jpg'
 export default {
   name: 'StudentDiscuss',
-  components: {StudentNav, StudentHeading},
+  components: { StudentNav, StudentHeading },
   data: function () {
     return {
       loading: true,
@@ -160,7 +165,7 @@ export default {
       time: ''
     }
   },
-  mounted () {
+  mounted() {
     this.s_id = this.cookie.getCookie('s_id')
     this.s_name = this.cookie.getCookie('s_name')
     this.pt_id = this.$route.query.pt_id
@@ -219,7 +224,7 @@ export default {
           }
         }).then(function (response) {
           console.log(response.data)
-          if (response.data === 0) {
+          if (response.data.code === 200) {
             that.$message.success(response.data.message)
             that.returnStudentAllDiscuss()
           } else {

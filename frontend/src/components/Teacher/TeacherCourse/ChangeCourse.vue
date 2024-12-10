@@ -12,12 +12,17 @@
           <el-form label-position="top" v-loading="loading">
             <el-form-item label="课程名称">
               <el-col :span="12">
-                <el-input v-model="course.c_name"></el-input>
+                <el-input v-model="course.c_name" disabled></el-input>
               </el-col>
             </el-form-item>
             <el-form-item label="课程介绍">
               <el-col :span="12">
                 <el-input type="textarea" v-model="course.intro"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="课程容量">
+              <el-col :span="12">
+                <el-input type="textarea" v-model="course.capacity"></el-input>
               </el-col>
             </el-form-item>
             <el-form-item style="margin-top: 20%">
@@ -45,13 +50,19 @@ export default {
       course: {
         c_id: '',
         c_name: '',
-        intro: ''
+        intro: '',
+        capacity: '',
       },
       t_id: ''
     }
   },
   mounted: function () {
-    this.course.c_id = this.$route.params.id
+    this.course.c_id = this.$route.params.id || localStorage.getItem('c_id')
+    if (this.course.c_id) {
+      localStorage.setItem('c_id', this.course.c_id) // 将 c_id 存储到 localStorage 中
+    } else {
+      this.$message.error('课程ID未定义')
+    }
     this.t_id = this.cookie.getCookie('t_id')
     this.getCourseInfo()
   },
@@ -61,16 +72,18 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetCourseInfo/',
-        method: 'get',
-        params: {
+        method: 'post',
+        data: {
           c_id: that.course.c_id
         }
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
         if (response.data.code === 200) {
+          that.course.c_id = response.data.data.c_id
           that.course.c_name = response.data.data.c_name
           that.course.intro = response.data.data.intro
+          that.course.capacity = response.data.data.capacity
         } else {
           that.$message.error(response.data.message)
         }
@@ -87,8 +100,8 @@ export default {
         method: 'post',
         data: {
           c_id: that.course.c_id,
-          c_name: that.course.c_name,
           intro: that.course.intro,
+          capacity: that.course.capacity,
           t_id: that.t_id
         }
       }).then(function (response) {

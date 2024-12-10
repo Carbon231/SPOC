@@ -8,11 +8,11 @@ import TeacherHeading from '../TeacherHeading'
 /* eslint-disable */
 export default {
   name: 'TeacherCourse',
-  components: {TeacherNav, TeacherHeading}
+  components: { TeacherNav, TeacherHeading }
 }
 </script>
 
 <style scoped>
- @import "../../../assets/css/nav.css";
- @import "../../../assets/css/back.css";
+@import "../../../assets/css/nav.css";
+@import "../../../assets/css/back.css";
 </style>

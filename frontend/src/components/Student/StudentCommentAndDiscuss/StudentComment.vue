@@ -20,17 +20,12 @@
                 <el-row style="text-align: center; font-size: medium">
                   课程评分
                 </el-row>
-                <el-rate
-                  align="center"
-                  v-model="courseAvgDegree"
-                  disabled
-                  show-score
-                  text-color="#ff9900"></el-rate>
+                <el-rate align="center" v-model="courseAvgDegree" disabled show-score text-color="#ff9900"></el-rate>
               </el-col>
               <el-col :offset="2" :span="17">
                 <el-row>
                   <el-col :span="18">
-                    <strong>{{c_name}}</strong>
+                    <strong>{{ c_name }}</strong>
                   </el-col>
                 </el-row>
                 <el-row>
@@ -53,10 +48,7 @@
             <div style="font-size: medium">
               评分
             </div>
-            <el-rate
-              style="font-size: medium"
-              v-model="myDegree"
-              show-text>
+            <el-rate style="font-size: medium" v-model="myDegree" show-text>
             </el-rate>
           </el-row>
           <el-row>
@@ -64,7 +56,8 @@
           </el-row>
           <el-row>
             <el-col>
-              <el-input class="input" v-model="contentInput" type="textarea" :rows="3" placeholder="对于课程内容、讲课质量、考核方式等的评价">
+              <el-input class="input" v-model="contentInput" type="textarea" :rows="3"
+                placeholder="对于课程内容、讲课质量、考核方式等的评价">
               </el-input>
             </el-col>
             <el-button v-on:click="commentCourse" type="primary" size="small" style="float: right">添加评价</el-button>
@@ -77,9 +70,9 @@
               </el-col>
               <el-col :span="3" :offset="1">
                 <el-row class="userName">
-                  {{comment.s_name}}({{comment.s_id}}) :
+                  {{ comment.s_name }}({{ comment.s_id }}) :
                 </el-row>
-                <el-row>{{comment.time}}</el-row>
+                <el-row>{{ comment.time }}</el-row>
               </el-col>
               <el-col :span="19" class="content">
                 <el-row class="content-of-comment" v-html="comment.content">
@@ -93,7 +86,7 @@
             </el-row>
             <el-divider></el-divider>
           </div>
-      </el-main>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -101,27 +94,33 @@
 
 <style scoped>
 @import "../../../assets/css/back.css";
-  .buttons {
-    margin-bottom: 10px;
-  }
-  .input {
-    font-size: medium;
-  }
-  .time {
-    font-size: small;
-    color: #e2e2e2;
-  }
-  .s_id {
-    font-size: medium;
-    color: #66b1ff;
-  }
-  .content {
-    font-size: medium;
-    word-break: break-all;
-  }
-  .content-of-comment {
-    color: black;
-  }
+
+.buttons {
+  margin-bottom: 10px;
+}
+
+.input {
+  font-size: medium;
+}
+
+.time {
+  font-size: small;
+  color: #e2e2e2;
+}
+
+.s_id {
+  font-size: medium;
+  color: #66b1ff;
+}
+
+.content {
+  font-size: medium;
+  word-break: break-all;
+}
+
+.content-of-comment {
+  color: black;
+}
 </style>
 
 <script>
@@ -131,7 +130,7 @@ import CourseImg from '../../../assets/img/buaa_class_img.jpg'
 import StudentImg from '../../../assets/img/student.png'
 export default {
   name: 'StudentComment',
-  components: {StudentNav, StudentHeading},
+  components: { StudentNav, StudentHeading },
   data: function () {
     return {
       loading: true,
@@ -158,7 +157,7 @@ export default {
       ]
     }
   },
-  mounted () {
+  mounted() {
     this.s_id = this.cookie.getCookie('s_id')
     this.s_name = this.cookie.getCookie('s_name')
     this.c_id = this.$route.query.c_id
