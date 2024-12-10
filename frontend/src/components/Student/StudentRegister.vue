@@ -86,18 +86,18 @@ export default {
         }).then(function (response) {
           console.log(response.data)
           that.status = response.data.code;
-          if (that.status === 201) {
+          if (that.status === 200) {
             that.$message.success(response.data.message)
             that.$router.push({
               name: 'StudentLogin',
-              data: {
+              query: {
                 s_id: that.s_id,
                 s_pwd: that.s_pwd
               }
             })
           }
           else if (that.status === 400) {
-            that.$message.error(response.data.message)
+            that.$message.error(response.data.error)
           }
         }).catch(function (error) {
           console.log(error)
