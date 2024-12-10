@@ -30,7 +30,7 @@
               <el-col :offset="2" :span="2">
                 <el-image :src="courseImg" lazy></el-image>
               </el-col>
-              <el-col :offset="2" :span="14">
+              <el-col :offset="2" :span="12">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
                     <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
@@ -42,8 +42,8 @@
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-if="!course.hasScore" v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
-                  <el-button v-if="course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
+                  <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
+                  <el-button v-else-if="course.isSelect === 2" v-if="course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
                   <el-button v-else type="info" disabled size="small">查看成绩</el-button>
                 </el-button-group>
               </el-col>
@@ -103,7 +103,9 @@ export default {
         c_id: '',
         c_name: '',
         t_name: '',
-        intro: ''
+        intro: '',
+        hasScore: false,
+        isSelect: 1,
       },
       courseImg: CourseImg,
       loading: true,
@@ -116,7 +118,8 @@ export default {
         t_name: '教师1',
         avgDegree: 2.0,
         intro: '',
-        hasScore: false
+        hasScore: false,
+        isSelect: 1,
       }],
       showMyCourseList: this.myCourseList,
       gradesDialogVisible: false,

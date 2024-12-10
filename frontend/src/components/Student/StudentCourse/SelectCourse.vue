@@ -20,7 +20,7 @@
             </el-col>
           </el-row>
           <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
-            style="margin-bottom: 2%">
+            style="margin-bottom: 2%;">
             <el-row>
               <el-col :offset="1" :span="2">
                 <el-image :src="courseImg" lazy></el-image>
@@ -33,7 +33,11 @@
                 </el-row>
                 <el-row>
                   <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
+                  <el-tag type="success">院系名称<span>&nbsp;&nbsp;{{ course.d_name }}</span></el-tag>
                 </el-row>
+              </el-col>
+              <el-col :span="2">
+                <span style="color: gray">{{course.selectedNum}} / {{course.capacity}}</span>
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
@@ -49,10 +53,10 @@
                 &nbsp;&nbsp;
                 {{ courseInfo.c_name }}({{ courseInfo.c_id }})
               </el-descriptions-item>
-              <!--              <el-descriptions-item label="学习材料(ID)">-->
-              <!--                &nbsp;&nbsp;-->
-              <!--                <a v-for="(m) in courseInfo.materialList" v-bind:key="m.id">{{ m.name }}({{ m.id }})，</a>-->
-              <!--              </el-descriptions-item>-->
+              <el-descriptions-item label="院系名称">
+                &nbsp;&nbsp;
+                {{ courseInfo.d_name }}
+              </el-descriptions-item>
               <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
@@ -90,6 +94,7 @@ export default {
       courseInfo: {
         c_id: '',
         c_name: '',
+        d_name: '',
         t_name: '',
         intro: ''
       },
@@ -101,9 +106,13 @@ export default {
         c_id: '1',
         c_name: '课程1',
         t_name: '教师1',
+        d_id: 0,
+        d_name: '暂无',
         avgDegree: 2.0,
         intro: '',
         isSelect: false,
+        capacity: 100,
+        selectedNum: 0
       }],
       showCourseList: this.courseList,
       inputSearch: ''
@@ -159,6 +168,7 @@ export default {
           if (status === 200) {
             that.$message.success(response.data.message)
             that.courseList[index].isSelect = true
+            that.getCourseList()
           } else if (status === 401) {
             that.$message.info(response.data.message)
           } else {
