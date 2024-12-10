@@ -10,11 +10,29 @@
         </el-header>
         <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
-            <el-col :span="23">
-              <el-input placeholder="查找您的相关课程(课程名或课程编号)" prefix-icon="el-icon-search" v-model="inputSearch"
+            <el-col :span="8">
+              <el-select v-model="departmentSelect" @change="filtrateDepartment" clearable placeholder="开课院系">
+                <el-option
+                  v-for="dep in departmentSelections"
+                  :key="dep.d_id"
+                  :value="dep.d_name">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="8">
+              <el-select v-model="chooseCourseStatus" @change="filtrateStatus" clearable placeholder="选课状态">
+                <el-option
+                  v-for="s in courseStatusLists"
+                  :key="s.label"
+                  :value="s.value">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="6">
+              <el-input placeholder="课程名" prefix-icon="el-icon-search" v-model="inputSearch"
                 style="margin-bottom: 5%"></el-input>
             </el-col>
-            <el-col :span="1">
+            <el-col :span="2">
               <el-button type="primary" icon="el-icon-search" style="float: right" @click="searchCourse(inputSearch)"
                 circle></el-button>
             </el-col>
@@ -115,13 +133,31 @@ export default {
         selectedNum: 0
       }],
       showCourseList: this.courseList,
-      inputSearch: ''
+      inputSearch: '',
+      departmentSelections:'',
+      departmentSelect: '',
+      chooseCourseStatus: '',
+      courseStatusLists: [{
+          label: '0',
+          value: '全部'
+        }, {
+          label: '1',
+          value: '已选'
+      }, {
+          label: '2',
+          value: '未选'
+      }, {
+          label: '3',
+          value: '已开课'
+      }
+      ]
     }
   },
   mounted: function () {
     this.s_id = this.cookie.getCookie('s_id')
     this.s_name = this.cookie.getCookie('s_name')
     this.getCourseList()
+    this.getAllDepartments()
   },
   methods: {
     getCourseInfo: function (index) {
@@ -146,6 +182,22 @@ export default {
         that.loading = false
         that.courseList = response.data.data
         that.showCourseList = response.data.data
+      }).catch(function (error) {
+        console.log(error)
+        that.loading = false
+      })
+    },
+    getAllDepartments() {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'GetAllDepartments/',
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        that.departmentSelections = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -201,13 +253,42 @@ export default {
       const len = list.length
       const arr = []
       for (let i = 0; i < len; i++) {
-        // 如果字符串中不包含目标字符会返回-1
           if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
-          arr.push(list[i])
+            arr.push(list[i])
         }
       }
       return arr
-    }
+    },
+    filtrateDepartment: function () {
+      let that = this
+      if (that.departmentSelections.length === 0) {
+        that.showCourseList = that.courseList
+      } else {
+        that.showCourseList = []
+        for (let i = 0; i < that.courseList.length; i++) {
+          if (that.departmentSelections.includes(that.courseList[i].d_name)) {
+            that.showCourseList.push(that.courseList[i])
+          }
+        }
+      }
+    },
+    filtrateStatus: function () {
+      let that = this
+      if (that.chooseCourseStatus === '全部') {
+        that.showCourseList = that.courseList
+      } else if (that.chooseCourseStatus) {
+        that.showCourseList = []
+        for (let i = 0; i < that.courseList.length; i++) {
+          if (that.chooseCourseStatus === '已选' && (that.courseList[i].isSelect === 1 || that.courseList[i].isSelect === 2 || that.courseList[i].isSelect === 3)) {
+            that.showCourseList.push(that.courseList[i])
+          } else if (that.chooseCourseStatus === '未选' && that.courseList[i].isSelect === 0) {
+            that.showCourseList.push(that.courseList[i])
+          } else if (that.chooseCourseStatus === '已开课' && that.courseList[i].isOpen) {
+            that.showCourseList.push(that.courseList[i])
+          }
+        }
+      }
+    },
   }
 }
 </script>

@@ -73,7 +73,7 @@ export default {
   components: {StudentHeading, StudentNav},
   data(){
     return {
-      dialogVisible: true,
+      dialogVisible: false,
       cookieImg: CookieImg
     };
   },
@@ -86,11 +86,9 @@ export default {
     },
   },
   mounted() {
-    if (this.cookie.getCookie('accepted') === true) {
-      console.log(this.cookie.getCookie('accepted'));
+    if (this.cookie.getCookie('accepted')) {
       this.dialogVisible = false;
     } else {
-      console.log(this.cookie.getCookie('accepted'));
       this.dialogVisible = true;
     }
   }
