@@ -64,4 +64,5 @@ urlpatterns = [
     path('DrawALottery/', views.DrawALottery.as_view()),
     path('SetExcellent/', views.SetExcellent.as_view()),
     path('CancelExcellent/', views.CancelExcellent.as_view()),
+    path('GetAllDepartments/', views.GetAllDepartments.as_view()),
 ]

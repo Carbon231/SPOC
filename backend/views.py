@@ -331,6 +331,7 @@ class GetCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "isSelect": isSelect,
+                "isOpen": not course.confirmed,
                 "capacity": course.capacity,
                 "selectedNum": selectedNum,
                 "d_id": course.teacher.t_department.d_id,
@@ -371,6 +372,7 @@ class GetDepartmentCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "isSelect": isSelect,
+                "isOpen": not course.confirmed,
                 "capacity": course.capacity,
                 "selectedNum": selectedNum
             })
@@ -1072,12 +1074,12 @@ class DrawALottery(APIView):
             SC.objects.filter(course=course).update(isSelect=2)
             selected_scs = scs
         else:
-            # 随机选择部分学生中选
+            # 随机选择部分学生中选 2
             selected_scs = random.sample(list(scs), capacity)
             selected_students_ids = [sc.student.s_id for sc in selected_scs]
             SC.objects.filter(student__s_id__in=selected_students_ids).update(isSelect=2)
-            # 删除未中选学生的选课记录
-            SC.objects.exclude(student__s_id__in=selected_students_ids).filter(course=course).delete()
+            # 未中选学生 3
+            SC.objects.exclude(student__s_id__in=selected_students_ids).filter(course=course).update(isSelect=3)
         selected_students_data = [
             {
                 "s_id": sc.student.s_id,
@@ -1126,4 +1128,21 @@ class CancelExcellent(APIView):
         return Response({
             "code": 200,
             "message": "操作成功！"
+        })
+
+
+class GetAllDepartments(APIView):
+    def get(self, request):
+        departments = Department.objects.all()
+        data = []
+        for department in departments:
+            if not department.d_id == '0':
+                data.append({
+                    "d_id": department.d_id,
+                    "d_name": department.d_name
+                })
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data" : data
         })
