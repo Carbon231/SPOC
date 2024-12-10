@@ -43,7 +43,7 @@
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
                   <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
-                  <el-button v-else-if="course.isSelect === 2" v-if="course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
+                  <el-button v-else-if="course.isSelect === 2 && course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
                   <el-button v-else type="info" disabled size="small">查看成绩</el-button>
                 </el-button-group>
               </el-col>

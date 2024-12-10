@@ -29,10 +29,8 @@
                     v-on:click="enterPostTheme(index)">进入帖子</el-button>
                 </div>
                 <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
-                  <el-tag size="mini">
-                    <span v-if="postTheme.isExcellent === 0">学生</span>
-                    <span v-else-if="postTheme.isExcellent === 1">教师</span>
-                    <span v-else-if="postTheme.isExcellent === 2">管理员</span>
+                  <el-tag size="mini" type="success" v-if="postTheme.isExcellent === 1">
+                    <span>经助教认证</span>
                   </el-tag>
                 </div>
                 <div>

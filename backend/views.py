@@ -332,7 +332,9 @@ class GetCourseList(APIView):
                 "intro": course.intro,
                 "isSelect": isSelect,
                 "capacity": course.capacity,
-                "selectedNum": selectedNum
+                "selectedNum": selectedNum,
+                "d_id": course.teacher.t_department.d_id,
+                "d_name": course.teacher.t_department.d_name
             })
         return Response({
             "code": 200,
@@ -527,7 +529,8 @@ class GetStudentCourseList(APIView):
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
                 "intro": course.intro,
-                "hasScore": sc.hasScore
+                "hasScore": sc.hasScore,
+                "isSelect": sc.isSelect
             })
         return Response({
             "code": 200,
@@ -734,6 +737,7 @@ class GetPostThemeList(APIView):
             "title": post_theme.title,
             "content": post_theme.content,
             "time": post_theme.time,
+            "isExcellent": post_theme.isExcellent,
         } for post_theme in post_themes]
         return Response({
             "code": 200,
@@ -829,7 +833,8 @@ class GetPostTheme(APIView):
             "u_name": post_theme.user.u_name,
             "title": post_theme.title,
             "content": post_theme.content,
-            "time": post_theme.time
+            "time": post_theme.time,
+            "isExcellent": post_theme.isExcellent,
         }
         return Response({
             "code": 200,

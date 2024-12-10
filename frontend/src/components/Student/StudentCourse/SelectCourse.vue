@@ -33,7 +33,7 @@
                 </el-row>
                 <el-row>
                   <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
-                  <el-tag type="success">院系名称<span>&nbsp;&nbsp;{{ course.d_name }}</span></el-tag>
+                  <el-tag type="success">开课院系<span>&nbsp;&nbsp;{{ course.d_name }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
