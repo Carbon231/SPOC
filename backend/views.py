@@ -331,7 +331,7 @@ class GetCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "isSelect": isSelect,
-                "isOpen": not course.confirmed,
+                "isOpen": course.confirmed,
                 "capacity": course.capacity,
                 "selectedNum": selectedNum,
                 "d_id": course.teacher.t_department.d_id,
@@ -372,7 +372,7 @@ class GetDepartmentCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "isSelect": isSelect,
-                "isOpen": not course.confirmed,
+                "isOpen": course.confirmed,
                 "capacity": course.capacity,
                 "selectedNum": selectedNum
             })
