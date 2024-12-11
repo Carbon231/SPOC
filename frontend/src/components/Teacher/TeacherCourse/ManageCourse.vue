@@ -33,8 +33,8 @@
                 </el-row>
                 <el-row>
                   <el-tag style="font-size: 15px" type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
-                  <el-tag style="font-size: 15px; margin-left:2%" type="success">开课院系<span>&nbsp;&nbsp;{{ course.d_name
-                      }}</span></el-tag>
+                  <el-tag style="font-size: 15px; margin-left:2%" type="success">开课院系<span>&nbsp;&nbsp;{{
+                    course.d_name }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
@@ -53,27 +53,44 @@
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="60%">
-            <el-descriptions class="info">
-              <el-descriptions-item label="课程名称(ID)">
-                {{ courseInfo.c_name }}({{ courseInfo.c_id }})
+          <el-dialog :visible.sync="courseInfoVisible">
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-management"></i>
+                  课程名称
+                </template>
+                {{ courseInfo.c_name }}
               </el-descriptions-item>
-              <el-descriptions-item label="课程介绍">
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-sunny"></i>
+                  课程编号
+                </template>
+                {{ courseInfo.c_id }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-home"></i>
+                  开课院系
+                </template>
+                {{ courseInfo.d_name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-custom"></i>
+                  授课教师
+                </template>
+                {{ courseInfo.t_name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-info"></i>
+                  课程简介
+                </template>
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
-              <el-descriptions-item label="课程容量">
-                <span v-html="courseInfo.capacity"></span>
-              </el-descriptions-item>
-              <el-descriptions-item label="选课学生">
-                <el-button-group style="margin-left: 20px;">
-                  <el-button type="primary" icon="el-icon-edit"
-                    v-on:click="teacherGetStudentInCourse">查看选课学生名单</el-button>
-                </el-button-group>
-              </el-descriptions-item>
             </el-descriptions>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="courseInfoVisible = false">确 定</el-button>
-            </div>
           </el-dialog>
           <el-dialog title="分数分布" :visible.sync="scoreDistributionVisible">
             <div id="score-distribution-chart" style="width: 100%; height: 400px;"></div>

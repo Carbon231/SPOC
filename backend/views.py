@@ -532,7 +532,12 @@ class GetStudentCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "hasScore": sc.hasScore,
-                "isSelect": sc.isSelect
+                "d_id": course.teacher.t_department.d_id,   
+                "d_name": course.teacher.t_department.d_name,
+                "isSelect": sc.isSelect,
+                "capacity": course.capacity,
+                "selectedNum": len(SC.objects.filter(course__id=course.id)),
+                "isOpen": course.confirmed
             })
         return Response({
             "code": 200,
@@ -622,7 +627,7 @@ class GetTeacherCourseList(APIView):
                 for c in comment:
                     sum += int(c.degree)
                 avgDegree = round(sum / len(comment),  2)
-            
+    
             scs = SC.objects.filter(course__id=course.id)
             selectedNum = len(scs)
             data.append({
@@ -633,7 +638,9 @@ class GetTeacherCourseList(APIView):
                 "intro": course.intro,
                 "capacity": course.capacity,
                 "selectedNum": selectedNum,
-                "isOpen": course.confirmed
+                "isOpen": course.confirmed,
+                "d_id": course.teacher.t_department.d_id,
+                "d_name": course.teacher.t_department.d_name
             })
         return Response({
             "code": 200,

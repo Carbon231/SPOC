@@ -11,17 +11,11 @@
         <el-main style="padding-left: 10%; padding-right: 10%">
           <el-row>
             <el-col :span="22">
-              <el-input
-                placeholder="查找您的相关课程"
-                prefix-icon="el-icon-search" v-model="inputSearch"
+              <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
                 style="margin-bottom: 5%"></el-input>
             </el-col>
             <el-col :span="2">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                style="float: right"
-                @click="searchCourse(inputSearch)"
+              <el-button type="primary" icon="el-icon-search" style="float: right" @click="searchCourse(inputSearch)"
                 circle></el-button>
             </el-col>
           </el-row>
@@ -37,14 +31,17 @@
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="primary" style="margin-right: 10px;">授课教师<span>&nbsp;&nbsp;{{ course.t_name }}</span></el-tag>
+                  <el-tag type="primary" style="margin-right: 10px;">授课教师<span>&nbsp;&nbsp;{{ course.t_name
+                      }}</span></el-tag>
                   <el-tag type="success">开课院系<span>&nbsp;&nbsp;{{ course.d_name }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger" size="small">退课</el-button>
-                  <el-button v-else-if="course.isSelect === 2 && course.hasScore" type="primary" @click="viewScore(index)" size="small">查看成绩</el-button>
+                  <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger"
+                    size="small">退课</el-button>
+                  <el-button v-else-if="course.isSelect === 2 && course.hasScore" type="primary"
+                    @click="viewScore(index)" size="small">查看成绩</el-button>
                   <el-button v-else type="info" disabled size="small">查看成绩</el-button>
                 </el-button-group>
               </el-col>
@@ -82,7 +79,7 @@
                   <i class="el-icon-s-home"></i>
                   开课院系
                 </template>
-                {{ courseInfo.d_name}}
+                {{ courseInfo.d_name }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
@@ -108,6 +105,7 @@
 
 <style scoped>
 @import "../../../assets/css/back.css";
+
 .info {
   margin-bottom: 20px;
   word-break: break-all;
@@ -121,17 +119,23 @@ import CourseImg from '../../../assets/img/buaa_class_img.jpg'
 export default {
   /* eslint-disable */
   name: 'StudentCourse',
-  components: {StudentNav, StudentHeading},
+  components: { StudentNav, StudentHeading },
   data: function () {
     return {
       courseInfoVisible: false,
       courseInfo: {
         c_id: '',
         c_name: '',
+        d_name: '',
         t_name: '',
-        intro: '',
-        hasScore: false,
         isSelect: 1,
+        avgDegree: 0,
+        capacity: 0,
+        selectedNum: 0,
+        d_id: 0,
+        isOpen: false,
+        intro: '',
+        hasScore: false
       },
       courseImg: CourseImg,
       loading: true,
@@ -143,6 +147,7 @@ export default {
         c_name: '课程1',
         t_name: '教师1',
         avgDegree: 2.0,
+        d_name: '院系1',
         intro: '',
         hasScore: false,
         isSelect: 1,
