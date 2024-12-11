@@ -145,7 +145,7 @@ class TeacherRegister(APIView):
         t_pwd_confirm = req_data['t_pwd_confirm']
         if not t_pwd_confirm == t_pwd:
             return Response({
-                "code": 401,
+                "code": 400,
                 "message": "密码不正确"
             })
         if Teacher.objects.filter(t_name=t_name).exists():
@@ -163,7 +163,7 @@ class TeacherRegister(APIView):
         teacher = Teacher.objects.create(t_id=t_id, t_name=t_name, t_pwd=t_pwd, user=user, t_department=department)
         teacher.save()
         return Response({
-            "code": 200,
+            "code": 201,
             "message": "注册成功"
         })
 
@@ -306,7 +306,7 @@ class GetCourseList(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        course_list = Course.objects.filter(confirmed=False)
+        course_list = Course.objects.all()
         data = []
         for course in course_list:
             # 计算平均分
@@ -350,7 +350,7 @@ class GetDepartmentCourseList(APIView):
         s_id = req_data['s_id']
         d_id = req_data['d_id']
         department = Department.objects.filter(d_id=d_id)
-        course_list = Course.objects.filter(teacher__t_department=department, confirmed=False)
+        course_list = Course.objects.filter(teacher__t_department=department)
         data = []
         for course in course_list:
             sum = 0
