@@ -80,7 +80,6 @@ export default {
                 }
             }).then(function (response) {
                 console.log(response.data)
-                console.log(response)
                 that.loading = false
                 if (response.data.code === 200) {
                     that.$message.success(response.data.message)

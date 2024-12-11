@@ -628,7 +628,8 @@ class GetTeacherCourseList(APIView):
                 "t_name": course.teacher.t_name,
                 "avgDegree": avgDegree,
                 "intro": course.intro,
-                "capacity": course.capacity
+                "capacity": course.capacity,
+                "isOpen": course.confirmed
             })
         return Response({
             "code": 200,
