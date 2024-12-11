@@ -112,7 +112,6 @@ export default {
           'Content-Type': 'application/json'
         },
       }).then(function (response) {
-        console.log(response.data)
         that.status = response.data.code
         if (that.status === 200) {
           that.student = response.data.data

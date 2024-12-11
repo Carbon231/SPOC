@@ -45,14 +45,20 @@
                   <el-button style="margin-right: 5px" type="primary" icon="el-icon-edit"
                     v-on:click="changeCourse(index)">编辑</el-button>
                   <el-button type="danger" icon="el-icon-delete" v-on:click="cancelCourse(index)">停课</el-button>
+                  <el-button type="success" v-if="!course.isOpen" icon="el-icon-check"
+                    v-on:click="drawALottery(index)">抽签</el-button>
+                  <el-button type="success" v-if="course.isOpen" icon="el-icon-check" disabled>抽签</el-button>
                 </el-button-group>
                 <el-button-group style="margin-top: 2%;margin-left:10px">
                   <el-button type="info" icon="el-icon-pie-chart"
                     v-on:click="getScoreDistribution(index)">查看分数分布</el-button>
+                  <el-button type="warning" icon="el-icon-search"
+                    v-on:click="teacherGetStudentInCourse(index)">查看学生名单</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
           </el-card>
+
           <el-dialog :visible.sync="courseInfoVisible">
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
@@ -92,12 +98,14 @@
               </el-descriptions-item>
             </el-descriptions>
           </el-dialog>
+
           <el-dialog title="分数分布" :visible.sync="scoreDistributionVisible">
             <div id="score-distribution-chart" style="width: 100%; height: 400px;"></div>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="scoreDistributionVisible = false">确 定</el-button>
             </div>
           </el-dialog>
+
         </el-main>
       </el-container>
     </el-container>
@@ -146,7 +154,7 @@ export default {
         d_name: '暂无',
         avgDegree: 2.0,
         intro: '',
-        isSelect: false,
+        isOpen: false,
         capacity: 100,
         selectedNum: 0
       }],
@@ -160,6 +168,28 @@ export default {
     this.getTeacherCourseList()
   },
   methods: {
+    drawALottery: function (index) {
+      let that = this
+      that.loading = true
+      this.$http.request({
+        url: that.$url + 'DrawALottery/',
+        method: 'post',
+        data: {
+          c_id: that.showCourseList[index].c_id
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        that.loading = false
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
+        } else {
+          that.$message.error(response.data.message)
+        }
+      }).catch(function (error) {
+        console.log(error)
+        that.loading = false
+      })
+    },
     teacherGetStudentInCourse: function () {
       this.$router.push({ name: 'TeacherGetStudentInCourse', params: { c_id: this.courseInfo.c_id } })
     },

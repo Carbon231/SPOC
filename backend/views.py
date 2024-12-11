@@ -596,6 +596,8 @@ class GetTeacherInfo(APIView):
         if Teacher.objects.filter(t_id=t_id).exists():
             teacher = Teacher.objects.get(t_id=t_id)
             data = {
+                "t_id": teacher.t_id,
+                "t_name": teacher.t_name,
                 "t_office": teacher.t_office,
                 "t_department": teacher.t_department.d_name,
                 "t_phone": teacher.t_phone,
@@ -1011,7 +1013,8 @@ class TeacherGetStudentInCourse(APIView):
         req_data = json.loads(request.body)
         c_id = req_data['c_id']
         course = Course.objects.get(id=c_id)
-        scs = SC.objects.filter(course=course, isSelect=2)
+       
+        scs = SC.objects.filter(course=course,isSelect= 1 if course.confirmed else 2)
         data = []
         for sc in scs:
             student = sc.student

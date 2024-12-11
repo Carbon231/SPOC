@@ -30,7 +30,6 @@ import TeacherComment from '@/components/Teacher/TeacherCommentAndDiscuss/Teache
 import TeacherDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherDiscuss.vue'
 import TeacherChange from '@/components/Teacher/TeacherChange/TeacherChange.vue'
 import TeacherInfo from '@/components/Teacher/TeacherChange/TeacherInfo.vue'
-import TeacherChangeInfo from '@/components/Teacher/TeacherChange/TeacherChangeInfo.vue'
 import TeacherGetStudentInCourse from '@/components/Teacher/TeacherCourse/TeacherGetStudentInCourse.vue'
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
@@ -193,11 +192,6 @@ export default new Router({
       path: '/TeacherInfo',
       name: 'TeacherInfo',
       component: TeacherInfo
-    },
-    {
-      path: '/TeacherChangeInfo',
-      name: 'TeacherChangeInfo',
-      component: TeacherChangeInfo,
     },
     {
       path: '/TeacherGetStudentInCourse',
