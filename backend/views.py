@@ -622,6 +622,9 @@ class GetTeacherCourseList(APIView):
                 for c in comment:
                     sum += int(c.degree)
                 avgDegree = round(sum / len(comment),  2)
+            
+            scs = SC.objects.filter(course__id=course.id)
+            selectedNum = len(scs)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -629,6 +632,7 @@ class GetTeacherCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "capacity": course.capacity,
+                "selectedNum": selectedNum,
                 "isOpen": course.confirmed
             })
         return Response({
