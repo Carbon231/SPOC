@@ -24,16 +24,13 @@
                 <el-input v-model="student.s_name" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="学院">
-                <el-select v-model="d_new_name" @change="s_new_department" clearable placeholder="开课院系">
-                  <el-option
-                      v-for="dep in departmentSelections"
-                      :key="dep.d_id"
-                      :value="dep.d_name">
+                <el-select v-model="d_new_name" clearable placeholder="开课院系">
+                  <el-option v-for="dep in departmentSelections" :key="dep.d_id" :value="dep.d_name">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input v-model="s_new_email" sug></el-input>
+                <el-input v-model="s_new_email"></el-input>
                 <span v-if="!s_new_email">{{ student.s_email }}</span>
               </el-form-item>
               <el-form-item label="电话">
@@ -58,7 +55,7 @@ import CookieImg from '../../../assets/img/cookiePic.png'
 
 export default {
   name: 'StudentInfo',
-  components: {StudentHeading, StudentNav},
+  components: { StudentHeading, StudentNav },
   data() {
     return {
       s_id: '',
@@ -86,8 +83,8 @@ export default {
         data: {
           s_id: that.s_id,
           d_name: that.d_new_name,
-          s_email: that.student.s_email,
-          s_phone: that.student.s_phone,
+          s_email: that.s_new_email,
+          s_phone: that.s_new_phone,
         },
         headers: {
           'Content-Type': 'application/json'
@@ -119,6 +116,7 @@ export default {
         that.status = response.data.code
         if (that.status === 200) {
           that.student = response.data.data
+          that.d_new_name = response.data.data.s_department
           that.s_new_email = response.data.data.s_email
           that.s_new_phone = response.data.data.s_phone
           that.$message.success(response.data.message)
@@ -152,7 +150,7 @@ export default {
     this.getAllDepartments()
   },
 }
-;
+  ;
 </script>
 
 <style scoped>
@@ -163,10 +161,14 @@ export default {
 
 .avatar-container {
   position: relative;
-  width: 50%; /* 设置宽度为表单项的一半 */
-  margin: 0 auto; /* 居中 */
-  padding-top: 50%; /* 创建一个正方形容器 */
-  overflow: hidden; /* 隐藏溢出的内容 */
+  width: 50%;
+  /* 设置宽度为表单项的一半 */
+  margin: 0 auto;
+  /* 居中 */
+  padding-top: 50%;
+  /* 创建一个正方形容器 */
+  overflow: hidden;
+  /* 隐藏溢出的内容 */
 }
 
 .avatar-container .el-image {
@@ -175,6 +177,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 保持图片的纵横比 */
+  object-fit: cover;
+  /* 保持图片的纵横比 */
 }
 </style>

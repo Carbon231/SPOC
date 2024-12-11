@@ -1011,7 +1011,7 @@ class TeacherGetStudentInCourse(APIView):
         req_data = json.loads(request.body)
         c_id = req_data['c_id']
         course = Course.objects.get(id=c_id)
-        scs = SC.objects.filter(course=course)
+        scs = SC.objects.filter(course=course, isSelect=2)
         data = []
         for sc in scs:
             student = sc.student

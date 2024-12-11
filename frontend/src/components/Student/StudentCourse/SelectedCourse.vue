@@ -8,7 +8,7 @@
         <el-header>
           <StudentHeading></StudentHeading>
         </el-header>
-        <el-main style="padding-left: 10%; padding-right: 10%">
+        <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
             <el-col :span="22">
               <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
@@ -19,12 +19,13 @@
                 circle></el-button>
             </el-col>
           </el-row>
-          <el-card v-for="(course, index) in showMyCourseList" :key="index" shadow="hover" style="margin-bottom: 2%">
-            <el-row v-loading="loading">
+          <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
+            style="margin-bottom: 2%;">
+            <el-row>
               <el-col :offset="2" :span="2">
                 <el-image :src="courseImg" lazy></el-image>
               </el-col>
-              <el-col :offset="2" :span="12">
+              <el-col :offset="2" :span="14">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
                     <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
@@ -37,12 +38,14 @@
                 </el-row>
               </el-col>
               <el-col :span="2">
+                <span style="color: gray">{{ course.selectedNum }} / {{ course.capacity }}</span>
+              </el-col>
+              <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-                  <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger"
-                    size="small">退课</el-button>
+                  <el-button v-if="course.isSelect === 1" v-on:click="dropCourse(index)" type="danger">退课</el-button>
                   <el-button v-else-if="course.isSelect === 2 && course.hasScore" type="primary"
-                    @click="viewScore(index)" size="small">查看成绩</el-button>
-                  <el-button v-else type="info" disabled size="small">查看成绩</el-button>
+                    @click="viewScore(index)">查看成绩</el-button>
+                  <el-button v-else type="info" disabled>查看成绩</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
@@ -142,7 +145,7 @@ export default {
       s_id: '',
       s_name: '',
       inputSearch: '',
-      myCourseList: [{
+      courseList: [{
         c_id: '1',
         c_name: '课程1',
         t_name: '教师1',
@@ -152,7 +155,7 @@ export default {
         hasScore: false,
         isSelect: 1,
       }],
-      showMyCourseList: this.myCourseList,
+      showCourseList: this.courseList,
       gradesDialogVisible: false,
       currentCourseScore: null
     }
@@ -165,7 +168,7 @@ export default {
   methods: {
     getCourseInfo: function (index) {
       let that = this
-      that.courseInfo = that.showMyCourseList[index]
+      that.courseInfo = that.showCourseList[index]
       that.courseInfoVisible = true
     },
     getStudentCourseList: function () {
@@ -183,8 +186,8 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        that.myCourseList = response.data.data
-        that.showMyCourseList = response.data.data
+        that.courseList = response.data.data
+        that.showCourseList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -203,7 +206,7 @@ export default {
           method: 'post',
           data: {
             s_id: that.s_id,
-            c_id: that.showMyCourseList[index].c_id
+            c_id: that.showCourseList[index].c_id
           }
         }).then(function (response) {
           console.log(response.data)
@@ -225,7 +228,7 @@ export default {
         method: 'post',
         data: {
           s_id: that.s_id,
-          c_id: that.showMyCourseList[index].c_id
+          c_id: that.showCourseList[index].c_id
         },
         headers: {
           'Content-Type': 'application/json'
@@ -249,7 +252,7 @@ export default {
       this.$router.replace('/')
     },
     searchCourse: function (inputSearch) {
-      this.showMyCourseList = this.searchByIndexOf(inputSearch, this.myCourseList)
+      this.showCourseList = this.searchByIndexOf(inputSearch, this.courseList)
     },
     searchByIndexOf: function (keyWord, list) {
       if (!(list instanceof Array)) {
