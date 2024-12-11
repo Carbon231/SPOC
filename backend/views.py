@@ -971,7 +971,7 @@ class StudentChangeInfo(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        d_id = req_data['d_id']
+        d_name = req_data['d_name']
         s_email = req_data['s_email']
         s_phone = req_data['s_phone']
         try:
@@ -984,7 +984,7 @@ class StudentChangeInfo(APIView):
         student.s_email = s_email
         student.s_phone = s_phone
         try:
-            department = Department.objects.get(d_id=d_id)
+            department = Department.objects.get(d_name=d_name)
             student.s_department = department
         except Department.DoesNotExist:
             return Response({
