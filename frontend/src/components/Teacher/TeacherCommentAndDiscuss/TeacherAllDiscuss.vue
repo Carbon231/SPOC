@@ -29,10 +29,8 @@
                     v-on:click="enterPostTheme(index)">进入帖子</el-button>
                 </div>
                 <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
-                  <el-tag size="mini">
-                    <span v-if="postTheme.isExcellent === 0">学生</span>
-                    <span v-else-if="postTheme.isExcellent === 1">教师</span>
-                    <span v-else-if="postTheme.isExcellent === 2">管理员</span>
+                  <el-tag size="mini" type="success" v-if="postTheme.isExcellent === 1">
+                    <span>经助教认证</span>
                   </el-tag>
                 </div>
                 <div>
@@ -50,6 +48,7 @@
                     <el-descriptions :column="1">
                       <el-descriptions-item label="姓名">{{ t_name }}</el-descriptions-item>
                       <el-descriptions-item label="工号">{{ t_id }}</el-descriptions-item>
+                      <el-descriptions-item label="已发帖子">{{ discussNum }}</el-descriptions-item>
                     </el-descriptions>
                   </el-col>
                 </el-row>
@@ -101,6 +100,7 @@ export default {
       loading: true,
       t_id: '',
       t_name: '',
+      discussNum: '',
       teacherImg: TeacherImg,
       input: {
         title: '',
@@ -109,8 +109,8 @@ export default {
       inputSearch: '',
       postThemeList: [{
         pt_id: '',
-        s_id: '',
-        s_name: '',
+        u_id: '',
+        u_name: '',
         title: '',
         content: '',
         time: '',
@@ -119,8 +119,8 @@ export default {
       showPostThemeList: [
         {
           pt_id: '',
-          s_id: '',
-          s_name: '',
+          u_id: '',
+          u_name: '',
           title: '',
           content: '',
           time: '',
@@ -135,8 +135,24 @@ export default {
     this.t_id = this.cookie.getCookie('t_id')
     this.t_name = this.cookie.getCookie('t_name')
     this.getPostThemeList()
+    this.getTeacherDiscussNum()
   },
   methods: {
+    getTeacherDiscussNum: function () {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'GetTeacherDiscussNum/',
+        method: 'post',
+        data: {
+          t_id: that.t_id
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        that.discussNum = response.data.data.discussNum
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
     getPostThemeList: function () {
       let that = this
       that.loading = true
@@ -187,6 +203,7 @@ export default {
           that.$message.success('创建成功')
           that.buildThemeVisible = false
           that.getPostThemeList()
+          that.getTeacherDiscussNum()
           that.input = {
             title: '',
             content: ''
