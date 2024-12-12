@@ -77,7 +77,7 @@ class PostTheme(models.Model):
     content = models.CharField(max_length=300, blank=True, null=True)
     time = models.CharField(max_length=30, blank=True, null=True)
     isExcellent = models.IntegerField(blank=True, null=True, default=0)
-    liked = models.IntegerField(blank=True, null=True, default=0)
+    likedNum = models.IntegerField(blank=True, null=True, default=0)
 
     def __str__(self):
         return self.content

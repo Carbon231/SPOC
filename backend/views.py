@@ -756,7 +756,7 @@ class GetPostThemeList(APIView):
             "content": post_theme.content,
             "time": post_theme.time,
             "isExcellent": post_theme.isExcellent,
-            "likedNum": post_theme.liked,
+            "likedNum": post_theme.likedNum,
             "isLiked": Liked.objects.filter(post_theme=post_theme, user__username=u_id)
         } for post_theme in post_themes]
         return Response({
@@ -1205,7 +1205,7 @@ class GetLikedPostThemeList(APIView):
                 "content": post_theme.content,
                 "time": post_theme.time,
                 "isExcellent": post_theme.isExcellent,
-                "likedNum": post_theme.liked,
+                "likedNum": post_theme.likedNum,
                 "isLiked": True
             })
         return Response({
