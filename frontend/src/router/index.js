@@ -8,6 +8,8 @@ import StudentCourse from '../components/Student/StudentCourse/StudentCourse'
 import SelectCourse from '../components/Student/StudentCourse/SelectCourse'
 import SelectedCourse from '../components/Student/StudentCourse/SelectedCourse'
 import StudentChange from '../components/Student/StudentChange/StudentChange'
+import StudentInfo from '../components/Student/StudentChange/StudentInfo'
+import StudentMain from '../components/Student/StudentChange/StudentMain.vue'
 import StudentCommentAndDiscuss from '../components/Student/StudentCommentAndDiscuss/StudentCommentAndDiscuss'
 import StudentAllComment from '../components/Student/StudentCommentAndDiscuss/StudentAllComment'
 import StudentComment from '../components/Student/StudentCommentAndDiscuss/StudentComment'
@@ -28,7 +30,6 @@ import TeacherComment from '@/components/Teacher/TeacherCommentAndDiscuss/Teache
 import TeacherDiscuss from '@/components/Teacher/TeacherCommentAndDiscuss/TeacherDiscuss.vue'
 import TeacherChange from '@/components/Teacher/TeacherChange/TeacherChange.vue'
 import TeacherInfo from '@/components/Teacher/TeacherChange/TeacherInfo.vue'
-import TeacherChangeInfo from '@/components/Teacher/TeacherChange/TeacherChangeInfo.vue'
 import TeacherGetStudentInCourse from '@/components/Teacher/TeacherCourse/TeacherGetStudentInCourse.vue'
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
@@ -104,13 +105,17 @@ export default new Router({
       ]
     },
     {
-      path: '/StudentChange',
-      name: 'StudentChange',
-      component: StudentChange,
+      path: '/StudentMain',
+      name: 'StudentMain',
+      component: StudentMain,
       children: [
         {
           path: 'StudentChange',
           component: StudentChange
+        },
+        {
+          path: 'StudentInfo',
+          component: StudentInfo
         }
       ]
     },
@@ -187,11 +192,6 @@ export default new Router({
       path: '/TeacherInfo',
       name: 'TeacherInfo',
       component: TeacherInfo
-    },
-    {
-      path: '/TeacherChangeInfo',
-      name: 'TeacherChangeInfo',
-      component: TeacherChangeInfo,
     },
     {
       path: '/TeacherGetStudentInCourse',

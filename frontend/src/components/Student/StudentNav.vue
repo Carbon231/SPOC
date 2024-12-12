@@ -16,7 +16,8 @@
     </el-submenu>
     <el-submenu index="3">
       <template slot="title"><i class="el-icon-user"></i><span class="item">用户信息</span></template>
-      <el-menu-item class="subitem" index="/StudentChange/StudentChange">修改密码</el-menu-item>
+      <el-menu-item class="subitem" index="/StudentMain/StudentInfo">个人信息</el-menu-item>
+      <el-menu-item class="subitem" index="/StudentMain/StudentChange">修改密码</el-menu-item>
     </el-submenu>
   </el-menu>
 </template>

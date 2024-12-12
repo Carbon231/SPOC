@@ -8,7 +8,7 @@
         <el-header>
           <TeacherHeading></TeacherHeading>
         </el-header>
-        <el-main style="padding-left: 10%; padding-right: 10%">
+        <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
             <el-col :span="23">
               <el-input placeholder="查找您的相关课程" prefix-icon="el-icon-search" v-model="inputSearch"
@@ -19,69 +19,107 @@
                 circle></el-button>
             </el-col>
           </el-row>
-          <el-card v-for="(course, index) in showMyCourseList" :key="index" v-loading="loading" shadow="hover"
-            style="margin-bottom: 2%">
+          <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
+            style="margin-bottom: 2%;">
             <el-row>
-              <el-col :offset="2" :span="2">
-                <el-image :src="courseImg" lazy></el-image>
+              <el-col :offset="1" :span="2">
+                <el-image style="width:150px;height:90px" :src="courseImg" lazy></el-image>
               </el-col>
-              <el-col :offset="2" :span="16">
+              <el-col :offset="2" :span="12">
                 <el-row style="margin-bottom: 3%">
                   <el-link type="primary" v-on:click="getCourseInfo(index)">
-                    <span style="font-size: 16px"><strong>{{ course.c_name }}</strong></span>
+                    <span style="font-size: 18px"><strong>{{ course.c_name }}</strong></span>
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
+                  <el-tag style="font-size: 15px" type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
+                  <el-tag style="font-size: 15px; margin-left:2%" type="success">开课院系<span>&nbsp;&nbsp;{{
+                    course.d_name }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
-                <el-button-group style="margin-bottom: 1%">
-                  <el-button type="primary" icon="el-icon-edit" v-on:click="changeCourse(index)">编辑</el-button>
-                </el-button-group>
+                <span style="color: gray">{{ course.selectedNum }} / {{ course.capacity }}</span>
+              </el-col>
+              <el-col :span="4">
                 <el-button-group>
+                  <el-button style="margin-right: 5px" type="primary" icon="el-icon-edit"
+                    v-on:click="changeCourse(index)">编辑</el-button>
                   <el-button type="danger" icon="el-icon-delete" v-on:click="cancelCourse(index)">停课</el-button>
+                  <el-button type="success" v-if="!course.isOpen" icon="el-icon-check"
+                    v-on:click="drawALottery(index)">抽签</el-button>
+                  <el-button type="success" v-if="course.isOpen" icon="el-icon-check" disabled>抽签</el-button>
                 </el-button-group>
-                <el-button-group>
+                <el-button-group style="margin-top: 2%;margin-left:10px">
                   <el-button type="info" icon="el-icon-pie-chart"
                     v-on:click="getScoreDistribution(index)">查看分数分布</el-button>
+                  <el-button type="warning" icon="el-icon-search"
+                    v-on:click="teacherGetStudentInCourse(index)">查看学生名单</el-button>
                 </el-button-group>
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="课程详情" :visible.sync="courseInfoVisible" width="60%">
-            <el-descriptions class="info">
-              <el-descriptions-item label="课程名称(ID)">
-                {{ courseInfo.c_name }}({{ courseInfo.c_id }})
+
+          <el-dialog :visible.sync="courseInfoVisible">
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-management"></i>
+                  课程名称
+                </template>
+                {{ courseInfo.c_name }}
               </el-descriptions-item>
-              <el-descriptions-item label="课程介绍">
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-sunny"></i>
+                  课程编号
+                </template>
+                {{ courseInfo.c_id }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-home"></i>
+                  开课院系
+                </template>
+                {{ courseInfo.d_name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-custom"></i>
+                  授课教师
+                </template>
+                {{ courseInfo.t_name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-info"></i>
+                  课程简介
+                </template>
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
-              <el-descriptions-item label="课程容量">
-                <span v-html="courseInfo.capacity"></span>
-              </el-descriptions-item>
-              <el-descriptions-item label="选课学生">
-                <el-button-group style="margin-left: 20px;">
-                  <el-button type="primary" icon="el-icon-edit"
-                    v-on:click="teacherGetStudentInCourse">查看选课学生名单</el-button>
-                </el-button-group>
-              </el-descriptions-item>
             </el-descriptions>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="courseInfoVisible = false">确 定</el-button>
-            </div>
           </el-dialog>
+
           <el-dialog title="分数分布" :visible.sync="scoreDistributionVisible">
             <div id="score-distribution-chart" style="width: 100%; height: 400px;"></div>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="scoreDistributionVisible = false">确 定</el-button>
             </div>
           </el-dialog>
+
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
+
+<style scoped>
+@import "../../../assets/css/back.css";
+
+.info {
+  margin-bottom: 20px;
+  word-break: break-all;
+}
+</style>
 
 <script>
 import * as echarts from 'echarts';
@@ -99,16 +137,28 @@ export default {
       courseInfo: {
         c_id: '',
         c_name: '',
+        d_name: '',
         t_name: '',
         capacity: '',
         intro: ''
       },
       courseImg: CourseImg,
-      loading: true,
-      t_name: '',
+      loading: false,
       t_id: '',
-      myCourseList: [],
-      showMyCourseList: [],
+      t_name: '',
+      courseList: [{
+        c_id: '1',
+        c_name: '课程1',
+        t_name: '教师1',
+        d_id: 0,
+        d_name: '暂无',
+        avgDegree: 2.0,
+        intro: '',
+        isOpen: false,
+        capacity: 100,
+        selectedNum: 0
+      }],
+      showCourseList: this.courseList,
       inputSearch: '',
     }
   },
@@ -118,12 +168,34 @@ export default {
     this.getTeacherCourseList()
   },
   methods: {
+    drawALottery: function (index) {
+      let that = this
+      that.loading = true
+      this.$http.request({
+        url: that.$url + 'DrawALottery/',
+        method: 'post',
+        data: {
+          c_id: that.showCourseList[index].c_id
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        that.loading = false
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
+        } else {
+          that.$message.error(response.data.message)
+        }
+      }).catch(function (error) {
+        console.log(error)
+        that.loading = false
+      })
+    },
     teacherGetStudentInCourse: function () {
       this.$router.push({ name: 'TeacherGetStudentInCourse', params: { c_id: this.courseInfo.c_id } })
     },
     getCourseInfo: function (index) {
       let that = this
-      that.courseInfo = that.showMyCourseList[index]
+      that.courseInfo = that.courseList[index]
       that.courseInfoVisible = true
     },
     getTeacherCourseList: function () {
@@ -134,51 +206,61 @@ export default {
         method: 'post',
         data: {
           t_id: that.t_id
-        }
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
       }).then(function (response) {
         console.log(response.data)
         that.loading = false
-        if (response.data.code === 200) {
-          that.myCourseList = response.data.data
-          that.showMyCourseList = response.data.data
-        } else {
-          that.$message.error(response.data.message)
-        }
+        that.courseList = response.data.data
+        that.showCourseList = response.data.data
       }).catch(function (error) {
         console.log(error)
         that.loading = false
       })
     },
     changeCourse: function (index) {
-      this.$router.push({ name: 'ChangeCourse', params: { id: this.showMyCourseList[index].c_id } })
+      this.$router.push({ name: 'ChangeCourse', params: { id: this.showCourseList[index].c_id } })
     },
     cancelCourse: function (index) {
-      let that = this
-      that.loading = true
-      this.$http.request({
-        url: that.$url + 'CancelCourse/',
-        method: 'post',
-        data: {
-          c_id: that.showMyCourseList[index].c_id,
-          t_id: that.t_id
-        }
-      }).then(function (response) {
-        console.log(response.data)
-        that.loading = false
-        if (response.data.code === 200) {
-          that.$message.success(response.data.message)
-          that.getTeacherCourseList()
-        } else {
-          that.$message.error(response.data.message)
-        }
-      }).catch(function (error) {
-        console.log(error)
-        that.loading = false
+      this.$confirm('此操作将退选该课程，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let that = this
+        that.loading = true
+        this.$http.request({
+          url: that.$url + 'CancelCourse/',
+          method: 'post',
+          data: {
+            c_id: that.showCourseList[index].c_id,
+            t_id: that.t_id
+          }
+        }).then(function (response) {
+          console.log(response.data)
+          that.loading = false
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
+            that.getTeacherCourseList()
+          } else {
+            that.$message.error(response.data.message)
+          }
+        }).catch(function (error) {
+          console.log(error)
+          that.loading = false
+        })
       })
+    },
+    goToHelloWorld: function () {
+      this.cookie.clearCookie('t_id')
+      this.cookie.clearCookie('t_name')
+      this.$router.replace('/')
     },
     getScoreDistribution(index) {
       let that = this;
-      let course = this.showMyCourseList[index];
+      let course = this.showCourseList[index];
       console.log(course);
 
       this.$http.request({
@@ -225,14 +307,24 @@ export default {
       };
       option && myChart.setOption(option);
     },
-    searchCourse: function (query) {
-      this.showMyCourseList = this.myCourseList.filter(course => course.c_name.includes(query))
-    }
+    searchCourse: function (inputSearch) {
+      this.showCourseList = this.searchByIndexOf(inputSearch, this.courseList)
+    },
+    searchByIndexOf: function (keyWord, list) {
+      if (!(list instanceof Array)) {
+        return
+      } else if (keyWord === '') {
+        return list
+      }
+      const len = list.length
+      const arr = []
+      for (let i = 0; i < len; i++) {
+        if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
+          arr.push(list[i])
+        }
+      }
+      return arr
+    },
   }
 }
 </script>
-
-<style scoped>
-@import "../../../assets/css/nav.css";
-@import "../../../assets/css/back.css";
-</style>

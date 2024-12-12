@@ -532,7 +532,12 @@ class GetStudentCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "hasScore": sc.hasScore,
-                "isSelect": sc.isSelect
+                "d_id": course.teacher.t_department.d_id,   
+                "d_name": course.teacher.t_department.d_name,
+                "isSelect": sc.isSelect,
+                "capacity": course.capacity,
+                "selectedNum": len(SC.objects.filter(course__id=course.id)),
+                "isOpen": course.confirmed
             })
         return Response({
             "code": 200,
@@ -591,6 +596,8 @@ class GetTeacherInfo(APIView):
         if Teacher.objects.filter(t_id=t_id).exists():
             teacher = Teacher.objects.get(t_id=t_id)
             data = {
+                "t_id": teacher.t_id,
+                "t_name": teacher.t_name,
                 "t_office": teacher.t_office,
                 "t_department": teacher.t_department.d_name,
                 "t_phone": teacher.t_phone,
@@ -622,6 +629,9 @@ class GetTeacherCourseList(APIView):
                 for c in comment:
                     sum += int(c.degree)
                 avgDegree = round(sum / len(comment),  2)
+    
+            scs = SC.objects.filter(course__id=course.id)
+            selectedNum = len(scs)
             data.append({
                 "c_id": course.id,
                 "c_name": course.c_name,
@@ -629,7 +639,10 @@ class GetTeacherCourseList(APIView):
                 "avgDegree": avgDegree,
                 "intro": course.intro,
                 "capacity": course.capacity,
-                "isOpen": course.confirmed
+                "selectedNum": selectedNum,
+                "isOpen": course.confirmed,
+                "d_id": course.teacher.t_department.d_id,
+                "d_name": course.teacher.t_department.d_name
             })
         return Response({
             "code": 200,
@@ -972,7 +985,7 @@ class StudentChangeInfo(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         s_id = req_data['s_id']
-        d_id = req_data['d_id']
+        d_name = req_data['d_name']
         s_email = req_data['s_email']
         s_phone = req_data['s_phone']
         try:
@@ -985,7 +998,7 @@ class StudentChangeInfo(APIView):
         student.s_email = s_email
         student.s_phone = s_phone
         try:
-            department = Department.objects.get(d_id=d_id)
+            department = Department.objects.get(d_name=d_name)
             student.s_department = department
         except Department.DoesNotExist:
             return Response({
@@ -1005,7 +1018,8 @@ class TeacherGetStudentInCourse(APIView):
         req_data = json.loads(request.body)
         c_id = req_data['c_id']
         course = Course.objects.get(id=c_id)
-        scs = SC.objects.filter(course=course)
+       
+        scs = SC.objects.filter(course=course,isSelect= 1 if course.confirmed else 2)
         data = []
         for sc in scs:
             student = sc.student

@@ -12,19 +12,13 @@
           <el-row>
             <el-col :span="8">
               <el-select v-model="departmentSelect" @change="filtrateDepartment" clearable placeholder="开课院系">
-                <el-option
-                  v-for="dep in departmentSelections"
-                  :key="dep.d_id"
-                  :value="dep.d_name">
+                <el-option v-for="dep in departmentSelections" :key="dep.d_id" :value="dep.d_name">
                 </el-option>
               </el-select>
             </el-col>
             <el-col :span="8">
               <el-select v-model="chooseCourseStatus" @change="filtrateStatus" clearable placeholder="选课状态">
-                <el-option
-                  v-for="s in courseStatusLists"
-                  :key="s.label"
-                  :value="s.value">
+                <el-option v-for="s in courseStatusLists" :key="s.label" :value="s.value">
                 </el-option>
               </el-select>
             </el-col>
@@ -40,7 +34,7 @@
           <el-card v-for="(course, index) in showCourseList" :key="index" v-loading="loading" shadow="hover"
             style="margin-bottom: 2%;">
             <el-row>
-              <el-col :offset="1" :span="2">
+              <el-col :offset="2" :span="2">
                 <el-image :src="courseImg" lazy></el-image>
               </el-col>
               <el-col :offset="2" :span="14">
@@ -50,17 +44,18 @@
                   </el-link>
                 </el-row>
                 <el-row>
-                  <el-tag type="info">课程编号<span>&nbsp;&nbsp;{{ course.c_id }}</span></el-tag>
+                  <el-tag type="primary" style="margin-right: 10px;">授课教师<span>&nbsp;&nbsp;{{ course.t_name
+                      }}</span></el-tag>
                   <el-tag type="success">开课院系<span>&nbsp;&nbsp;{{ course.d_name }}</span></el-tag>
                 </el-row>
               </el-col>
               <el-col :span="2">
-                <span style="color: gray">{{course.selectedNum}} / {{course.capacity}}</span>
+                <span style="color: gray">{{ course.selectedNum }} / {{ course.capacity }}</span>
               </el-col>
               <el-col :span="2">
                 <el-button-group style="margin-top: 2%">
-<!--                  <el-button v-if="!showCourseList[index].isSelect" v-on:click="selectCourse(index)" type="primary">选课</el-button>-->
-<!--                  <el-button v-else type="info" disabled>已选</el-button>-->
+                  <!--                  <el-button v-if="!showCourseList[index].isSelect" v-on:click="selectCourse(index)" type="primary">选课</el-button>-->
+                  <!--                  <el-button v-else type="info" disabled>已选</el-button>-->
                   <el-button v-if="showCourseList[index].isSelect !== 0" type="warning" disabled>已选</el-button>
                   <el-button v-else-if="showCourseList[index].isOpen" type="info" disabled>不可选</el-button>
                   <el-button v-else type="primary" @click="selectCourse(index)">选课</el-button>
@@ -68,23 +63,44 @@
               </el-col>
             </el-row>
           </el-card>
-          <el-dialog title="提示" :visible.sync="courseInfoVisible" width="40%">
-            <el-descriptions class="info">
-              <el-descriptions-item label="课程名称(ID)">
-                &nbsp;&nbsp;
-                {{ courseInfo.c_name }}({{ courseInfo.c_id }})
+          <el-dialog :visible.sync="courseInfoVisible">
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-management"></i>
+                  课程名称
+                </template>
+                {{ courseInfo.c_name }}
               </el-descriptions-item>
-              <el-descriptions-item label="院系名称">
-                &nbsp;&nbsp;
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-sunny"></i>
+                  课程编号
+                </template>
+                {{ courseInfo.c_id }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-home"></i>
+                  开课院系
+                </template>
                 {{ courseInfo.d_name }}
               </el-descriptions-item>
-              <el-descriptions-item label="课程介绍">&nbsp;&nbsp;
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-custom"></i>
+                  授课教师
+                </template>
+                {{ courseInfo.t_name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-info"></i>
+                  课程简介
+                </template>
                 <span v-html="courseInfo.intro"></span>
               </el-descriptions-item>
             </el-descriptions>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="courseInfoVisible = false">确 定</el-button>
-            </div>
           </el-dialog>
         </el-main>
       </el-container>
@@ -117,6 +133,12 @@ export default {
         c_name: '',
         d_name: '',
         t_name: '',
+        isSelect: 1,
+        avgDegree: 0,
+        capacity: 0,
+        selectedNum: 0,
+        d_id: 0,
+        isOpen: false,
         intro: ''
       },
       courseImg: CourseImg,
@@ -137,21 +159,21 @@ export default {
       }],
       showCourseList: this.courseList,
       inputSearch: '',
-      departmentSelections:'',
+      departmentSelections: '',
       departmentSelect: '',
       chooseCourseStatus: '',
       courseStatusLists: [{
-          label: '0',
-          value: '全部'
-        }, {
-          label: '1',
-          value: '已选'
+        label: '0',
+        value: '全部'
       }, {
-          label: '2',
-          value: '未选'
+        label: '1',
+        value: '已选'
       }, {
-          label: '3',
-          value: '已开课'
+        label: '2',
+        value: '未选'
+      }, {
+        label: '3',
+        value: '已开课'
       }
       ]
     }
@@ -210,7 +232,7 @@ export default {
       console.log(index)
       let that = this
       if (!that.courseList[index].isSelect) {
-          this.$http.request({
+        this.$http.request({
           url: that.$url + 'SelectCourse/',
           method: 'post',
           data: {
@@ -256,8 +278,8 @@ export default {
       const len = list.length
       const arr = []
       for (let i = 0; i < len; i++) {
-          if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
-            arr.push(list[i])
+        if (list[i].c_name.toString().includes(keyWord) || list[i].c_id.toString().includes(keyWord)) {
+          arr.push(list[i])
         }
       }
       return arr
