@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post, User, Department
+from backend.models import Student, Teacher, Course, Comment, SC, PostTheme, Post, User, Department, Liked
 from django.contrib import auth
 
 
@@ -731,7 +731,9 @@ class DeleteComment(APIView):
 
 
 class GetPostThemeList(APIView):
-    def get(self, request):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        u_id = req_data['u_id']
         post_themes = PostTheme.objects.all()
         data = [{
             "pt_id": post_theme.id,
@@ -741,6 +743,8 @@ class GetPostThemeList(APIView):
             "content": post_theme.content,
             "time": post_theme.time,
             "isExcellent": post_theme.isExcellent,
+            "likedNum": post_theme.liked,
+            "isLiked": Liked.objects.filter(post_theme=post_theme, user__username=u_id)
         } for post_theme in post_themes]
         return Response({
             "code": 200,
@@ -838,6 +842,7 @@ class GetPostTheme(APIView):
             "content": post_theme.content,
             "time": post_theme.time,
             "isExcellent": post_theme.isExcellent,
+            "liked": post_theme.liked
         }
         return Response({
             "code": 200,
@@ -1147,3 +1152,51 @@ class GetAllDepartments(APIView):
             "message": "操作成功！",
             "data" : data
         })
+
+
+class LikedPostTheme(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        u_id = req_data['u_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.liked += 1
+        Liked.objects.create(post_theme=post_theme, user__username=u_id)
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+
+
+class GetLikedPostThemeList(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        u_id = req_data['u_id']
+        likedList = Liked.objects.filter(user__username=u_id)
+        data = []
+        for liked in likedList:
+            post_theme = liked.post_theme
+            data.append({
+                "pt_id": post_theme.id,
+                "u_id": post_theme.user.username,
+                "u_name": post_theme.user.u_name,
+                "title": post_theme.title,
+                "content": post_theme.content,
+                "time": post_theme.time,
+                "isExcellent": post_theme.isExcellent,
+                "likedNum": post_theme.liked,
+                "isLiked": True
+            })
+        return Response({
+            "code": 200,
+            "message": "操作成功！",
+            "data": data
+        })
+

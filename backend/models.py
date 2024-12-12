@@ -77,9 +77,14 @@ class PostTheme(models.Model):
     content = models.CharField(max_length=300, blank=True, null=True)
     time = models.CharField(max_length=30, blank=True, null=True)
     isExcellent = models.IntegerField(blank=True, null=True, default=0)
+    liked = models.IntegerField(blank=True, null=True, default=0)
 
     def __str__(self):
         return self.content
+
+class Liked(models.Model):
+    user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    post_theme = models.ForeignKey(PostTheme, on_delete=models.RESTRICT)
 
 
 class Post(models.Model):
