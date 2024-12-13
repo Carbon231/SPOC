@@ -118,7 +118,7 @@ export default {
           that.d_new_name = response.data.data.s_department
           that.s_new_email = response.data.data.s_email
           that.s_new_phone = response.data.data.s_phone
-          that.$message.success(response.data.message)
+          // that.$message.success(response.data.message)
         } else {
           that.$message.error(response.data.message)
         }

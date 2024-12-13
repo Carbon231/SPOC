@@ -126,7 +126,7 @@ export default {
                     that.t_new_email = response.data.data.t_email
                     that.t_new_phone = response.data.data.t_phone
                     that.t_new_office = response.data.data.t_office
-                    that.$message.success(response.data.message)
+                    // that.$message.success(response.data.message)
                 } else {
                     that.$message.error(response.data.message)
                 }

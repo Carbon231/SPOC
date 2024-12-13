@@ -11,6 +11,7 @@
         <el-main style="padding-left: 10%; padding-right: 10%">
           <el-row>
             <el-col :span="14" class="left-information" style="width: 50%">
+
               <el-row>
                 <el-col :span="22">
                   <el-input placeholder="查找相关帖子" prefix-icon="el-icon-search" v-model="inputSearch"
@@ -21,13 +22,34 @@
                     @click="searchDiscuss(inputSearch)" circle></el-button>
                 </el-col>
               </el-row>
+
+
+
+              <el-row>
+                <el-col :span="8" style="margin-bottom: 5%;margin-right: 5%;">
+                  <el-select v-model="departmentSelect" @change="filtrateDepartment" clearable placeholder="筛选">
+                    <el-option>只看我赞过的</el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="8">
+                  <el-select v-model="chooseCourseStatus" @change="filtrateStatus" clearable placeholder="查看顺序">
+                    <el-option v-for="s in courseStatusLists" :key="s.label" :value="s.value"></el-option>
+                  </el-select>
+                </el-col>
+              </el-row>
+
               <el-card v-for="(postTheme, index) in showPostThemeList" :key="index" v-loading="loading" shadow="hover"
                 style="margin-bottom: 2%">
                 <div class="clearfix">
                   <span>{{ postTheme.title }}</span>
                   <el-button style="float: right; padding: 3px 0" type="text"
                     v-on:click="enterPostTheme(index)">进入帖子</el-button>
+                  <el-button v-if="!postTheme.isLiked" icon="el-icon-thumb" @click="likedPostTheme(index)">{{
+                    postTheme.likedNum }} 点赞</el-button>
+                  <el-button v-if="postTheme.isLiked" icon="el-icon-thumb" @click="cancelLikedPostTheme(index)">{{
+                    postTheme.likedNum }} 取消点赞</el-button>
                 </div>
+                <el-icon></el-icon>
                 <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
                   <el-tag size="mini" type="success" v-if="postTheme.isExcellent === 1">
                     <span>经助教认证</span>
@@ -37,6 +59,7 @@
                   <span style="color: gray; font-size: 8px">发表于-{{ postTheme.time }}</span>
                 </div>
               </el-card>
+
             </el-col>
             <el-col :span="8" :offset="2" class="right-information">
               <el-card shadow="hover" style="width: 100%">
@@ -92,6 +115,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import TeacherImg from '../../../assets/img/teacher.png'
 
+
 export default {
   name: 'TeacherAllDiscuss',
   components: { TeacherNav, TeacherHeading, quillEditor },
@@ -107,26 +131,9 @@ export default {
         content: ''
       },
       inputSearch: '',
-      postThemeList: [{
-        pt_id: '',
-        u_id: '',
-        u_name: '',
-        title: '',
-        content: '',
-        time: '',
-        isExcellent: 0
-      }],
-      showPostThemeList: [
-        {
-          pt_id: '',
-          u_id: '',
-          u_name: '',
-          title: '',
-          content: '',
-          time: '',
-          isExcellent: 0
-        }
-      ],
+      postThemeList: [{}],
+      showPostThemeList: [{}],
+      myLikedPostThemeList: [{}],
       buildThemeVisible: false,
       time: ''
     }
@@ -136,8 +143,76 @@ export default {
     this.t_name = this.cookie.getCookie('t_name')
     this.getPostThemeList()
     this.getTeacherDiscussNum()
+    this.getMyLikedPostThemeList()
   },
   methods: {
+    likedPostTheme: function (index) {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'LikedPostTheme/',
+        method: 'post',
+        data: {
+          u_id: that.t_id,
+          pt_id: that.showPostThemeList[index].pt_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          that.$message.success('点赞成功')
+          that.getMyLikedPostThemeList()
+          that.$router.go(0)
+        } else {
+          that.$message.error('未知错误')
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    cancelLikedPostTheme: function (index) {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'CancelLikedPostTheme/',
+        method: 'post',
+        data: {
+          u_id: that.t_id,
+          pt_id: that.showPostThemeList[index].pt_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          that.$message.success('取消点赞成功')
+          that.$router.go(0)
+        } else {
+          that.$message.error('未知错误')
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    getMyLikedPostThemeList: function () {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'GetLikedPostThemeList/',
+        method: 'post',
+        data: {
+          u_id: that.t_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
+        console.log(response.data)
+        that.myLikedPostThemeList = response.data.data
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
     getTeacherDiscussNum: function () {
       let that = this
       this.$http.request({
@@ -158,7 +233,10 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetPostThemeList/',
-        method: 'get',
+        method: 'post',
+        data: {
+          u_id: that.t_id
+        },
         headers: {
           'Content-Type': 'application/json'
         },

@@ -605,13 +605,13 @@ class GetTeacherInfo(APIView):
             }
             return Response({
                 "code": 200,
-                "message": "操作成功",
+                "message": "获取教师信息成功！",
                 "data": data
             })
         else:
             return Response({
                 "code": 401,
-                "error": "教师不存在"
+                "error": "教师不存在！"
             })
 
 
@@ -757,7 +757,7 @@ class GetPostThemeList(APIView):
             "time": post_theme.time,
             "isExcellent": post_theme.isExcellent,
             "likedNum": post_theme.likedNum,
-            "isLiked": Liked.objects.filter(post_theme=post_theme, user__username=u_id)
+            "isLiked": Liked.objects.filter(post_theme=post_theme, user__username=u_id).exists()
         } for post_theme in post_themes]
         return Response({
             "code": 200,
@@ -846,6 +846,7 @@ class GetPostTheme(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         pt_id = req_data['pt_id']
+        u_id = req_data['u_id']
         post_theme = PostTheme.objects.get(id=pt_id)
         data = {
             "pt_id": post_theme.id,
@@ -855,7 +856,8 @@ class GetPostTheme(APIView):
             "content": post_theme.content,
             "time": post_theme.time,
             "isExcellent": post_theme.isExcellent,
-            "liked": post_theme.liked
+            "likedNum": post_theme.likedNum,
+            "isLiked": Liked.objects.filter(post_theme=post_theme, user__username=u_id).exists()
         }
         return Response({
             "code": 200,
@@ -965,7 +967,7 @@ class GetStudentInfo(APIView):
         except Student.DoesNotExist:
             return Response({
                 "code": 404,
-                "error": "学生不存在"
+                "error": "学生不存在！"
             })
         student_info = {
             "s_id": student.s_id,
@@ -976,7 +978,7 @@ class GetStudentInfo(APIView):
         }
         return Response({
             "code": 200,
-            "message": "操作成功！",
+            "message": "获取学生信息成功！",
             "data": student_info
         })
 
@@ -1108,7 +1110,7 @@ class DrawALottery(APIView):
         ]
         return Response({
             "code": 200,
-            "message": "操作成功！",
+            "message": "已更新选课学生名单！",
             "data": selected_students_data
         })
 
@@ -1167,7 +1169,7 @@ class GetAllDepartments(APIView):
             "data" : data
         })
 
-
+# TypeError: Liked() got unexpected keyword arguments: 'user__username'
 class LikedPostTheme(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
@@ -1180,8 +1182,29 @@ class LikedPostTheme(APIView):
                 "code": 404,
                 "message": "主题帖不存在"
             })
-        post_theme.liked += 1
-        Liked.objects.create(post_theme=post_theme, user__username=u_id)
+        post_theme.likedNum += 1
+        
+        Liked.objects.create(post_theme=post_theme, user=User.objects.get(username=u_id))
+        post_theme.save()
+        return Response({
+            "code": 200,
+            "message": "操作成功！"
+        })
+        
+class CancelLikedPostTheme(APIView):
+    def post(self, request):
+        req_data = json.loads(request.body)
+        pt_id = req_data['pt_id']
+        u_id = req_data['u_id']
+        try:
+            post_theme = PostTheme.objects.get(id=pt_id)
+        except PostTheme.DoesNotExist:
+            return Response({
+                "code": 404,
+                "message": "主题帖不存在"
+            })
+        post_theme.likedNum -= 1
+        Liked.objects.filter(post_theme=post_theme, user=User.objects.get(username=u_id)).delete()
         post_theme.save()
         return Response({
             "code": 200,
@@ -1193,7 +1216,7 @@ class GetLikedPostThemeList(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         u_id = req_data['u_id']
-        likedList = Liked.objects.filter(user__username=u_id)
+        likedList = Liked.objects.filter(user=User.objects.get(username=u_id))
         data = []
         for liked in likedList:
             post_theme = liked.post_theme

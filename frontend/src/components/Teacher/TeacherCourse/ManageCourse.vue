@@ -46,8 +46,8 @@
                     v-on:click="changeCourse(index)">编辑</el-button>
                   <el-button type="danger" icon="el-icon-delete" v-on:click="cancelCourse(index)">停课</el-button>
                   <el-button type="success" v-if="!course.isOpen" icon="el-icon-check"
-                    v-on:click="drawALottery(index)">抽签</el-button>
-                  <el-button type="success" v-if="course.isOpen" icon="el-icon-check" disabled>抽签</el-button>
+                    v-on:click="drawALottery(index)">正式开课</el-button>
+                  <el-button type="success" v-if="course.isOpen" icon="el-icon-check" disabled>已开课</el-button>
                 </el-button-group>
                 <el-button-group style="margin-top: 2%;margin-left:10px">
                   <el-button type="info" icon="el-icon-pie-chart"
@@ -169,25 +169,31 @@ export default {
   },
   methods: {
     drawALottery: function (index) {
-      let that = this
-      that.loading = true
-      this.$http.request({
-        url: that.$url + 'DrawALottery/',
-        method: 'post',
-        data: {
-          c_id: that.showCourseList[index].c_id
-        }
-      }).then(function (response) {
-        console.log(response.data)
-        that.loading = false
-        if (response.data.code === 200) {
-          that.$message.success(response.data.message)
-        } else {
-          that.$message.error(response.data.message)
-        }
-      }).catch(function (error) {
-        console.log(error)
-        that.loading = false
+      this.$confirm('此操作将通过抽签确定选课学生名单，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let that = this
+        that.loading = true
+        this.$http.request({
+          url: that.$url + 'DrawALottery/',
+          method: 'post',
+          data: {
+            c_id: that.showCourseList[index].c_id
+          }
+        }).then(function (response) {
+          console.log(response.data)
+          that.loading = false
+          if (response.data.code === 200) {
+            that.$message.success(response.data.message)
+          } else {
+            that.$message.error(response.data.message)
+          }
+        }).catch(function (error) {
+          console.log(error)
+          that.loading = false
+        })
       })
     },
     teacherGetStudentInCourse: function () {

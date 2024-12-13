@@ -11,13 +11,13 @@
         <el-main style="padding-right: 10%; padding-left: 10%">
           <el-row>
             <el-col :span="8">
-              <el-select v-model="departmentSelect" @change="filtrateDepartment" clearable placeholder="开课院系">
+              <el-select v-model="departmentSelect" @change="filtrate()" clearable placeholder="开课院系">
                 <el-option v-for="dep in departmentSelections" :key="dep.d_id" :value="dep.d_name">
                 </el-option>
               </el-select>
             </el-col>
             <el-col :span="8">
-              <el-select v-model="chooseCourseStatus" @change="filtrateStatus" clearable placeholder="选课状态">
+              <el-select v-model="chooseCourseStatus" @change="filtrate()" clearable placeholder="选课状态">
                 <el-option v-for="s in courseStatusLists" :key="s.label" :value="s.value">
                 </el-option>
               </el-select>
@@ -159,6 +159,7 @@ export default {
       }],
       showCourseList: this.courseList,
       inputSearch: '',
+      tempCourseList: [],
       departmentSelections: '',
       departmentSelect: '',
       chooseCourseStatus: '',
@@ -223,6 +224,7 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         that.departmentSelections = response.data.data
+        that.departmentSelections.unshift({ d_id: 0, d_name: '全部' })
       }).catch(function (error) {
         console.log(error)
         that.loading = false
@@ -284,34 +286,40 @@ export default {
       }
       return arr
     },
+    filtrate: function () {
+      let that = this
+      that.tempCourseList = that.courseList
+      that.filtrateDepartment()
+      that.filtrateStatus()
+      that.showCourseList = that.tempCourseList
+    },
     filtrateDepartment: function () {
       let that = this
-      if (that.departmentSelections.length === 0) {
-        that.showCourseList = that.courseList
-      } else {
-        that.showCourseList = []
-        for (let i = 0; i < that.courseList.length; i++) {
-          if (that.departmentSelections.includes(that.courseList[i].d_name)) {
-            that.showCourseList.push(that.courseList[i])
+      let newCourseList = []
+      if (that.departmentSelect && that.departmentSelect !== '全部') {
+        for (let i = 0; i < that.tempCourseList.length; i++) {
+          if (that.departmentSelect === that.tempCourseList[i].d_name) {
+            newCourseList.push(that.tempCourseList[i])
           }
         }
+        that.tempCourseList = newCourseList
       }
+
     },
     filtrateStatus: function () {
       let that = this
-      if (that.chooseCourseStatus === '全部') {
-        that.showCourseList = that.courseList
-      } else if (that.chooseCourseStatus) {
-        that.showCourseList = []
-        for (let i = 0; i < that.courseList.length; i++) {
-          if (that.chooseCourseStatus === '已选' && (that.courseList[i].isSelect === 1 || that.courseList[i].isSelect === 2 || that.courseList[i].isSelect === 3)) {
-            that.showCourseList.push(that.courseList[i])
-          } else if (that.chooseCourseStatus === '未选' && that.courseList[i].isSelect === 0) {
-            that.showCourseList.push(that.courseList[i])
-          } else if (that.chooseCourseStatus === '已开课' && that.courseList[i].isOpen) {
-            that.showCourseList.push(that.courseList[i])
+      let newCourseList = []
+      if (that.chooseCourseStatus && that.chooseCourseStatus !== '全部') {
+        for (let i = 0; i < that.tempCourseList.length; i++) {
+          if (that.chooseCourseStatus === '已选' && (that.tempCourseList[i].isSelect === 1 || that.tempCourseList[i].isSelect === 2 || that.tempCourseList[i].isSelect === 3)) {
+            that.showCourseList.push(that.tempCourseList[i])
+          } else if (that.chooseCourseStatus === '未选' && that.tempCourseList[i].isSelect === 0) {
+            that.showCourseList.push(that.tempCourseList[i])
+          } else if (that.chooseCourseStatus === '已开课' && that.tempCourseList[i].isOpen) {
+            that.showCourseList.push(that.tempCourseList[i])
           }
         }
+        that.tempCourseList = newCourseList
       }
     },
   }

@@ -157,7 +157,10 @@ export default {
       that.loading = true
       this.$http.request({
         url: that.$url + 'GetPostThemeList/',
-        method: 'get',
+        method: 'post',
+        data: {
+          u_id: that.s_id
+        },
         headers: {
           'Content-Type': 'application/json'
         },

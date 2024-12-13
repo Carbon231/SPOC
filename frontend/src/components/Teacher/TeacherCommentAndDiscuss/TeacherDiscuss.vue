@@ -49,6 +49,12 @@
                   size="small">加精</el-button>
                 <el-button @click="cancelExcellent" v-else type="primary" size="small">取消加精</el-button>
               </el-col>
+              <el-col>
+                <el-button v-if="!postTheme.isLiked" icon="el-icon-thumb" @click="likedPostTheme()">{{
+                  postTheme.likedNum }} 点赞</el-button>
+                <el-button v-if="postTheme.isLiked" icon="el-icon-thumb" @click="cancelLikedPostTheme()">{{
+                  postTheme.likedNum }} 取消点赞</el-button>
+              </el-col>
             </el-row>
           </el-card>
 
@@ -149,24 +155,11 @@ export default {
       adminImg: AdminImg,
       p_id: 0,
       postTheme: {
-        pt_id: '',
-        u_id: '',
-        u_name: '',
-        title: '',
-        content: '',
-        time: '',
-        isExcellent: 0
       },
       input: {
         content: ''
       },
       postList: [{
-        p_id: '',
-        u_id: '',
-        u_name: '',
-        content: '',
-        time: '',
-        isExcellent: 0
       }],
       time: ''
     }
@@ -182,13 +175,64 @@ export default {
     console.log(this.postTheme)
   },
   methods: {
+    cancelLikedPostTheme: function () {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'CancelLikedPostTheme/',
+        method: 'post',
+        data: {
+          pt_id: that.pt_id,
+          u_id: that.t_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
+          that.getPostTheme()
+          that.$router.go(0)
+        } else {
+          that.$message.error('未知错误')
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    likedPostTheme: function () {
+      let that = this
+      this.$http.request({
+        url: that.$url + 'LikedPostTheme/',
+        method: 'post',
+        data: {
+          pt_id: that.pt_id,
+          u_id: that.t_id
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          that.$message.success(response.data.message)
+          that.getPostTheme()
+          that.$router.go(0)
+        } else {
+          that.$message.error('未知错误')
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
     getPostTheme: function () {
       let that = this
       this.$http.request({
         url: that.$url + 'GetPostTheme/',
         method: 'post',
         data: {
-          pt_id: that.pt_id
+          pt_id: that.pt_id,
+          u_id: that.t_id
         },
         headers: {
           'Content-Type': 'application/json'

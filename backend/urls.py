@@ -66,5 +66,6 @@ urlpatterns = [
     path('CancelExcellent/', views.CancelExcellent.as_view()),
     path('GetAllDepartments/', views.GetAllDepartments.as_view()),
     path('LikedPostTheme/', views.LikedPostTheme.as_view()),
+    path('CancelLikedPostTheme/', views.CancelLikedPostTheme.as_view()),
     path("GetLikedPostThemeList/", views.GetLikedPostThemeList.as_view())
 ]

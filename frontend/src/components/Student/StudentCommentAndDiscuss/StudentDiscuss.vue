@@ -182,7 +182,8 @@ export default {
         url: that.$url + 'GetPostTheme/',
         method: 'post',
         data: {
-          pt_id: that.pt_id
+          pt_id: that.pt_id,
+          u_id: that.s_id
         },
         headers: {
           'Content-Type': 'application/json'
