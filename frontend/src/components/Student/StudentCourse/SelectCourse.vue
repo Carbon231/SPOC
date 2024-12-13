@@ -160,7 +160,7 @@ export default {
       showCourseList: this.courseList,
       inputSearch: '',
       tempCourseList: [],
-      departmentSelections: '',
+      departmentSelections: [],
       departmentSelect: '',
       chooseCourseStatus: '',
       courseStatusLists: [{
@@ -312,11 +312,11 @@ export default {
       if (that.chooseCourseStatus && that.chooseCourseStatus !== '全部') {
         for (let i = 0; i < that.tempCourseList.length; i++) {
           if (that.chooseCourseStatus === '已选' && (that.tempCourseList[i].isSelect === 1 || that.tempCourseList[i].isSelect === 2 || that.tempCourseList[i].isSelect === 3)) {
-            that.showCourseList.push(that.tempCourseList[i])
+            newCourseList.push(that.tempCourseList[i])
           } else if (that.chooseCourseStatus === '未选' && that.tempCourseList[i].isSelect === 0) {
-            that.showCourseList.push(that.tempCourseList[i])
+            newCourseList.push(that.tempCourseList[i])
           } else if (that.chooseCourseStatus === '已开课' && that.tempCourseList[i].isOpen) {
-            that.showCourseList.push(that.tempCourseList[i])
+            newCourseList.push(that.tempCourseList[i])
           }
         }
         that.tempCourseList = newCourseList

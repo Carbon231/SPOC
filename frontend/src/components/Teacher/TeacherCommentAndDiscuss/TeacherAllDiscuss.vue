@@ -23,17 +23,15 @@
                 </el-col>
               </el-row>
 
-
-
               <el-row>
                 <el-col :span="8" style="margin-bottom: 5%;margin-right: 5%;">
-                  <el-select v-model="departmentSelect" @change="filtrateDepartment" clearable placeholder="筛选">
-                    <el-option>只看我赞过的</el-option>
+                  <el-select v-model="selectOption" @change="filter" clearable placeholder="筛选条件">
+                    <el-option v-for="s in selectOptions" :key="s.key" :value="s.value"></el-option>
                   </el-select>
                 </el-col>
                 <el-col :span="8">
-                  <el-select v-model="chooseCourseStatus" @change="filtrateStatus" clearable placeholder="查看顺序">
-                    <el-option v-for="s in courseStatusLists" :key="s.label" :value="s.value"></el-option>
+                  <el-select v-model="sortOption" @change="sort" clearable placeholder="查看顺序">
+                    <el-option v-for="s in sortOptions" :key="s.key" :value="s.value"></el-option>
                   </el-select>
                 </el-col>
               </el-row>
@@ -131,11 +129,36 @@ export default {
         content: ''
       },
       inputSearch: '',
-      postThemeList: [{}],
-      showPostThemeList: [{}],
-      myLikedPostThemeList: [{}],
+      postThemeList: [],
+      showPostThemeList: [],
+      myLikedPostThemeList: [],
       buildThemeVisible: false,
-      time: ''
+      time: '',
+
+      selectOption: '',
+      sortOption: '',
+
+      sortOptions: [
+        {
+          key: '1',
+          value: '按时间排序'
+        },
+        {
+          key: '2',
+          value: '按点赞排序'
+        }
+      ],
+
+      selectOptions: [
+        {
+          key: '1',
+          value: '只看我赞过的'
+        },
+        {
+          key: '2',
+          value: '只看精华帖'
+        },
+      ]
     }
   },
   mounted: function () {
@@ -146,6 +169,30 @@ export default {
     this.getMyLikedPostThemeList()
   },
   methods: {
+    sort: function () {
+      if (this.sortOption === '按点赞排序') {
+        this.showPostThemeList.sort((a, b) => {
+          return a.likedNum < b.likedNum ? 1 : -1
+        })
+      } else {
+        this.showPostThemeList.sort((a, b) => {
+          return a.time < b.time ? 1 : -1
+        })
+      }
+    },
+    filter: function () {
+      if (this.selectOption === '只看我赞过的') {
+        this.showPostThemeList = this.showPostThemeList.filter((item) => {
+          return item.isLiked === 1
+        })
+      } else if (this.selectOption === '只看精华帖') {
+        this.showPostThemeList = this.showPostThemeList.filter((item) => {
+          return item.isExcellent === 1
+        })
+      } else {
+        this.showPostThemeList = this.postThemeList
+      }
+    },
     likedPostTheme: function (index) {
       let that = this
       this.$http.request({
