@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container class="background">
+    <el-container>
       <el-aside class="aside" width="show?'64px':30%">
         <TeacherNav></TeacherNav>
       </el-aside>
@@ -9,37 +9,33 @@
           <TeacherHeading></TeacherHeading>
         </el-header>
         <el-main style="padding-left: 10%; padding-right: 10%">
-          <h1>FreeTalk课程平台</h1>
-          <p>FreeTalk课程平台是一个基于Vue进行前端设计的平台，经历过多次更新。</p>
+          <h1>Sharing课程平台</h1>
           <ul>
             <li>介绍</li>
             <li>项目地址</li>
           </ul>
 
           <h2>介绍</h2>
-          <p>本次课程设计的FreeTalk课程平台是综合了选课系统、教材管理、课程评价和讨论，面向所有学生与老师的选课平台。</p>
+          <p>Sharing课程平台是一个创新的在线教育解决方案，旨在为学生和教师提供一个全面、互动和用户友好的选课、教学和学习环境。</p>
 
           <h4>(1)综合需求</h4>
-          <p>FreeTalk课程平台（FreeTalk1.0）初步实现了课程管理和评论区，通过对于以下单元进行操作完成您的需求：</p>
+          <p>Sharing课程平台通过整合以下核心功能，满足教育过程中的多样化需求：</p>
           <ul>
-            <li>课程：根据您的需要进行选课</li>
-            <li>资料：获取相应的学习资料</li>
-            <li>留言：分享您的看法</li>
+            <li>课程系统：根据您的需要进行开课、选课、退课，对课程进行评价</li>
+            <li>成绩系统：获取课程成绩</li>
+            <li>讨论系统：提供一个平台，让学生和教师可以就课程内容进行深入讨论</li>
           </ul>
 
           <h4>(2)使用说明</h4>
           <p>左侧栏中进行如下操作：</p>
           <ul>
-            <li>点击课程信息——进行选课退课</li>
-            <li>点击留言板——进行讨论交流，查看您的课程</li>
-            <li>点击课程管理——管理您的课程（教师端）</li>
+            <li>点击课程信息——学生：进行选课和查看我的课程 教师：开设课程以及管理课程</li>
+            <li>点击留言板——进行课程评价、自由讨论交流</li>
+            <li>点击用户信息——查看个人信息、更改用户资料</li>
           </ul>
           <h4>讨论区</h4>
-          <p>在讨论区中进行问题交流，关注讨论区中的通知。您也可以向FreeTalk工作组进行反馈，我们会尽快解决您的问题。</p>
+          <p>讨论区是Sharing课程平台的社交中心，学生和教师可以在这里交流思想，分享知识，提问和解答。请积极参与讨论，同时关注平台的通知和更新。如果您有任何问题或建议，欢迎向Sharing工作组反馈，我们将竭诚为您服务。</p>
 
-          <h2>项目地址</h2>
-          <p>如果您的有更好的建议，欢迎通过以下方式联系我们：</p>
-          <el-link href="https://github.com/fangzhou0216/buaa_db">fangzhou0216</el-link>
         </el-main>
       </el-container>
     </el-container>

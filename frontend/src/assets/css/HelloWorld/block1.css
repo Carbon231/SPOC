@@ -1,15 +1,15 @@
   .line_1 {
     margin-top: 50px;
-    height: 500px;
+    height: 400px;
     width: inherit;
     margin-left: 50px;
     margin-right: 50px
 }
   .line-1-content {
-     height: 520px
+     height: 20px
 }
   .this-el-row {
-    height: 90%;
+    height: 50%;
 }
   .div-head{
     float: left;

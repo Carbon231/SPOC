@@ -53,87 +53,6 @@
         </el-row>
       </div>
     </div>
-    <div class="line_2">
-      <div class="line-2-head"><span class="div-head">仍在优化...</span></div>
-      <div class="timeline">
-        <el-row>
-          <el-col :span="12">
-            <el-timeline>
-              <el-timeline-item timestamp="2021/9/15" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">Initial Commit</strong>
-                  <p>Submitted on <i>2021/9/15 17:00</i></p>
-                </el-card>
-              </el-timeline-item>
-              <el-timeline-item timestamp="2021/10/9" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">HomeWork One Completed</strong>
-                  <p>Submitted on <i>2021/10/14 22:18</i></p>
-                </el-card>
-              </el-timeline-item>
-              <el-timeline-item timestamp="2021/11/3" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">The Representation On DB Design</strong>
-                  <p>Submitted on <i>2021/11/3 16:16</i></p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
-          </el-col>
-          <el-col :span="12">
-            <el-timeline>
-              <el-timeline-item timestamp="2021/11/23" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">The Second Check</strong>
-                  <p>Submitted on <i>2021/11/23 01:20</i></p>
-                </el-card>
-              </el-timeline-item>
-              <el-timeline-item timestamp="2021/11/?" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">HomeWork Two Completed</strong>
-                  <p>Submitted on <i>2021/12/12 20:08</i>></p>
-                </el-card>
-              </el-timeline-item>
-              <el-timeline-item timestamp="202?/?/?" placement="top">
-                <el-card>
-                  <strong style="font-size: 20px">To be Continued...</strong>
-                  <p><span></span></p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <div class="copyright">
-      <div class="copyright-block">
-        <div class="first-copyright-head">Platform</div>
-        <div class="first-copyright-content">壹课，发现课程之美</div>
-      </div>
-      <div class="copyright-block">
-        <div class="author-head">Developers</div>
-        <div class="author-task">
-          <span class="author-task">oyk---Vue设计</span>
-        </div>
-        <div class="author-task">
-          <span class="author-task">tqj---Vue服务器链接</span>
-        </div>
-        <div class="author-task">
-          <span class="author-task">gmm---后端框架</span>
-        </div>
-      </div>
-      <div class="copyright-block">
-        <div class="third-copyright-head">Relatives</div>
-        <div class="third-copyright-link">
-          <p><a href="https://github.com/fangzhou0216/buaa_db" class="links">@方舟</a></p>
-          <p><a href="https://www.icourse163.org/" class="links">中国大学MOOC</a></p>
-        </div>
-        <div class="admin-enter-item">
-          <p class="admin-enter-text" @click="goToAdminLogin">
-            Be&nbsp;an&nbsp;Admin?
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   </transition>
 </template>
@@ -142,9 +61,9 @@
 import technology from '../assets/img/AI助手.png'
 import book from '../assets/img/智学北航.png'
 import Computer from '../assets/img/人才培养.png'
-import cardBook from '../assets/img/300-240-book.png'
+import cardBook from '../assets/img/300-240-book.jpg'
 import cardJoin from '../assets/img/300-240-add.jpg'
-import cardGroup from '../assets/img/300-240-group.jpg'
+import cardGroup from '../assets/img/300-240-group.png'
 
 export default {
   data: function () {
@@ -167,7 +86,7 @@ export default {
       },
       cardImg_join: {
         'id': 'join',
-        'title': '操作系统',
+        'title': '编译原理',
         'src': cardJoin
       },
       cardImg_book: {

@@ -1,7 +1,9 @@
 
   .background{
-    /*background-image: url("../img/Login.jpg");*/
-    height: 100vh;
+    background-image: url("../img/Login.jpg");
+    background-size: 50% 60%; /* 背景图片的宽度和高度都将缩小到原来的50% */
+    background-position: 50% 100%; /* 使背景图片水平居中并位于底部 */
+    background-repeat: no-repeat; /* 防止背景图片重复 */
   }
   .head{
     text-align: center;
@@ -11,21 +13,18 @@
   }
 
   .register_block{
-    background-color: rgba(255, 255, 255, 0.15);
-    position: center;
-    margin-top: 50px;
-    margin-left: 40%;
-    width: 20%;
-    height: 500px;
-    border-color: #a8a8a8;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 20px;
-    opacity: 0.8;
+    border-radius: 10px;
+    margin: 150px auto;
+    width: 350px;
+    padding: 30px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    text-align: left;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
+    opacity: 0.8; /* 设置元素的透明度为50% */
   }
   .register_head{
     text-align: center;
-    margin-top: 10%;
     font-family: "微软雅黑", serif;
     color: black;
     font-size: 30px;
@@ -33,10 +32,16 @@
   #register-n, #register-name, #register-password, #confirm-password{
     padding-left: 10%;
   }
-  .confirm-button, .register-button, .return-button{
+  .confirm-button, .register-button{
     margin-top: 10px;
     padding-left: 10%;
   }
+  .return-button{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-left: 10%;
+  }
+
   .inputs{
     width: 90%;
     height: 20px;

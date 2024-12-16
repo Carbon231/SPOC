@@ -16,7 +16,7 @@
           <el-divider>楼主</el-divider>
           <el-card shadow="hover" style="margin-bottom: 2%">
             <el-row>
-              <el-col :offset="2" :span="2">
+              <el-col :span="2">
                 <el-row class="time">
                   {{ postTheme.time }}
                 </el-row>
