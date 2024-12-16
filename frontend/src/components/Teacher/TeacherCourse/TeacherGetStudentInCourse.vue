@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-container class="background">
+        <el-container>
             <el-aside class="aside" width="show?'64px':'250px'">
                 <TeacherNav></TeacherNav>
             </el-aside>
@@ -8,7 +8,7 @@
                 <el-header>
                     <TeacherHeading></TeacherHeading>
                 </el-header>
-                <el-main style="padding-left: 30%; padding-right: 10%">
+                <el-main style="padding-left: 20%; padding-right: 10%">
                     <el-table :data="students" style="width: 100%">
                         <el-table-column prop="s_id" label="学生学号" width="180"></el-table-column>
                         <el-table-column prop="s_name" label="学生姓名" width="180"></el-table-column>
@@ -20,9 +20,9 @@
                         </el-table-column>
                         <el-table-column label="操作" width="180">
                             <template slot-scope="scope">
-                                <el-button type="warning" @click="editScore(scope.row)"
-                                    v-if="!scope.row.editing">编辑</el-button>
-                                <el-button type="danger" @click="saveScore(scope.row)" v-else>保存</el-button>
+                                <el-button type="primary" @click="editScore(scope.row)"
+                                    v-if="!scope.row.editing">录入成绩</el-button>
+                                <el-button type="warning" @click="saveScore(scope.row)" v-else>保存</el-button>
                             </template>
                         </el-table-column>
                     </el-table>

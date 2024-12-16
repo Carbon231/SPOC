@@ -935,7 +935,7 @@ class TeacherChangeInfo(APIView):
     def post(self, request):
         req_data = json.loads(request.body)
         t_id = req_data['t_id']
-        d_id = req_data['d_id']
+        d_name = req_data['d_name']
         t_email = req_data['t_email']
         t_phone = req_data['t_phone']
         t_office = req_data['t_office']
@@ -947,7 +947,7 @@ class TeacherChangeInfo(APIView):
                 "error": "教师不存在"
             })
         # 更新教师信息
-        teacher.t_department = Department.objects.get(d_id=d_id)
+        teacher.t_department = Department.objects.get(d_name=d_name)
         teacher.t_email = t_email
         teacher.t_phone = t_phone
         teacher.t_office = t_office
@@ -1021,7 +1021,7 @@ class TeacherGetStudentInCourse(APIView):
         c_id = req_data['c_id']
         course = Course.objects.get(id=c_id)
        
-        scs = SC.objects.filter(course=course,isSelect= 1 if course.confirmed else 2)
+        scs = SC.objects.filter(course=course,isSelect= 2 if course.confirmed else 1)
         data = []
         for sc in scs:
             student = sc.student
@@ -1055,18 +1055,18 @@ class GetScoreDistribution(APIView):
             "60-80": 0,
             "80-100": 0
         }
-        scores = SC.objects.filter(course=course)
+        scores = SC.objects.filter(course=course, hasScore=1)
         for score in scores:
-            degree = int(score.score)
-            if 0 <= degree <= 20:
+            degree = score.score
+            if "0" <= degree <= "20":
                 score_distribution["0-20"] += 1
-            elif 20 < degree <= 40:
+            elif "20" < degree <= "40":
                 score_distribution["20-40"] += 1
-            elif 40 < degree <= 60:
+            elif "40" < degree <= "60":
                 score_distribution["40-60"] += 1
-            elif 60 < degree <= 80:
+            elif "60" < degree <= "80":
                 score_distribution["60-80"] += 1
-            elif 80 < degree <= 100:
+            elif "80" < degree <= "99":
                 score_distribution["80-100"] += 1
         return Response({
             "code": 200,
