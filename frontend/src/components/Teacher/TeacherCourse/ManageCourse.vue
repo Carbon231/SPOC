@@ -56,14 +56,7 @@
                   <el-button type="success" v-if="course.isOpen" icon="el-icon-check" disabled>已开课</el-button>
                 </el-button-group>
               </el-col>
-<!--              <el-col :offset="4">-->
-<!--                <el-button-group style="margin-top: 2%;margin-left:10px">-->
-<!--                  <el-button type="info" icon="el-icon-pie-chart"-->
-<!--                    v-on:click="getScoreDistribution(index)">查看分数分布</el-button>-->
-<!--                  <el-button type="warning" icon="el-icon-search"-->
-<!--                    v-on:click="teacherGetStudentInCourse(index)">查看学生名单</el-button>-->
-<!--                </el-button-group>-->
-<!--              </el-col>-->
+
             </el-row>
           </el-card>
 

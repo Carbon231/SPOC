@@ -38,24 +38,33 @@
 
               <el-card v-for="(postTheme, index) in showPostThemeList" :key="index" v-loading="loading" shadow="hover"
                 style="margin-bottom: 2%">
-                <div class="clearfix">
-                  <span>{{ postTheme.title }}</span>
-                  <el-button style="float: right; padding: 3px 0" type="text"
-                    v-on:click="enterPostTheme(index)">进入帖子</el-button>
-                  <el-button v-if="!postTheme.isLiked" icon="el-icon-thumb" @click="likedPostTheme(index)">{{
-                    postTheme.likedNum }} 点赞</el-button>
-                  <el-button v-if="postTheme.isLiked" icon="el-icon-thumb" @click="cancelLikedPostTheme(index)">{{
-                    postTheme.likedNum }} 取消点赞</el-button>
-                </div>
-                <el-icon></el-icon>
-                <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
-                  <el-tag size="mini" type="success" v-if="postTheme.isExcellent === 1">
-                    <span>经助教认证</span>
-                  </el-tag>
-                </div>
-                <div>
-                  <span style="color: gray; font-size: 8px">发表于-{{ postTheme.time }}</span>
-                </div>
+                <el-row>
+                  <el-col>
+                    <el-row>
+                      <div class="clearfix">
+                      <span>{{ postTheme.title }}</span>
+                      <el-button style="float: right; padding: 3px 0" type="text"
+                        v-on:click="enterPostTheme(index)">进入帖子</el-button>
+                      </div>
+                    </el-row>
+                  </el-col>
+                  <el-col>
+                    <el-row>
+                      <div class="textitem" style="font-size: 10px; margin-top: 2%; margin-bottom: 2%">
+                      <el-tag size="mini" type="success" v-if="postTheme.isExcellent === 1">
+                        <span>经助教认证</span>
+                      </el-tag>
+                    </div>
+                    </el-row>
+                    <el-row>
+                      <span style="color: gray; font-size: 8px">发表于-{{ postTheme.time }}</span>
+                      <el-button style="float: right" v-if="!postTheme.isLiked" icon="el-icon-thumb" @click="likedPostTheme(index)">{{
+                          postTheme.likedNum }} 点赞</el-button>
+                      <el-button style="float: right" v-if="postTheme.isLiked" icon="el-icon-thumb" @click="cancelLikedPostTheme(index)">{{
+                          postTheme.likedNum }} 取消点赞</el-button>
+                    </el-row>
+                  </el-col>
+                </el-row>
               </el-card>
 
             </el-col>
