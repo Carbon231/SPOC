@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container class="background">
+    <el-container>
       <el-aside class="aside" width="show?'64px':'300px'">
         <StudentNav></StudentNav>
       </el-aside>
